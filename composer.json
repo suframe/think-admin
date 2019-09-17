@@ -13,6 +13,13 @@
       "suframe\\thinkAdmin\\": "src"
     }
   },
+  "extra": {
+    "think": {
+      "services": [
+        "suframe\\thinkAdmin\\AdminService"
+      ]
+    }
+  },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {

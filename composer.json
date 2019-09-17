@@ -1,0 +1,25 @@
+{
+  "name": "suframe/think-admin",
+  "description": "suframe thinkphp admin",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "qian",
+      "email": "330576744@qq.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "suframe\\thinkAdmin\\": "src"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "suframe/think": "dev-master@dev",
+    "ext-inotify": "*"
+  },
+  "require-dev": {
+    "swoole/ide-helper": "@dev"
+  }
+}

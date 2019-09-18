@@ -17,12 +17,16 @@
     "think": {
       "services": [
         "suframe\\thinkAdmin\\AdminService"
-      ]
+      ],
+      "config": {
+        "admin": "src/config/admin.php"
+      }
     }
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
+    "topthink/think-migration": "^3.0",
     "suframe/think": "dev-master@dev",
     "ext-inotify": "*"
   },

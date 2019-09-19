@@ -2,6 +2,8 @@
 
 namespace suframe\thinkAdmin;
 
+use DirectoryIterator;
+use think\File;
 use think\Route;
 use think\Service;
 
@@ -25,7 +27,7 @@ class AdminService extends Service
         if (!$this->enable) {
             return false;
         }
-
+        $this->createMigrations();
         $this->registerRouteMiddleware();
     }
 
@@ -35,6 +37,7 @@ class AdminService extends Service
      */
     public function boot(Route $route)
     {
+
         if (!$this->enable) {
             return false;
         }
@@ -48,5 +51,24 @@ class AdminService extends Service
     protected function registerRouteMiddleware()
     {
         $this->routeMiddleware = config('thinkAdmin.routeMiddleware', []);
+    }
+
+    protected function createMigrations()
+    {
+        if(!$this->app->runningInConsole()){
+            return false;
+        }
+        $dataPath = $this->app->getRootPath() . 'database' . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR;
+        if(!is_dir($dataPath)){
+            mkdir($dataPath, 0755, true);
+        }
+        $sqlDir = __DIR__ . '/database/migrations';
+        foreach (new DirectoryIterator($sqlDir) as $fileInfo) {
+            if($fileInfo->isDot()) continue;
+            $file = new File($fileInfo->getFilename());
+            $file->move()
+            echo $fileInfo->getFilename() . "<br>\n";
+        }
+
     }
 }

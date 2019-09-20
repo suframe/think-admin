@@ -3,29 +3,22 @@
 namespace suframe\thinkAdmin;
 
 use DirectoryIterator;
-use think\File;
 use think\Route;
 use think\Service;
 
 class AdminService extends Service
 {
 
-    protected $config;
     protected $enable = false;
-
-    /**
-     * The application's route middleware.
-     * @var array
-     */
     protected $routeMiddleware = [];
 
     public function register()
     {
-        $this->config = config('thinkAdmin', []);
-        $this->enable = $this->config['enable'] ?? false;
+        $this->enable = config('thinkAdmin.enable', false);
         if (!$this->enable) {
             return false;
         }
+        $this->initAdmin();
         $this->createMigrations();
         $this->registerRouteMiddleware();
     }
@@ -36,12 +29,11 @@ class AdminService extends Service
      */
     public function boot(Route $route)
     {
-
         if (!$this->enable) {
             return false;
         }
         $route->get('admin/core/:controller/:action', '\suframe\thinkAdmin\controller\:controller@:action')
-            ->middleware($this->routeMiddleware, 'admin');
+            ->middleware($this->routeMiddleware);
     }
 
     /**
@@ -50,6 +42,17 @@ class AdminService extends Service
     protected function registerRouteMiddleware()
     {
         $this->routeMiddleware = config('thinkAdmin.routeMiddleware', []);
+    }
+
+    protected function initAdmin(){
+        if ($this->app->runningInConsole()) {
+            return false;
+        }
+        $this->app->bind('admin', Admin::class);
+        $token = $this->app->request->param(config('thinkAdmin.token', 'token'));
+        if($token){
+            $this->app->get('admin')->auth()->initByToken($token);
+        }
     }
 
     /**

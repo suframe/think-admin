@@ -2,6 +2,7 @@
 
 namespace app\controller;
 
+use suframe\thinkAdmin\model\AdminUsers;
 use think\Request;
 
 class Blog
@@ -13,7 +14,9 @@ class Blog
      */
     public function index()
     {
+        $user = AdminUsers::where('access_token', 1)->find();
         //
+        return $user->id;
         return 'sssss';
     }
 

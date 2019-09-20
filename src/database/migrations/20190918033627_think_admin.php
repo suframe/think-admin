@@ -29,7 +29,7 @@ class ThinkAdmin extends Migrator
     {
         //管理员
         $table = $this->table(
-            config('admin.database.users_table', 'admin_users'),
+            config('thinkAdmin.database.users_table'),
             array(
                 'engine' => 'InnoDB',
                 'comment' => '用户表',
@@ -39,9 +39,11 @@ class ThinkAdmin extends Migrator
             ->addColumn('password', 'string', ['comment' => '密码', 'length' => 60])
             ->addColumn('name', 'string', ['comment' => '姓名', 'null' => true])
             ->addColumn('avatar', 'string', ['comment' => '头像', 'null' => true])
+            ->addColumn('access_token', 'string', ['comment' => '访问token', 'null' => true, 'length' => 32])
             ->addColumn('remember_token', 'string', ['comment' => '记住密码token', 'null' => true, 'length' => 60])
             ->addIndex(['username'], ['unique' => true])
             ->addIndex(['remember_token'])
+            ->addIndex(['access_token'])
             ->addTimestamps()
             ->create();
         $admin = [
@@ -54,7 +56,7 @@ class ThinkAdmin extends Migrator
 
         //角色
         $table = $this->table(
-            config('admin.database.roles_table', 'admin_roles'),
+            config('thinkAdmin.database.roles_table'),
             array(
                 'engine' => 'InnoDB',
                 'comment' => '管理员角色表',
@@ -73,7 +75,7 @@ class ThinkAdmin extends Migrator
 
         //管理员权限
         $table = $this->table(
-            config('admin.database.permissions_table', 'admin_permissions'),
+            config('thinkAdmin.database.permissions_table'),
             array(
                 'engine' => 'InnoDB',
                 'comment' => '管理员权限表',
@@ -83,12 +85,13 @@ class ThinkAdmin extends Migrator
             ->addColumn('http_method', 'string', ['comment' => '请求method', 'null' => true])
             ->addColumn('http_path', 'string', ['comment' => '请求path', 'null' => true])
             ->addTimestamps()
-            ->addIndex(['name', 'slug'], ['unique' => true])
+            ->addIndex(['name'], ['unique' => true])
+            ->addIndex(['slug'], ['unique' => true])
             ->create();
 
         //管理菜单
         $table = $this->table(
-            config('admin.database.menu_table', 'admin_menu'),
+            config('thinkAdmin.database.menu_table'),
             array(
                 'engine' => 'InnoDB',
                 'comment' => '管理菜单',
@@ -104,55 +107,59 @@ class ThinkAdmin extends Migrator
 
         //管理员角色表
         $table = $this->table(
-            config('admin.database.role_users_table', 'admin_role_users'),
+            config('thinkAdmin.database.role_users_table'),
             array(
                 'engine' => 'InnoDB',
                 'comment' => '管理员角色表',
             ));
         $table->addColumn('role_id', 'integer', ['comment' => '角色ID'])
             ->addColumn('user_id', 'integer', ['comment' => '用户ID'])
-            ->addIndex(['role_id', 'user_id'])
+            ->addIndex(['role_id'])
+            ->addIndex(['user_id'])
             ->create();
 
         //管理员角色权限表
         $table = $this->table(
-            config('admin.database.role_permissions_table', 'admin_role_permissions'),
+            config('thinkAdmin.database.role_permissions_table'),
             array(
                 'engine' => 'InnoDB',
                 'comment' => '管理员角色权限表',
             ));
         $table->addColumn('role_id', 'integer', ['comment' => '角色ID'])
             ->addColumn('permission_id', 'integer', ['comment' => '权限ID'])
-            ->addIndex(['role_id', 'permission_id'])
+            ->addIndex(['role_id'])
+            ->addIndex(['permission_id'])
             ->create();
 
         //管理员权限表
         $table = $this->table(
-            config('admin.database.user_permissions_table', 'admin_user_permissions'),
+            config('thinkAdmin.database.user_permissions_table'),
             array(
                 'engine' => 'InnoDB',
                 'comment' => '管理员权限表',
             ));
         $table->addColumn('user_id', 'integer', ['comment' => '管理员ID'])
             ->addColumn('permission_id', 'integer', ['comment' => '权限ID'])
-            ->addIndex(['user_id', 'permission_id'])
+            ->addIndex(['user_id'])
+            ->addIndex(['permission_id'])
             ->create();
 
         //管理员角色菜单表
         $table = $this->table(
-            config('admin.database.role_menu_table', 'admin_role_menu'),
+            config('thinkAdmin.database.role_menu_table'),
             array(
                 'engine' => 'InnoDB',
                 'comment' => '管理员角色菜单表',
             ));
         $table->addColumn('role_id', 'integer', ['comment' => '角色ID'])
             ->addColumn('menu_id', 'integer', ['comment' => '菜单ID'])
-            ->addIndex(['role_id', 'menu_id'])
+            ->addIndex(['role_id'])
+            ->addIndex(['menu_id'])
             ->create();
 
         //管理员日志表
         $table = $this->table(
-            config('admin.database.operation_log_table', 'admin_operation_log'),
+            config('thinkAdmin.database.operation_log_table'),
             array(
                 'engine' => 'InnoDB',
                 'comment' => '管理员日志表',
@@ -172,13 +179,14 @@ class ThinkAdmin extends Migrator
      */
     public function down()
     {
-        $this->table(config('admin.database.users_table', 'admin_users'))->drop();
-        $this->table(config('admin.database.roles_table', 'admin_roles'))->drop();
-        $this->table(config('admin.database.permissions_table', 'admin_permissions'))->drop();
-        $this->table(config('admin.database.menu_table', 'admin_menu'))->drop();
-        $this->table(config('admin.database.user_permissions_table', 'admin_user_permissions'))->drop();
-        $this->table(config('admin.database.role_users_table', 'admin_role_users'))->drop();
-        $this->table(config('admin.database.role_menu_table', 'admin_role_menu'))->drop();
-        $this->table(config('admin.database.operation_log_table', 'admin_operation_log'))->drop();
+        $this->table(config('thinkAdmin.database.users_table'))->drop();
+        $this->table(config('thinkAdmin.database.roles_table'))->drop();
+        $this->table(config('thinkAdmin.database.permissions_table'))->drop();
+        $this->table(config('thinkAdmin.database.menu_table'))->drop();
+        $this->table(config('thinkAdmin.database.user_permissions_table'))->drop();
+        $this->table(config('thinkAdmin.database.role_users_table'))->drop();
+        $this->table(config('thinkAdmin.database.role_menu_table'))->drop();
+        $this->table(config('thinkAdmin.database.operation_log_table'))->drop();
+        $this->table(config('thinkAdmin.database.role_permissions_table'))->drop();
     }
 }

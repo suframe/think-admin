@@ -9,4 +9,10 @@ class Auth extends Base
         return 'is auth';
     }
 
+
+    public function login()
+    {
+        return 'is login';
+    }
+
 }

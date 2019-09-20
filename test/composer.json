@@ -17,11 +17,11 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "topthink/framework": "6.0.*-dev",
         "topthink/think-orm": "2.0.*-dev",
         "topthink/think-view": "^1.0",
         "topthink/think-captcha": "^3.0",
-        "topthink/think-migration": "^3.0"
+        "topthink/think-migration": "^3.0",
+        "topthink/framework": "6.0.*-dev"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2"
@@ -34,7 +34,10 @@
 
         "psr-0": {
             "": "extend/"
-        }
+        },
+        "files": [
+          "../src/helpers.php"
+        ]
     },
     "extra": {
       "think": {

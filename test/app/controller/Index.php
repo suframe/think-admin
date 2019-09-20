@@ -12,7 +12,7 @@ class Index extends BaseController
 {
     public function index()
     {
-        $user = Db::table('user');
+        $user = Db::table('admin_users');
         Db::startTrans();
         try {
             $rs = $user->select();

@@ -11,7 +11,10 @@
   "autoload": {
     "psr-4": {
       "suframe\\thinkAdmin\\": "src"
-    }
+    },
+    "files": [
+      "src/helpers.php"
+    ]
   },
   "extra": {
     "think": {
@@ -19,7 +22,7 @@
         "suframe\\thinkAdmin\\AdminService"
       ],
       "config": {
-        "admin": "src/config/admin.php"
+        "admin": "src/config/thinkAdmin.php"
       }
     }
   },

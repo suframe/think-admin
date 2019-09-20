@@ -65,9 +65,11 @@ class AdminService extends Service
         $sqlDir = __DIR__ . '/database/migrations';
         foreach (new DirectoryIterator($sqlDir) as $fileInfo) {
             if($fileInfo->isDot()) continue;
-            $file = new File($fileInfo->getFilename());
-            $file->move()
-            echo $fileInfo->getFilename() . "<br>\n";
+            $target = $dataPath . $fileInfo->getFilename();
+            if(file_exists($target)){
+                return false;
+            }
+            copy($fileInfo->getRealPath(), $target);
         }
 
     }

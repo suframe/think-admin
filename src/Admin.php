@@ -17,7 +17,7 @@ Class Admin
      */
     public function auth()
     {
-        return Auth::create();
+        return \suframe\thinkAdmin\facade\Auth::create();
     }
 
 }

@@ -15,7 +15,6 @@ class AdminService extends Service
 
     /**
      * The application's route middleware.
-     *
      * @var array
      */
     protected $routeMiddleware = [];
@@ -53,23 +52,28 @@ class AdminService extends Service
         $this->routeMiddleware = config('thinkAdmin.routeMiddleware', []);
     }
 
+    /**
+     * 数据库迁移
+     * @return bool
+     */
     protected function createMigrations()
     {
-        if(!$this->app->runningInConsole()){
+        if (!$this->app->runningInConsole()) {
             return false;
         }
         $dataPath = $this->app->getRootPath() . 'database' . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR;
-        if(!is_dir($dataPath)){
+        if (!is_dir($dataPath)) {
             mkdir($dataPath, 0755, true);
         }
         $sqlDir = __DIR__ . '/database/migrations';
         foreach (new DirectoryIterator($sqlDir) as $fileInfo) {
-            if($fileInfo->isDot()) continue;
-            $target = $dataPath . $fileInfo->getFilename();
-            if(file_exists($target)){
-                return false;
+            if ($fileInfo->isDot()) {
+                continue;
             }
-            copy($fileInfo->getRealPath(), $target);
+            $target = $dataPath . $fileInfo->getFilename();
+            if (!file_exists($target)) {
+                copy($fileInfo->getRealPath(), $target);
+            }
         }
 
     }

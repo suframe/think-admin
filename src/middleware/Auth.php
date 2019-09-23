@@ -10,9 +10,8 @@ class Auth
 
     public function handle($request, \Closure $next)
     {
-        $redirectTo = admin_base_path(config('thinkAdmin.auth.redirect_to', 'admin/core/auth/login'));
         if (app('admin')->auth()->guest() && !$this->shouldPassThrough($request)) {
-            return redirect($redirectTo);
+            return json_error('need login!', 504);
         }
         return $next($request);
     }

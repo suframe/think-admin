@@ -3,10 +3,13 @@
 namespace suframe\thinkAdmin\controller;
 
 use app\BaseController;
+use suframe\thinkAdmin\traits\AdminController;
+use think\Exception;
 use think\facade\View;
 
 class Base extends BaseController
 {
+    use AdminController;
 
     protected function initialize()
     {
@@ -20,4 +23,5 @@ class Base extends BaseController
             View::config(['view_path' => __DIR__ . '/../view/']);
         }
     }
+
 }

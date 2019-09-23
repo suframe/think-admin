@@ -36,6 +36,39 @@ class Auth
         $this->user = $user;
     }
 
+    /**
+     * 登录
+     * @param $username
+     * @param $password
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \Exception
+     */
+    public function login($username, $password)
+    {
+        $user = $this->user->where('username', $username)->find();
+        if($user){
+            throw new \Exception('username error');
+        }
+        //最大登录失败错误次数
+        $max_fail = config('thinkAdmin.auth.max_fail', 10);
+        if($user->login_fail > $max_fail){
+            throw new \Exception('login forbid!');
+        }
+        $passwordHash = $this->hashPassword($password);
+        if ($user->password !== $passwordHash) {
+            $user->login_fail += 1;
+            $user->save();
+            throw new \Exception('password error');
+        }
+        $token = $this->genToken();
+        $user->access_token = $token;
+        $user->login_fail = 0;
+        $user->save();
+        return $token;
+    }
+
     public function logout()
     {
         if (!$this->user) {
@@ -56,7 +89,7 @@ class Auth
     public function check($http_path, $http_method = 'GET')
     {
         $permission = $this->getUserAllPermission();
-        if(!$permission){
+        if (!$permission) {
             return false;
         }
         return !$permission->where('http_path', $http_path)
@@ -74,7 +107,7 @@ class Auth
     public function checkSlug($slug)
     {
         $permission = $this->getUserAllPermission();
-        if(!$permission){
+        if (!$permission) {
             return false;
         }
         return !$permission->where('slug', $slug)->isEmpty();
@@ -120,27 +153,28 @@ class Auth
      */
     protected function getUserAllPermission()
     {
-        if($this->permission){
+        if ($this->permission) {
             return $this->permission;
         }
         $user = $this->user();
-        if(!$user){
+        if (!$user) {
             return false;
         }
         //用户权限
         $permission_ids = $this->getUserPermissionsDb()->where('user_id', $user->id)->column('permission_id');
         //用户组权限
         $role_ids = $this->getUserRolesDb()->where('user_id', $user->id)->column('role_id');
-        if($role_ids){
-            $permissionRole_ids = $this->getUserRolePermissionsDb()->where('role_id', 'in', $role_ids)->column('permission_id');
-            if($permissionRole_ids){
+        if ($role_ids) {
+            $permissionRole_ids = $this->getUserRolePermissionsDb()->where('role_id', 'in',
+                $role_ids)->column('permission_id');
+            if ($permissionRole_ids) {
                 $permission_ids = array_merge($permission_ids, $permissionRole_ids);
             }
             //合并权限id
             $permission_ids = array_merge($permission_ids, $permissionRole_ids);
             $permission_ids = array_unique($permission_ids);
         }
-        if(!$permission_ids){
+        if (!$permission_ids) {
             return false;
         }
         return $this->permission = $this->getPermissionsDb()->where('id', 'in', $permission_ids)->select();
@@ -175,5 +209,20 @@ class Auth
     protected function getPermissionsDb()
     {
         return Db::table(config('thinkAdmin.database.permissions_table'));
+    }
+
+    protected function hashPassword($password)
+    {
+        $hash = config('thinkAdmin.auth.passwordHashFunc');
+        if (!$hash) {
+            $salt = config('thinkAdmin.auth.passwordSalt', 'thinkAdmin');
+            return md5(md5($password . $salt));
+        }
+        return $hash($password);
+    }
+
+    protected function genToken()
+    {
+        return md5(session_create_id());
     }
 }

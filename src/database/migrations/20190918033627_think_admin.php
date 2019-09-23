@@ -41,6 +41,7 @@ class ThinkAdmin extends Migrator
             ->addColumn('avatar', 'string', ['comment' => '头像', 'null' => true])
             ->addColumn('access_token', 'string', ['comment' => '访问token', 'null' => true, 'length' => 32])
             ->addColumn('remember_token', 'string', ['comment' => '记住密码token', 'null' => true, 'length' => 60])
+            ->addColumn('login_fail', 'int', ['comment' => '登录失败次数', 'null' => true, 'default' => 0])
             ->addIndex(['username'], ['unique' => true])
             ->addIndex(['remember_token'])
             ->addIndex(['access_token'])

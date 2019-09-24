@@ -7,17 +7,19 @@ Class Admin
     /**
      * 管理员
      */
-    public function user()
+    public static function user()
     {
         return static::auth()->user();
     }
 
     /**
+     * auth
      * @return Auth
      */
     public static function auth()
     {
         return \suframe\thinkAdmin\facade\Auth::create();
     }
+
 
 }

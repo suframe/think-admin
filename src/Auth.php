@@ -2,8 +2,12 @@
 
 namespace suframe\thinkAdmin;
 
+use suframe\thinkAdmin\model\AdminMenu;
+use suframe\thinkAdmin\model\AdminRoleMenu;
+use suframe\thinkAdmin\model\AdminRoleUsers;
 use suframe\thinkAdmin\model\AdminUsers;
 use think\Collection;
+use think\facade\Cache;
 use think\facade\Db;
 
 class Auth
@@ -48,12 +52,12 @@ class Auth
     public function login($username, $password)
     {
         $user = $this->user->where('username', $username)->find();
-        if($user){
+        if ($user) {
             throw new \Exception('username error');
         }
         //最大登录失败错误次数
         $max_fail = config('thinkAdmin.auth.max_fail', 10);
-        if($user->login_fail > $max_fail){
+        if ($user->login_fail > $max_fail) {
             throw new \Exception('login forbid!');
         }
         $passwordHash = $this->hashPassword($password);
@@ -89,11 +93,25 @@ class Auth
     public function check($http_path, $http_method = 'GET')
     {
         $permission = $this->getUserAllPermission();
+
         if (!$permission) {
             return false;
         }
-        return !$permission->where('http_path', $http_path)
+        $rs = !$permission->where('http_path', $http_path)
             ->where('http_method', $http_method)->isEmpty();
+
+        if (!$rs) {
+            //匹配通配符*
+            $likes = $permission
+                ->whereLike('http_path', '*')
+                ->where('http_method', $http_method)
+                ->filter(function ($item) use ($http_path) {
+                    $path = str_replace('*', '', $item['http_path']);
+                    return strpos($http_path, $path) !== false;
+                });
+            $rs = !$likes->isEmpty();
+        }
+        return $rs;
     }
 
     /**
@@ -140,6 +158,29 @@ class Auth
     }
 
     /**
+     * 获取管理员菜单
+     * @return Collection|\think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function getAdminMenu()
+    {
+        $roleIds = AdminRoleUsers::where('user_id', $this->user()->getKey())->column('role_id');
+        if (!$roleIds) {
+            return json_return([]);
+        }
+        $menuIds = AdminRoleMenu::where('role_id', 'in', $roleIds)->column('menu_id');
+        if (!$menuIds) {
+            return json_return([]);
+        }
+        return AdminMenu::where('id', 'in', $menuIds)
+            ->order('order', 'desc')
+            ->order('id', 'desc')
+            ->select();
+    }
+
+    /**
      * @var Collection
      */
     protected $permission;
@@ -160,6 +201,14 @@ class Auth
         if (!$user) {
             return false;
         }
+        //缓存
+        if(config('thinkAdmin.cache_admin_permission', false)){
+            $menu = Cache::get('thinkAdmin.admin.menus');
+            if($menu){
+                return $this->permission = $menu;
+            }
+        }
+
         //用户权限
         $permission_ids = $this->getUserPermissionsDb()->where('user_id', $user->id)->column('permission_id');
         //用户组权限
@@ -177,7 +226,12 @@ class Auth
         if (!$permission_ids) {
             return false;
         }
-        return $this->permission = $this->getPermissionsDb()->where('id', 'in', $permission_ids)->select();
+        $this->permission = $this->getPermissionsDb()->where('id', 'in', $permission_ids)->select();
+        //缓存
+        if(config('thinkAdmin.cache_admin_permission', false)) {
+            Cache::tag('thinkAdmin')->set('thinkAdmin.admin.menus', $this->permission);
+        }
+        return $this->permission;
     }
 
     public function addPermission($permission, $slug = null)
@@ -211,7 +265,7 @@ class Auth
         return Db::table(config('thinkAdmin.database.permissions_table'));
     }
 
-    protected function hashPassword($password)
+    public function hashPassword($password)
     {
         $hash = config('thinkAdmin.auth.passwordHashFunc');
         if (!$hash) {

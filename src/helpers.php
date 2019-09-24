@@ -55,3 +55,10 @@ if (!function_exists('json_return')) {
         ]);
     }
 }
+
+if (!function_exists('admin_config')) {
+    function admin_config()
+    {
+        return \suframe\thinkAdmin\Setting::getInstance();
+    }
+}

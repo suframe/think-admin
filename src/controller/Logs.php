@@ -1,12 +1,28 @@
 <?php
 namespace suframe\thinkAdmin\controller;
 
+use suframe\thinkAdmin\model\AdminOperationLog;
+
 class Logs extends Base
 {
 
+    /**
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \Exception
+     */
     public function index()
     {
-        return 'is logs';
+        $user_id = $this->request->param('user_id', null, 'intval');
+        list($page, $nums) = $this->requestPage();
+        $menu = AdminOperationLog::order('id', 'desc')->page($page, $nums);
+        if($user_id){
+            $menu->where('user_id', $user_id);
+        }
+        $list = $menu->select()->toArray();
+        return json_return($list);
     }
 
 }

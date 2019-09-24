@@ -11,7 +11,6 @@ class Auth extends Base
         return Admin::auth()->logout();
     }
 
-
     /**
      * 登录
      * @return string

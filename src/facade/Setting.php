@@ -4,14 +4,14 @@ namespace suframe\thinkAdmin\facade;
 use think\Facade;
 
 /**
- * Class Auth
+ * Class Setting
  * @package suframe\thinkAdmin\facade
- * @mixin \suframe\thinkAdmin\Auth
+ * @mixin \suframe\thinkAdmin\Setting
  */
-class Auth extends Facade
+class Setting extends Facade
 {
     protected static function getFacadeClass()
     {
-        return \suframe\thinkAdmin\Auth::class;
+        return \suframe\thinkAdmin\Setting::class;
     }
 }

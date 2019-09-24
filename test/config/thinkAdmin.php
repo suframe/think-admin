@@ -19,9 +19,17 @@ return [
         'user_permissions_table' => 'admin_user_permissions',
         'role_users_table' => 'admin_role_users',
         'role_menu_table' => 'admin_role_menu',
-        'operation_log_table' => 'admin_operation_log',
         'role_permissions_table' => 'admin_role_permissions',
+        'operation_log_table' => 'admin_operation_log',
+        'setting' => 'admin_setting',
     ],
 
-    'check_route_permission' => true
+    'configGroups' => [
+        'system' => '系统配置',
+        'other' => '其他配置'
+    ],
+
+    'check_route_permission' => true,
+    'cache_admin_permission' => false,
+
 ];

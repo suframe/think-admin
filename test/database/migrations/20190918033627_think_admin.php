@@ -37,10 +37,11 @@ class ThinkAdmin extends Migrator
 
         $table->addColumn('username', 'string', ['comment' => '用户名', 'length' => 190])
             ->addColumn('password', 'string', ['comment' => '密码', 'length' => 60])
-            ->addColumn('name', 'string', ['comment' => '姓名', 'null' => true])
+            ->addColumn('real_name', 'string', ['comment' => '姓名', 'null' => true])
             ->addColumn('avatar', 'string', ['comment' => '头像', 'null' => true])
             ->addColumn('access_token', 'string', ['comment' => '访问token', 'null' => true, 'length' => 32])
             ->addColumn('remember_token', 'string', ['comment' => '记住密码token', 'null' => true, 'length' => 60])
+            ->addColumn('login_fail', 'int', ['comment' => '登录失败次数', 'null' => true, 'default' => 0])
             ->addIndex(['username'], ['unique' => true])
             ->addIndex(['remember_token'])
             ->addIndex(['access_token'])
@@ -80,7 +81,7 @@ class ThinkAdmin extends Migrator
                 'engine' => 'InnoDB',
                 'comment' => '管理员权限表',
             ));
-        $table->addColumn('name', 'string', ['comment' => '用户名', 'length' => 50])
+        $table->addColumn('name', 'string', ['comment' => '权限名称', 'length' => 50])
             ->addColumn('slug', 'string', ['comment' => '标识', 'length' => 50])
             ->addColumn('http_method', 'string', ['comment' => '请求method', 'null' => true])
             ->addColumn('http_path', 'string', ['comment' => '请求path', 'null' => true])
@@ -170,6 +171,24 @@ class ThinkAdmin extends Migrator
             ->addColumn('ip', 'string', ['comment' => 'IP'])
             ->addColumn('input', 'string', ['comment' => '参数'])
             ->addIndex(['user_id'])
+            ->create();
+
+        //通用配置表
+        $table = $this->table(
+            config('thinkAdmin.database.setting'),
+            array(
+                'engine' => 'InnoDB',
+                'comment' => '通用配置表',
+            ));
+        $table->addColumn('group', 'string', ['comment' => '分组名称', 'length' => 64])
+            ->addColumn('key', 'string', ['comment' => '配置key', 'length' => 64])
+            ->addColumn('name', 'string', ['comment' => '配置名称', 'length' => 64])
+            ->addColumn('value', 'text', ['comment' => '值'])
+            ->addColumn('order', 'integer', ['comment' => '显示排序', 'null' => true, 'default' => 100])
+            ->addIndex(['group'], ['unique' => true])
+            ->addIndex(['key'], ['unique' => true])
+            ->addIndex(['name'], ['unique' => true])
+            ->addIndex(['order'])
             ->create();
 
     }

@@ -7,6 +7,10 @@ use suframe\thinkAdmin\model\AdminUsers;
 class User extends Base
 {
 
+    /**
+     * 我的信息
+     * @return \think\response\Json
+     */
     public function info()
     {
         $rs = Admin::user()->info();
@@ -14,6 +18,7 @@ class User extends Base
     }
 
     /**
+     * 通过id查找管理员
      * @return \think\response\Json
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -32,6 +37,7 @@ class User extends Base
     }
 
     /**
+     * 搜索
      * @return \think\Collection
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException

@@ -4,20 +4,35 @@ namespace suframe\thinkAdmin\controller;
 use suframe\thinkAdmin\Admin;
 use think\facade\Cache;
 
+/**
+ * 后台通用设置
+ * Class Setting
+ * @package suframe\thinkAdmin\controller
+ */
 class Setting extends Base
 {
+    /**
+     * 获取分组
+     * @return mixed
+     */
+    public function group()
+    {
+        return config('thinkAdmin.configGroups');
+    }
 
     /**
+     * 获取分组下配置
      * @return int
      * @throws \Exception
      */
-    public function group()
+    public function findByGroup()
     {
         $group = $this->requireParam('group');
         return admin_config()->getGroup($group);
     }
 
     /**
+     * 通过key获取单个配置
      * @throws \Exception
      */
     public function get()
@@ -27,6 +42,7 @@ class Setting extends Base
     }
 
     /**
+     * 更新
      * @return string
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException

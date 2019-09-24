@@ -3,6 +3,11 @@ namespace suframe\thinkAdmin\controller;
 
 use suframe\thinkAdmin\model\AdminOperationLog;
 
+/**
+ * 管理员操作日志
+ * Class Logs
+ * @package suframe\thinkAdmin\controller
+ */
 class Logs extends Base
 {
 

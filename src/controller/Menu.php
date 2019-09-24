@@ -7,10 +7,16 @@ use suframe\thinkAdmin\model\AdminMenu;
 use suframe\thinkAdmin\model\AdminRoleMenu;
 use suframe\thinkAdmin\model\AdminRoleUsers;
 
+/**
+ * 管理员菜单
+ * Class Menu
+ * @package suframe\thinkAdmin\controller
+ */
 class Menu extends Base
 {
 
     /**
+     * 所有菜单
      * @return \think\response\Json
      * @throws \Exception
      */
@@ -24,6 +30,7 @@ class Menu extends Base
     }
 
     /**
+     * 我的菜单
      * @return \think\response\Json
      * @throws \Exception
      */

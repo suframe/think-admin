@@ -191,6 +191,25 @@ class ThinkAdmin extends Migrator
             ->addIndex(['order'])
             ->create();
 
+        $table = $this->table(
+            config('thinkAdmin.database.apps'),
+            array(
+                'engine' => 'InnoDB',
+                'comment' => '应用管理',
+            ));
+        $table->addColumn('app_name', 'string', ['comment' => '应用标识', 'length' => 64])
+            ->addColumn('title', 'string', ['comment' => '应用标题', 'length' => 128])
+            ->addColumn('icon', 'string', ['comment' => '应用图标', 'length' => 128])
+            ->addColumn('auth', 'string', ['comment' => '开发者', 'length' => 128])
+            ->addColumn('version', 'string', ['comment' => '版本', 'length' => 64])
+            ->addColumn('desc', 'string', ['comment' => '应用描述', 'length' => 255])
+            ->addColumn('entry', 'string', ['comment' => '应用入口', 'length' => 255])
+            ->addColumn('order', 'integer', ['comment' => '显示排序', 'null' => true, 'default' => 100])
+            ->addTimestamps()
+            ->addIndex(['app_name'], ['unique' => true])
+            ->addIndex(['order'])
+            ->create();
+
     }
 
     /**
@@ -207,5 +226,7 @@ class ThinkAdmin extends Migrator
         $this->table(config('thinkAdmin.database.role_menu_table'))->drop();
         $this->table(config('thinkAdmin.database.operation_log_table'))->drop();
         $this->table(config('thinkAdmin.database.role_permissions_table'))->drop();
+        $this->table(config('thinkAdmin.database.setting'))->drop();
+        $this->table(config('thinkAdmin.database.apps'))->drop();
     }
 }

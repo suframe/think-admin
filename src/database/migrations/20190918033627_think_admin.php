@@ -42,16 +42,17 @@ class ThinkAdmin extends Migrator
             ->addColumn('access_token', 'string', ['comment' => '访问token', 'null' => true, 'length' => 32])
             ->addColumn('remember_token', 'string', ['comment' => '记住密码token', 'null' => true, 'length' => 60])
             ->addColumn('login_fail', 'integer', ['comment' => '登录失败次数', 'null' => true, 'default' => 0])
+            ->addColumn('supper', 'tinyint', ['comment' => '是否超级管理员：1是', 'null' => true, 'default' => 0])
             ->addIndex(['username'], ['unique' => true])
             ->addIndex(['remember_token'])
             ->addIndex(['access_token'])
             ->addTimestamps()
             ->create();
         $admin = [
-            'id' => 1,
             'username' => 'admin',
             'password' => 'admin',
             'real_name' => '超级管理员',
+            'supper' => 1,
         ];
         $table->insert($admin)->save();
 

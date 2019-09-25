@@ -51,7 +51,7 @@ class ThinkAdmin extends Migrator
             'id' => 1,
             'username' => 'admin',
             'password' => 'admin',
-            'name' => '超级管理员',
+            'real_name' => '超级管理员',
         ];
         $table->insert($admin)->save();
 

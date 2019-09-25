@@ -42,6 +42,7 @@ class ThinkAdmin extends Migrator
             ->addColumn('access_token', 'string', ['comment' => '访问token', 'null' => true, 'length' => 32])
             ->addColumn('remember_token', 'string', ['comment' => '记住密码token', 'null' => true, 'length' => 60])
             ->addColumn('login_fail', 'int', ['comment' => '登录失败次数', 'null' => true, 'default' => 0])
+            ->addColumn('supper', 'tinyint', ['comment' => '是否超级管理员：1是', 'null' => true, 'default' => 0])
             ->addIndex(['username'], ['unique' => true])
             ->addIndex(['remember_token'])
             ->addIndex(['access_token'])
@@ -190,6 +191,29 @@ class ThinkAdmin extends Migrator
             ->addIndex(['key'], ['unique' => true])
             ->addIndex(['name'], ['unique' => true])
             ->addIndex(['order'])
+            ->create();
+
+        //apps表
+        $table = $this->table(
+            config('thinkAdmin.database.apps'),
+            array(
+                'engine' => 'InnoDB',
+                'comment' => '应用管理',
+            ));
+        $table->addColumn('app_name', 'string', ['comment' => '应用标识', 'length' => 64])
+            ->addColumn('title', 'string', ['comment' => '应用标题', 'length' => 128])
+            ->addColumn('icon', 'string', ['comment' => '应用图标', 'length' => 128])
+            ->addColumn('auth', 'string', ['comment' => '开发者', 'length' => 128])
+            ->addColumn('version', 'string', ['comment' => '版本', 'length' => 64])
+            ->addColumn('desc', 'string', ['comment' => '应用描述', 'length' => 255])
+            ->addColumn('entry', 'string', ['comment' => '应用入口', 'length' => 255])
+            ->addColumn('order', 'integer', ['comment' => '显示排序', 'null' => true, 'default' => 100])
+            ->addColumn('installed', 'integer', ['comment' => '是否已安装：1是', 'null' => true, 'default' => 0])
+            ->addColumn('setting_class', 'string', ['comment' => '安装的class', 'length' => 255])
+            ->addTimestamps()
+            ->addIndex(['app_name'], ['unique' => true])
+            ->addIndex(['order'])
+            ->addIndex(['installed'])
             ->create();
 
     }

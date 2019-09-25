@@ -2,7 +2,7 @@
 
 namespace suframe\thinkAdmin\traits;
 
-use app\Request;
+use think\Request;
 use suframe\thinkAdmin\Admin;
 
 /**

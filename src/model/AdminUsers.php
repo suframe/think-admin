@@ -4,6 +4,9 @@ namespace suframe\thinkAdmin\model;
 
 use think\Model;
 
+/**
+ * @property mixed supper
+ */
 class AdminUsers extends Model
 {
     //
@@ -18,5 +21,10 @@ class AdminUsers extends Model
             'create_time' => $this->create_time,
             'update_time' => $this->update_time,
         ];
+    }
+
+    public function isSupper()
+    {
+        return $this->supper == 1;
     }
 }

@@ -13,10 +13,7 @@ trait ShouldPassThrough
      */
     protected function shouldPassThrough(Request $request)
     {
-        $excepts = config('thinkAdmin.auth.excepts', [
-            'admin/core/auth/login',
-            'admin/core/auth/logout',
-        ]);
+        $excepts = config('thinkAdmin.auth.excepts');
         $pathInfo = $request->pathinfo();
         foreach ($excepts as $except) {
             if($pathInfo == $except){

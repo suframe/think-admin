@@ -6,24 +6,14 @@ use suframe\thinkAdmin\model\AdminMenu;
 use suframe\thinkAdmin\model\AdminRoleMenu;
 use suframe\thinkAdmin\model\AdminRoleUsers;
 use suframe\thinkAdmin\model\AdminUsers;
+use suframe\thinkAdmin\traits\SingleInstance;
 use think\Collection;
 use think\facade\Cache;
 use think\facade\Db;
 
 class Auth
 {
-    static $instance;
-
-    /**
-     * @return Auth
-     */
-    public static function create()
-    {
-        if (static::$instance) {
-            return static::$instance;
-        }
-        return static::$instance = new static();
-    }
+    use SingleInstance;
 
     /**
      * @var AdminUsers

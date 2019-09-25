@@ -4,6 +4,7 @@ use think\facade\Env;
 
 return [
     'enable' => Env::get('thinkAdmin.enable', 'true'),
+    'uri_pre' => 'admin/',
     'routeMiddleware' => [
         'Auth' => \suframe\thinkAdmin\middleware\Auth::class,
         'Log' => \suframe\thinkAdmin\middleware\Log::class,
@@ -22,6 +23,20 @@ return [
         'role_permissions_table' => 'admin_role_permissions',
         'operation_log_table' => 'admin_operation_log',
         'setting' => 'admin_setting',
+        'apps' => 'admin_apps',
+    ],
+
+    'auth' => [
+        'tokenName' => 'token',//token名称
+        'max_fail' => '10', //最大登录错误次数
+        'passwordSalt' => 'thinkAdmin', //密码加密后缀
+        //自定义密码加密
+        //'passwordHashFunc' => function($password) {return $password},
+        //白名单
+        'excepts' => [
+            'thinkadmin/auth/login',
+            'thinkadmin/auth/logout',
+        ]
     ],
 
     'configGroups' => [
@@ -29,7 +44,7 @@ return [
         'other' => '其他配置'
     ],
 
-    'check_route_permission' => false, //
+    'check_route_permission' => true, //
     'cache_admin_permission' => false, //缓存用户权限提高速度, 修改了权限需要更新缓存
 
 ];

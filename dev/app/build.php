@@ -20,7 +20,7 @@ return [
     // 需要自动创建的控制器
     'controller' => ['Index'],
     // 需要自动创建的模型
-    'model'      => ['User'],
+    'model'      => [],
     // 需要自动创建的模板
     'view'       => ['index/index'],
 ];

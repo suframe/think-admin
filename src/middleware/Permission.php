@@ -2,6 +2,7 @@
 
 namespace suframe\thinkAdmin\middleware;
 
+use suframe\thinkAdmin\model\AdminUsers;
 use suframe\thinkAdmin\traits\ShouldPassThrough;
 use think\Request;
 
@@ -20,14 +21,16 @@ class Permission
         if (config('thinkAdmin.check_route_permission') === false) {
             return $next($request);
         }
-
+        /** @var AdminUsers $user */
         $user = app('admin')->user();
-        if (!$user || $this->shouldPassThrough($request)) {
+        if (!$user ||
+            $user->isSupper() ||
+            $this->shouldPassThrough($request)) {
             return $next($request);
         }
 
         if(!app('admin')->auth()->check($request->pathinfo(), $request->method())){
-            throw new \Exception('Permission denied');
+            throw new \Exception('Permission denied', 5005);
         }
 
         return $next($request);

@@ -11,7 +11,7 @@ class Auth
     public function handle($request, \Closure $next)
     {
         if (app('admin')->auth()->guest() && !$this->shouldPassThrough($request)) {
-            return json_error('need login!', 504);
+            throw new \Exception('need login', 5004);
         }
         return $next($request);
     }

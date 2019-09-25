@@ -2,8 +2,8 @@
 
 namespace suframe\thinkAdmin\middleware;
 
-use app\Request;
 use think\facade\Db;
+use think\Request;
 
 class Log
 {
@@ -25,6 +25,6 @@ class Log
 
     protected function getDb()
     {
-        return Db::table(config('thinkAdmin.database.operation_log_table', 'admin_operation_log'));
+        return Db::table(config('thinkAdmin.database.operation_log_table'));
     }
 }

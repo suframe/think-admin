@@ -17,18 +17,18 @@ class Setting extends Base
      */
     public function group()
     {
-        return config('thinkAdmin.configGroups');
+        return json_return(config('thinkAdmin.configGroups'));
     }
 
     /**
      * 获取分组下配置
-     * @return int
+     * @return array|\think\Collection
      * @throws \Exception
      */
     public function findByGroup()
     {
         $group = $this->requireParam('group');
-        return admin_config()->getGroup($group);
+        return Admin::setting()->getGroup($group);
     }
 
     /**
@@ -38,7 +38,7 @@ class Setting extends Base
     public function get()
     {
         $key = $this->requireParam('key');
-        return admin_config()->getKey($key);
+        return Admin::setting()->getKey($key);
     }
 
     /**
@@ -53,7 +53,7 @@ class Setting extends Base
     {
         $key = $this->requireParam('key');
         $value = $this->requireParam('value');
-        return admin_config()->save($key, $value);
+        return Admin::setting()->save($key, $value);
     }
 
     /**
@@ -63,28 +63,7 @@ class Setting extends Base
     public function delete()
     {
         $key = $this->requireParam('key');
-        return admin_config()->delete($key);
-    }
-
-    /**
-     * 清除缓存
-     * @return bool
-     */
-    public function clearCache()
-    {
-        //要清除的缓存项目
-        return Cache::clear();
-    }
-
-    /**
-     * 删除缓存key
-     * @return bool
-     * @throws \Exception
-     */
-    public function deleteCache()
-    {
-        $key = $this->requirePost('key');
-        return Cache::delete($key);
+        return Admin::setting()->delete($key);
     }
 
 }

@@ -3,24 +3,12 @@
 namespace suframe\thinkAdmin;
 
 use suframe\thinkAdmin\model\AdminSetting;
+use suframe\thinkAdmin\traits\SingleInstance;
 use think\Collection;
 
 class Setting extends Collection
 {
-    static $instance;
-
-    /**
-     * @return Setting
-     */
-    public static function getInstance()
-    {
-        if (static::$instance) {
-            return static::$instance;
-        }
-        static::$instance = new static();
-
-        return static::$instance;
-    }
+    use SingleInstance;
 
     /**
      * @param $key

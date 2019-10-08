@@ -6,10 +6,20 @@ use app\validate\User;
 use think\db\Query;
 use think\exception\ValidateException;
 use think\facade\Db;
+use think\facade\Session;
 use think\response\Json;
 
 class Index extends BaseController
 {
+    public function session()
+    {
+        if($rs = session('dddd')){
+            return $rs;
+        }
+        session('dddd', 'sss');
+        return 'dddd';
+    }
+
     public function index()
     {
         $user = Db::table('admin_users');

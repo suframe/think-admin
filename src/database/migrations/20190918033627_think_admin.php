@@ -171,6 +171,7 @@ class ThinkAdmin extends Migrator
             ->addColumn('method', 'string', ['comment' => '方法'])
             ->addColumn('ip', 'string', ['comment' => 'IP'])
             ->addColumn('input', 'string', ['comment' => '参数'])
+            ->addTimestamps()
             ->addIndex(['user_id'])
             ->create();
 
@@ -192,6 +193,7 @@ class ThinkAdmin extends Migrator
             ->addIndex(['order'])
             ->create();
 
+        //apps表
         $table = $this->table(
             config('thinkAdmin.database.apps'),
             array(
@@ -206,9 +208,12 @@ class ThinkAdmin extends Migrator
             ->addColumn('desc', 'string', ['comment' => '应用描述', 'length' => 255])
             ->addColumn('entry', 'string', ['comment' => '应用入口', 'length' => 255])
             ->addColumn('order', 'integer', ['comment' => '显示排序', 'null' => true, 'default' => 100])
+            ->addColumn('installed', 'integer', ['comment' => '是否已安装：1是', 'null' => true, 'default' => 0])
+            ->addColumn('setting_class', 'string', ['comment' => '安装的class', 'length' => 255])
             ->addTimestamps()
             ->addIndex(['app_name'], ['unique' => true])
             ->addIndex(['order'])
+            ->addIndex(['installed'])
             ->create();
 
     }

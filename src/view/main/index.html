@@ -1,2 +1,140 @@
-<?php
-echo 111;
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<div id="app">
+    <div class="sidebar-container" v-bind:class="{ 'sidebar-container-collapse': isCollapse }">
+    <el-scrollbar wrap-class="scrollbar-wrapper">
+        <el-menu default-active="1-4-1"
+                 class="el-menu-vertical-demo"
+                 @open="handleOpen"
+                 @close="handleClose"
+                 background-color="#545c64"
+                 text-color="#fff"
+                 :collapse="isCollapse">
+            <el-submenu index="1">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span slot="title">导航一 </span>
+                </template>
+                <el-menu-item-group>
+                    <span slot="title">分组一</span>
+                    <el-menu-item index="1-1">选项1</el-menu-item>
+                    <el-menu-item index="1-2">选项2</el-menu-item>
+                </el-menu-item-group>
+                <el-menu-item-group title="分组2">
+                    <el-menu-item index="1-3">选项3</el-menu-item>
+                </el-menu-item-group>
+                <el-submenu index="1-4">
+                    <span slot="title">选项4</span>
+                    <el-menu-item index="1-4-1">选项1</el-menu-item>
+                </el-submenu>
+            </el-submenu>
+            <el-menu-item index="2">
+                <i class="el-icon-menu"></i>
+                <span slot="title">导航二</span>
+            </el-menu-item>
+            <el-menu-item index="3" disabled>
+                <i class="el-icon-document"></i>
+                <span slot="title">导航三</span>
+            </el-menu-item>
+            <el-menu-item index="4">
+                <i class="el-icon-setting"></i>
+                <span slot="title">导航四</span>
+            </el-menu-item>
+        </el-menu>
+    </el-scrollbar>
+    </div>
+    <div class="main-container" v-bind:class="{ 'main-container-collapse': isCollapse }">
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+            <el-menu-item index="0"><i class="el-icon-s-fold" @click.stop="handleCollapse"></i></el-menu-item>
+            <el-submenu index="3">
+                <template slot="title">我的工作台</template>
+                <el-menu-item index="2-1">选项1</el-menu-item>
+                <el-menu-item index="2-2">选项2</el-menu-item>
+                <el-menu-item index="2-3">选项3</el-menu-item>
+                <el-submenu index="2-4">
+                    <template slot="title">选项4</template>
+                    <el-menu-item index="2-4-1">选项1</el-menu-item>
+                    <el-menu-item index="2-4-2">选项2</el-menu-item>
+                    <el-menu-item index="2-4-3">选项3</el-menu-item>
+                </el-submenu>
+            </el-submenu>
+            <el-menu-item index="4" disabled>消息中心</el-menu-item>
+            <el-menu-item index="5"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
+        </el-menu>
+    </div>
+
+</div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: function() {
+            return {
+                isCollapse: false,
+                activeIndex: '1',
+                activeIndex2: '1'
+            }
+        },
+        methods: {
+            handleCollapse() {
+                this.isCollapse = this.isCollapse ? false : true
+                console.log(this.isCollapse)
+            },
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            }
+        }
+    })
+</script>
+<style>
+    body, #app, html {
+        height: 100%;
+    }
+    #app .sidebar-container .el-menu ,
+    #app .sidebar-container .el-scrollbar,
+    #app .sidebar-container .el-scrollbar__view {
+        height: 100%;
+    }
+    #app .main-container {
+        min-height: 100%;
+        transition: margin-left .28s;
+        margin-left: 210px;
+        position: relative;
+    }
+    #app .main-container-collapse {
+        margin-left: 54px;
+    }
+
+    #app .sidebar-container {
+        transition: width 0.28s;
+        width: 210px !important;
+        height: 100%;
+        position: fixed;
+        font-size: 0px;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1001;
+        overflow: hidden;
+    }
+    #app .sidebar-container-collapse {
+        width: 54px !important;
+    }
+</style>
+</html>

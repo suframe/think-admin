@@ -51,6 +51,7 @@ class Apps
             $newApp = new AdminApps();
             $newApp->save($app);
         }
+
         return true;
     }
 

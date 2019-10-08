@@ -35,12 +35,12 @@ class AdminService extends Service
         $middleware = config('thinkAdmin.routeMiddleware');
         if (config('app.auto_multi_app') === true) {
             //多应用，通过应用目录下 middleware.php文件自己设置
-            if (strpos($this->app->request->pathinfo(), config('app.uri_pre', 'admin/')) === 0) {
-                $route->get('thinkadmin/:controller/:action', '\suframe\thinkAdmin\controller\:controller@:action')
+            if (strpos($this->app->request->pathinfo(), config('app.uri_pre', 'thinkadmin/')) === 0) {
+                $route->any('thinkadmin/:controller/:action', '\suframe\thinkAdmin\controller\:controller@:action')
                     ->middleware($middleware);
             }
         } else {
-            $route->get('thinkadmin/:controller/:action', '\suframe\thinkAdmin\controller\:controller@:action');
+            $route->any('thinkadmin/:controller/:action', '\suframe\thinkAdmin\controller\:controller@:action');
             //单应用，全局配置middleware
             $this->app->middleware->import($middleware);
         }
@@ -60,10 +60,6 @@ class AdminService extends Service
             return false;
         }
         $this->app->bind('admin', Admin::class);
-        $token = $this->app->request->param(config('thinkAdmin.tokenName', 'token'));
-        if ($token) {
-            $this->app->get('admin')->auth()->initByToken($token);
-        }
     }
 
     /**

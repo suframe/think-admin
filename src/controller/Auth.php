@@ -1,7 +1,9 @@
 <?php
+
 namespace suframe\thinkAdmin\controller;
 
 use suframe\thinkAdmin\Admin;
+use think\facade\View;
 
 /**
  * 认证接口
@@ -17,7 +19,8 @@ class Auth extends Base
      */
     public function logout()
     {
-        return Admin::auth()->logout();
+        Admin::auth()->logout();
+        return redirect('/thinkadmin/auth/login');
     }
 
     /**
@@ -27,9 +30,16 @@ class Auth extends Base
      */
     public function login()
     {
-        $username = $this->requirePost('username');
-        $password = $this->requirePost('password');
-        return Admin::auth()->login($username, $password);
+        if ($this->request->isPost()) {
+            $username = $this->requirePost('username');
+            $password = $this->requirePost('password');
+            $rs = Admin::auth()->login($username, $password);
+            if($rs){
+                return redirect('/thinkadmin/main/index');
+            }
+            return $rs ? '登录成功' : '登录失败';
+        }
+        return View::fetch('auth/login');
     }
 
 }

@@ -4,7 +4,7 @@ use think\facade\Env;
 
 return [
     'enable' => Env::get('thinkAdmin.enable', 'true'),
-    'uri_pre' => 'admin/',
+    'uri_pre' => 'admin/thinkadmin/',
     'routeMiddleware' => [
         'Auth' => \suframe\thinkAdmin\middleware\Auth::class,
         'Log' => \suframe\thinkAdmin\middleware\Log::class,
@@ -30,6 +30,7 @@ return [
         'tokenName' => 'token',//token名称
         'max_fail' => '10', //最大登录错误次数
         'passwordSalt' => 'thinkAdmin', //密码加密后缀
+        'driver' => \suframe\thinkAdmin\auth\SessionDriver::class, //认证驱动
         //自定义密码加密
         //'passwordHashFunc' => function($password) {return $password},
         //白名单

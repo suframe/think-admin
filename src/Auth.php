@@ -2,6 +2,7 @@
 
 namespace suframe\thinkAdmin;
 
+use suframe\thinkAdmin\auth\SessionDriver;
 use suframe\thinkAdmin\model\AdminMenu;
 use suframe\thinkAdmin\model\AdminRoleMenu;
 use suframe\thinkAdmin\model\AdminRoleUsers;
@@ -14,6 +15,8 @@ use think\facade\Db;
 class Auth
 {
     use SingleInstance;
+
+    protected $driver;
 
     /**
      * @var AdminUsers
@@ -41,10 +44,12 @@ class Auth
      */
     public function login($username, $password)
     {
-        $user = $this->user->where('username', $username)->find();
-        if ($user) {
+        $rs = $this->getUsersDb()->where('username', $username)->find();
+        if (!$rs) {
             throw new \Exception('username error');
         }
+        $user = new AdminUsers($rs);
+        $user->exists(true);
         //最大登录失败错误次数
         $max_fail = config('thinkAdmin.auth.max_fail', 10);
         if ($user->login_fail > $max_fail) {
@@ -56,11 +61,7 @@ class Auth
             $user->save();
             throw new \Exception('password error');
         }
-        $token = $this->genToken();
-        $user->access_token = $token;
-        $user->login_fail = 0;
-        $user->save();
-        return $token;
+        return $this->getDriver()->login($user);
     }
 
     public function logout()
@@ -68,8 +69,7 @@ class Auth
         if (!$this->user) {
             return false;
         }
-        $this->user->access_token = null;
-        return $this->user->save();
+        return $this->getDriver()->logout($this->user);
     }
 
     /**
@@ -122,24 +122,18 @@ class Auth
     }
 
     /**
-     * @param $token
-     * @return array|bool|Db|\think\Model|null
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * 初始化用户
+     * @return mixed
      */
-    public function initByToken($token)
+    public function initAdmin()
     {
-        if (!$token) {
-            return false;
+        $user = $this->getDriver()->initAdmin($this->getUsersDb());
+        if($user){
+            $admin = new AdminUsers($user);
+            $admin->exists(true);
+            $this->setUser($admin);
+            return $admin;
         }
-        $rs = $this->getUsersDb()->where('access_token', $token)->find();
-        if (!$rs) {
-            return false;
-        }
-        $user = new AdminUsers($rs);
-        $this->setUser($user);
-        return $user;
     }
 
     public function guest()
@@ -192,9 +186,9 @@ class Auth
             return false;
         }
         //缓存
-        if(config('thinkAdmin.cache_admin_permission', false)){
+        if (config('thinkAdmin.cache_admin_permission', false)) {
             $menu = Cache::get('thinkAdmin.admin.menus');
-            if($menu){
+            if ($menu) {
                 return $this->permission = $menu;
             }
         }
@@ -218,7 +212,7 @@ class Auth
         }
         $this->permission = $this->getPermissionsDb()->where('id', 'in', $permission_ids)->select();
         //缓存
-        if(config('thinkAdmin.cache_admin_permission', false)) {
+        if (config('thinkAdmin.cache_admin_permission', false)) {
             Cache::tag('thinkAdmin')->set('thinkAdmin.admin.menus', $this->permission);
         }
         return $this->permission;
@@ -265,8 +259,24 @@ class Auth
         return $hash($password);
     }
 
-    protected function genToken()
+    /**
+     * @param mixed $driver
+     */
+    public function setDriver($driver): void
     {
-        return md5(session_create_id());
+        $this->driver = $driver;
+    }
+
+    /**
+     * 认证驱动
+     * @return mixed
+     */
+    public function getDriver()
+    {
+        if ($this->driver) {
+            return $this->driver;
+        }
+        $driver = config('thinkAdmin.auth.driver', SessionDriver::class);
+        return $this->driver = new $driver;
     }
 }

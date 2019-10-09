@@ -84,4 +84,9 @@ class Apps extends Base
         return $rs ? json_success() : json_error();
     }
 
+    public function demo()
+    {
+        return '这里是app示例';
+    }
+
 }

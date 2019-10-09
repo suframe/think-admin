@@ -10,6 +10,8 @@ class Main extends Base
 
     public function index()
     {
+
+        View::assign('admin', $this->getAdminUser());
         return View::fetch('main/index');
     }
 

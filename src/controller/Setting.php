@@ -3,6 +3,7 @@ namespace suframe\thinkAdmin\controller;
 
 use suframe\thinkAdmin\Admin;
 use think\facade\Cache;
+use think\facade\View;
 
 /**
  * 后台通用设置
@@ -11,6 +12,23 @@ use think\facade\Cache;
  */
 class Setting extends Base
 {
+
+    public function index()
+    {
+        return '系统设置';
+    }
+
+    /**
+     * 个人设置
+     * @return string
+     * @throws \Exception
+     */
+    public function user()
+    {
+        return View::fetch('setting/user');
+    }
+
+
     /**
      * 获取分组
      * @return mixed

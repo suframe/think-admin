@@ -2,15 +2,19 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <!-- import CSS -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.12.0/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/layer/2.3/skin/layer.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 <div id="app">
     <el-container class="think-container">
         <el-aside class="think-aside" width="64px">
             <el-menu
-                    default-active="home"
+                    default-active="apps"
                     class="think-el-menu"
                     background-color="#2a68c9"
                     text-color="#d7e6fe"
@@ -18,11 +22,9 @@
                     @select="handleSelect"
                     :collapse="isCollapse">
                 <el-menu-item style="padding: 5px;">
-                    <img class="menu-logo" src="https://t1.picb.cc/uploads/2019/10/09/gLpZna.png" alt="">
-                </el-menu-item>
-                <el-menu-item index="home" style="padding: 0;">
-                    <i class="el-icon-s-home"></i>
-                    <div class="menu-text"><a href="{:url('/thinkadmin/main/index')}">首页</a></div>
+                    <a href="{:url('/thinkadmin/main/index')}">
+                        <img class="menu-logo" src="https://t1.picb.cc/uploads/2019/10/09/gLpZna.png" alt="">
+                    </a>
                 </el-menu-item>
                 <el-menu-item index="apps" style="padding: 0;">
                     <i class="el-icon-star-on"></i>
@@ -34,13 +36,16 @@
                     </el-menu-item>
                     <el-menu-item style="padding:0 11px;">
                         <el-popover
+                                style="z-index: 999999998"
                                 width="114"
                                 placement="right"
                                 trigger="hover"
                         >
                             <div class="my-settings">
-                                <li><a href="index.html"><i class="el-icon-user"></i> 个人设置</a></li>
-                                <li><a href="index.html"><i class="el-icon-setting"></i> 系统设置</a></li>
+                                <li @click="openUrl('{:url('/thinkadmin/setting/user')}', '个人设置')"><i class="el-icon-user"></i> 个人设置</li>
+                                {if $admin->isSupper()}
+                                <li @click="openUrl('{:url('/thinkadmin/setting/index')}', '系统设置')"><i class="el-icon-setting"></i> 系统设置</li>
+                                {/if}
                                 <li><a href="{:url('/thinkadmin/auth/logout')}"><i class="el-icon-right"></i> 退出登录</a></li>
                             </div>
                             <div slot="reference">
@@ -61,6 +66,7 @@
                     <p>劝你别做痴心人</p>
                     <p>多情暂且保留几分</p>
                     <p>...</p>
+
                 </div>
                 <el-alert
                         title="除了退出登录，其他并没有开发"
@@ -71,6 +77,7 @@
     </el-container>
 
     <el-drawer
+            z-index="999999999"
             :modal="falseSetting"
             class="apps-drawer"
             title="应用"
@@ -81,7 +88,7 @@
         <el-row>
             <div class="think-apps">
                 <el-col :span="6" v-for="n in 20">
-                    <span><i class="el-icon-platform-eleme"></i><span class="icon-name">应用{{n}}</span></span>
+                    <span @click="openUrl('{:url('/thinkadmin/apps/demo')}', '应用' + n)"><i class="fa fa-apple"></i><span class="icon-name">应用{{n}}</span></span>
                 </el-col>
             </div>
         </el-row>
@@ -92,6 +99,8 @@
 <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
 <!-- import JavaScript -->
 <script src="https://cdn.bootcss.com/element-ui/2.12.0/index.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
 <script>
     new Vue({
         el: '#app',
@@ -104,6 +113,24 @@
             }
         },
         methods: {
+            openUrl(url, title) {
+                this.drawer = false
+                var width = document.body.clientWidth;
+                width = width > 1300 ? 1300 : (width - 70)
+                layer.open({
+                    type: 2,
+                    title: title,
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: [width + 'px', '750px'],
+                    content: url,
+                    zIndex: layer.zIndex,
+                    success: function(layero){
+                        layer.setTop(layero); //重点2
+                    }
+                });
+            },
             handleCollapse() {
                 this.isCollapse = this.isCollapse ? false : true
                 console.log(this.isCollapse)
@@ -135,33 +162,41 @@
         padding: 0;
         margin: 0;
     }
+
     #app .think-aside {
         overflow: unset;
     }
+
     #app .el-main {
         padding: 0;
     }
+
     #app .think-container,
     #app .think-container .think-aside,
     #app .think-container .think-el-menu {
         height: 100%;
     }
+
     .apps-drawer .el-drawer.ltr {
         left: 64px;
     }
+
     .think-el-menu .el-menu-item {
         line-height: 36px;
         font-size: 12px;
         margin: 0;
         text-align: center;
     }
-    .think-el-menu a{
+
+    .think-el-menu a {
         color: #d7e6fe;
         text-decoration: none;
     }
-    .think-el-menu .is-active a{
+
+    .think-el-menu .is-active a {
         color: #ffd04b;
     }
+
     .think-el-menu .menu-text {
         line-height: 120%;
     }
@@ -177,7 +212,7 @@
 
     .think-el-menu .menu-bottom {
         position: absolute;
-        bottom: 20px;
+        bottom: 42px;
         display: block;
         width: 100%;
     }
@@ -185,31 +220,46 @@
     .think-el-menu .menu-bottom .el-menu-item {
         line-height: 56px;
     }
+
     .my-settings li{
         list-style-type: none;
     }
-    .my-settings li a{
+
+    .my-settings li a {
+        color: #666;
+        line-height: 37px;
+        text-decoration: none;
+    }
+
+    .my-settings li{
+        cursor: pointer;
         color: #666;
         line-height: 37px;
         padding-left: 20px;
         text-decoration: none;
     }
-    .my-settings li a:hover{
-        color:#4f90f7
+
+    .my-settings li a:hover {
+        color: #4f90f7
     }
-    .think-apps{
+
+    .think-apps {
         text-align: center;
         color: #5e6d82;
         font-size: 14px;
         line-height: 2em;
     }
-    .think-apps>.el-col{
+
+    .think-apps > .el-col {
         margin-bottom: 20px;
         height: 120px;
+        cursor: pointer;
     }
-    .think-apps i{
+
+    .think-apps i {
         display: block;
         font-size: 48px;
     }
+
 </style>
 </html>

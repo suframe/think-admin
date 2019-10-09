@@ -33,18 +33,31 @@ class AdminService extends Service
             return false;
         }
         $middleware = config('thinkAdmin.routeMiddleware');
-        $route->post('thinkadmin/auth/login', '\suframe\thinkAdmin\controller\auth@login')->token();
+        $route->post('thinkadmin/auth/login', '\suframe\thinkAdmin\controller\Auth@login')->token();
         if (config('app.auto_multi_app') === true) {
             //多应用，通过应用目录下 middleware.php文件自己设置
             if (strpos($this->app->request->pathinfo(), config('app.uri_pre', 'thinkadmin/')) === 0) {
-                $route->any('thinkadmin/:controller/:action', '\suframe\thinkAdmin\controller\:controller@:action')
-                    ->middleware($middleware);
+                $this->setRouter($route)->middleware($middleware);
             }
         } else {
-            $route->any('thinkadmin/:controller/:action', '\suframe\thinkAdmin\controller\:controller@:action');
+            $this->setRouter($route);
             //单应用，全局配置middleware
             $this->app->middleware->import($middleware);
         }
+    }
+
+    /**
+     * @param Route $route
+     */
+    protected function setRouter($route)
+    {
+        return $route->group('thinkadmin', function () use ($route){
+            $controllers = config('thinkAdmin.controllers', ['apps', 'auth', 'logs', 'main', 'menu', 'setting', 'system', 'user']);
+            foreach ($controllers as $controller) {
+                $controllerUc = ucfirst($controller);
+                $route->any("{$controller}/:action", "\\suframe\\thinkAdmin\\controller\\{$controllerUc}@:action");
+            }
+        });
     }
 
     /**

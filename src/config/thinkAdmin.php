@@ -45,6 +45,8 @@ return [
         'other' => '其他配置'
     ],
 
+    'controllers' => ['apps', 'auth', 'logs', 'main', 'menu', 'setting', 'system', 'user'],
+
     'check_route_permission' => true, //
     'cache_admin_permission' => false, //缓存用户权限提高速度, 修改了权限需要更新缓存
 

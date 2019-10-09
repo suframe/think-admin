@@ -22,7 +22,7 @@
         "suframe\\thinkAdmin\\AdminService"
       ],
       "config": {
-        "admin": "src/config/thinkAdmin.php"
+        "thinkAdmin": "src/config/thinkAdmin.php"
       }
     }
   },

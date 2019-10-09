@@ -7,61 +7,84 @@
 </head>
 <body>
 <div id="app">
-    <div class="sidebar-container">
-        admin
-        <el-menu
-                default-active="home"
-                 class="think-el-menu"
-                 background-color="#2a68c9"
-                 text-color="#d7e6fe"
-                 active-text-color="#ffd04b"
-                 @select="handleSelect"
-                 :collapse="isCollapse">
-            <el-menu-item>
-                <div class="menu-logo">ADMIN</div>
-            </el-menu-item>
-            <el-menu-item index="home">
-                <i class="el-icon-s-home"></i>
-                <div class="menu-text">首页</div>
-            </el-menu-item>
-            <el-menu-item index="apps">
-                <i class="el-icon-star-on"></i>
-                <div class="menu-text">应用</div>
-            </el-menu-item>
-        <div class="menu-bottom">
-            <el-menu-item>
-                <i class="el-icon-chat-line-square"></i>
-            </el-menu-item>
-            <el-menu-item>
-
-                <el-popover
-                        title="标题"
-                        width="200"
-                        placement="right"
-                        trigger="hover"
-                        content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-
-                    <i class="el-icon-s-custom" slot="reference"></i>
-                </el-popover>
-
-
-            </el-menu-item>
-        </div>
-
-
-        </el-menu>
-    </div>
-    <div class="main-container">
-        <button @click="drawer=true">sss</button>
-    </div>
+    <el-container class="think-container">
+        <el-aside class="think-aside" width="64px">
+            <el-menu
+                    default-active="home"
+                    class="think-el-menu"
+                    background-color="#2a68c9"
+                    text-color="#d7e6fe"
+                    active-text-color="#ffd04b"
+                    @select="handleSelect"
+                    :collapse="isCollapse">
+                <el-menu-item style="padding: 5px;">
+                    <img class="menu-logo" src="https://t1.picb.cc/uploads/2019/10/09/gLpZna.png" alt="">
+                </el-menu-item>
+                <el-menu-item index="home" style="padding: 0;">
+                    <i class="el-icon-s-home"></i>
+                    <div class="menu-text"><a href="{:url('/thinkadmin/main/index')}">首页</a></div>
+                </el-menu-item>
+                <el-menu-item index="apps" style="padding: 0;">
+                    <i class="el-icon-star-on"></i>
+                    <div class="menu-text">应用</div>
+                </el-menu-item>
+                <div class="menu-bottom" style="padding: 0;">
+                    <el-menu-item>
+                        <i class="el-icon-chat-line-square"></i>
+                    </el-menu-item>
+                    <el-menu-item style="padding:0 11px;">
+                        <el-popover
+                                width="114"
+                                placement="right"
+                                trigger="hover"
+                        >
+                            <div class="my-settings">
+                                <li><a href="index.html"><i class="el-icon-user"></i> 个人设置</a></li>
+                                <li><a href="index.html"><i class="el-icon-setting"></i> 系统设置</a></li>
+                                <li><a href="{:url('/thinkadmin/auth/logout')}"><i class="el-icon-right"></i> 退出登录</a></li>
+                            </div>
+                            <div slot="reference">
+                                <i class="el-icon-s-custom"></i>
+                            </div>
+                        </el-popover>
+                    </el-menu-item>
+                </div>
+            </el-menu>
+        </el-aside>
+        <el-main>
+            <div style="text-align: center; margin: 300px auto; width: 500px;">
+                <h1>欢迎登录 think-admin</h1>
+                <div style="color: #666666">
+                    <p>一生曾经爱过多少人</p>
+                    <p>你不懂我伤有多深</p>
+                    <p>要剥开伤口总是很残忍</p>
+                    <p>劝你别做痴心人</p>
+                    <p>多情暂且保留几分</p>
+                    <p>...</p>
+                </div>
+                <el-alert
+                        title="除了退出登录，其他并没有开发"
+                        type="error">
+                </el-alert>
+            </div>
+        </el-main>
+    </el-container>
 
     <el-drawer
             :modal="falseSetting"
             class="apps-drawer"
             title="应用"
+            size="400px"
             :visible.sync="drawer"
             :direction="direction"
             :before-close="handleClose">
+        <el-row>
+            <div class="think-apps">
+                <el-col :span="6" v-for="n in 20">
+                    <span><i class="el-icon-platform-eleme"></i><span class="icon-name">应用{{n}}</span></span>
+                </el-col>
+            </div>
+        </el-row>
     </el-drawer>
 </div>
 </body>
@@ -96,6 +119,13 @@
                 }
                 console.log(key, keyPath);
             }
+        },
+        created: function () {
+            this.$notify({
+                title: '欢迎访问',
+                message: '不要问我，一生爱过多少人',
+                position: 'bottom-right'
+            });
         }
     })
 </script>
@@ -105,46 +135,34 @@
         padding: 0;
         margin: 0;
     }
-
-    #app .sidebar-container .el-menu,
-    #app .sidebar-container .el-scrollbar,
-    #app .sidebar-container .el-scrollbar__view {
+    #app .think-aside {
+        overflow: unset;
+    }
+    #app .el-main {
+        padding: 0;
+    }
+    #app .think-container,
+    #app .think-container .think-aside,
+    #app .think-container .think-el-menu {
         height: 100%;
     }
-
-    #app .main-container {
-        min-height: 100%;
-        transition: margin-left .28s;
-        margin-left: 64px;
-        position: relative;
-    }
-
-    #app .sidebar-container {
-
-        transition: width 0.28s;
-        width: 64px !important;
-        height: 100%;
-        position: fixed;
-        font-size: 0px;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 1001;
-        overflow: hidden;
-    }
-
     .apps-drawer .el-drawer.ltr {
         left: 64px;
     }
-
     .think-el-menu .el-menu-item {
         line-height: 36px;
         font-size: 12px;
-        margin:0 -20px;
+        margin: 0;
         text-align: center;
     }
-
-    .think-el-menu .menu-text{
+    .think-el-menu a{
+        color: #d7e6fe;
+        text-decoration: none;
+    }
+    .think-el-menu .is-active a{
+        color: #ffd04b;
+    }
+    .think-el-menu .menu-text {
         line-height: 120%;
     }
 
@@ -152,15 +170,46 @@
         color: #d7e6fe;
         font-size: 22px;
     }
-    .think-el-menu .menu-logo{
-        line-height: 56px;
+
+    .think-el-menu .menu-logo {
+        width: 100%;
     }
-    .think-el-menu .menu-bottom{
+
+    .think-el-menu .menu-bottom {
         position: absolute;
-        bottom: 0;
+        bottom: 20px;
         display: block;
         width: 100%;
+    }
+
+    .think-el-menu .menu-bottom .el-menu-item {
         line-height: 56px;
+    }
+    .my-settings li{
+        list-style-type: none;
+    }
+    .my-settings li a{
+        color: #666;
+        line-height: 37px;
+        padding-left: 20px;
+        text-decoration: none;
+    }
+    .my-settings li a:hover{
+        color:#4f90f7
+    }
+    .think-apps{
+        text-align: center;
+        color: #5e6d82;
+        font-size: 14px;
+        line-height: 2em;
+    }
+    .think-apps>.el-col{
+        margin-bottom: 20px;
+        height: 120px;
+    }
+    .think-apps i{
+        display: block;
+        font-size: 48px;
     }
 </style>
 </html>

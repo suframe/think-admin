@@ -33,6 +33,7 @@ class AdminService extends Service
             return false;
         }
         $middleware = config('thinkAdmin.routeMiddleware');
+        $route->post('thinkadmin/auth/login', '\suframe\thinkAdmin\controller\auth@login')->token();
         if (config('app.auto_multi_app') === true) {
             //多应用，通过应用目录下 middleware.php文件自己设置
             if (strpos($this->app->request->pathinfo(), config('app.uri_pre', 'thinkadmin/')) === 0) {

@@ -50,7 +50,7 @@ class ThinkAdmin extends Migrator
             ->create();
         $admin = [
             'username' => 'admin',
-            'password' => 'admin',
+            'password' => '8659ae75747cc60aee5df2a651db7463',
             'real_name' => '超级管理员',
             'supper' => 1,
         ];

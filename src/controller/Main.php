@@ -15,4 +15,9 @@ class Main extends Base
         return View::fetch('main/index');
     }
 
+    public function message()
+    {
+        return "你有一条新的消息：啦啦啦啦";
+    }
+
 }

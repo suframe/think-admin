@@ -17,7 +17,6 @@ class Main extends Base
 
     public function message()
     {
-        return "你有一条新的消息：啦啦啦啦";
+        return View::fetch('main/message');
     }
-
 }

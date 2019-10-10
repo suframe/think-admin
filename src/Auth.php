@@ -46,21 +46,23 @@ class Auth
     {
         $rs = $this->getUsersDb()->where('username', $username)->find();
         if (!$rs) {
-            throw new \Exception('username error');
+            throw new \Exception('用户名错误');
         }
         $user = new AdminUsers($rs);
         $user->exists(true);
         //最大登录失败错误次数
         $max_fail = config('thinkAdmin.auth.max_fail', 10);
-        if ($user->login_fail > $max_fail) {
-            throw new \Exception('login forbid!');
+        if ($user->login_fail >= $max_fail) {
+            throw new \Exception("超过最大登录错误次数限制{$user->login_fail}/{$max_fail}!");
         }
         $passwordHash = $this->hashPassword($password);
         if ($user->password !== $passwordHash) {
             $user->login_fail += 1;
             $user->save();
-            throw new \Exception('password error');
+            throw new \Exception('密码错误');
         }
+        $user->login_fail = 0;
+        $user->save();
         return $this->getDriver()->login($user);
     }
 

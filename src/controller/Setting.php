@@ -1,8 +1,9 @@
 <?php
 namespace suframe\thinkAdmin\controller;
 
+use suframe\form\facade\Form;
 use suframe\thinkAdmin\Admin;
-use think\facade\Cache;
+use suframe\thinkAdmin\ui\form\AdminUserForm;
 use think\facade\View;
 
 /**
@@ -15,7 +16,7 @@ class Setting extends Base
 
     public function index()
     {
-        return View::fetch('setting/index');;
+        return View::fetch('setting/index');
     }
 
     /**
@@ -25,6 +26,9 @@ class Setting extends Base
      */
     public function user()
     {
+        $html = Form::createElm()->setRuleByClass(AdminUserForm::class);
+        $formScript = $html->formScript();
+        View::assign('formScript', $formScript);
         return View::fetch('setting/user');
     }
 

@@ -45,6 +45,8 @@ return [
         'other' => '其他配置'
     ],
 
+    'upload_url' => url('/thinkadmin/main/upload'),
+
     'controllers' => ['apps', 'auth', 'logs', 'main', 'menu', 'setting', 'system', 'user'],
 
     'check_route_permission' => true, //

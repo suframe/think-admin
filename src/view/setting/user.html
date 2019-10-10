@@ -5,8 +5,15 @@
 {/block}
 
 {block name="main"}
-<el-tabs tab-position="left">
-    <el-tab-pane label="用户信息">用户信息</el-tab-pane>
-    <el-tab-pane label="密码修改">密码修改</el-tab-pane>
-</el-tabs>
+<div style="width: 400px; margin: 100px auto;">
+    <div id="user-form"></div>
+</div>
+{/block}
+
+{block name="script"}
+{__block__}
+<script>
+    var create = {$formScript|raw};
+    var $f = create(document.getElementById('user-form'));
+</script>
 {/block}

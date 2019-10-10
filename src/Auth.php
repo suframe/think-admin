@@ -52,7 +52,7 @@ class Auth
         $user->exists(true);
         //最大登录失败错误次数
         $max_fail = config('thinkAdmin.auth.max_fail', 10);
-        if ($user->login_fail > $max_fail) {
+        if ($user->login_fail >= $max_fail) {
             throw new \Exception("超过最大登录错误次数限制{$user->login_fail}/{$max_fail}!");
         }
         $passwordHash = $this->hashPassword($password);

@@ -3,6 +3,8 @@
 namespace suframe\thinkAdmin\controller;
 
 use suframe\thinkAdmin\Admin;
+use think\exception\ValidateException;
+use think\facade\Session;
 use think\facade\View;
 
 /**
@@ -31,14 +33,20 @@ class Auth extends Base
     public function login()
     {
         if ($this->request->isPost()) {
-            $username = $this->requirePost('username');
-            $password = $this->requirePost('password');
-            $rs = Admin::auth()->login($username, $password);
-            if($rs){
+            try {
+                $username = $this->requirePost('username', '请输入用户名');
+                $password = $this->requirePost('password','请输入密码');
+                $rs = Admin::auth()->login($username, $password);
+                if ($rs) {
+                    return redirect('/thinkadmin/main/index');
+                }
+                return $rs ? '登录成功' : '登录失败';
+            } catch (\Exception $e) {
+                Session::set('login_message', $e->getMessage());
                 return redirect('/thinkadmin/main/index');
             }
-            return $rs ? '登录成功' : '登录失败';
         }
+        View::assign('message', Session::pull('login_message'));
         return View::fetch('auth/login');
     }
 

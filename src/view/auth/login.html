@@ -50,6 +50,9 @@
 <div class="login-form">
     <form method="post">
         {:token_field()}
+        {if $message}
+        <div style="background: #fef0f0; color: #f56c6c; padding: 8px 16px;">{$message}</div>
+        {/if}
         <p><input type="text" name="username" placeholder="请输入账户"/></p>
         <p><input type="password" name="password" placeholder="请输入密码"/></p>
         <p><input class="login-form-submit" type="submit" value="登 录"/></p>

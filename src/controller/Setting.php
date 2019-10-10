@@ -15,7 +15,7 @@ class Setting extends Base
 
     public function index()
     {
-        return '系统设置';
+        return View::fetch('setting/index');;
     }
 
     /**

@@ -31,7 +31,7 @@
                     <div class="menu-text">应用</div>
                 </el-menu-item>
                 <div class="menu-bottom" style="padding: 0;">
-                    <el-menu-item>
+                    <el-menu-item @click="openUrl('{:url('/thinkadmin/main/message')}', '消息')">
                         <i class="el-icon-chat-line-square"></i>
                     </el-menu-item>
                     <el-menu-item style="padding:0 11px;">
@@ -60,6 +60,7 @@
             <div style="text-align: center; margin: 300px auto; width: 500px;">
                 <h1>欢迎登录 think-admin</h1>
                 <div style="color: #666666">
+                    <p>不要问我</p>
                     <p>一生曾经爱过多少人</p>
                     <p>你不懂我伤有多深</p>
                     <p>要剥开伤口总是很残忍</p>

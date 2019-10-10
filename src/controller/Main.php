@@ -15,4 +15,8 @@ class Main extends Base
         return View::fetch('main/index');
     }
 
+    public function message()
+    {
+        return View::fetch('main/message');
+    }
 }

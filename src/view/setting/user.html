@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{extend name="layout" /}
 
-    个人设置
+{block name="title"}
+管理sss
+{/block}
 
-</body>
-</html>
+{block name="main"}
+<el-tabs tab-position="left">
+    <el-tab-pane label="用户信息">用户信息</el-tab-pane>
+    <el-tab-pane label="密码修改">密码修改</el-tab-pane>
+</el-tabs>
+{/block}

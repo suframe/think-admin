@@ -26,12 +26,14 @@ class Setting extends Base
      */
     public function user()
     {
+
+        Form::createElm()->getTpRuleByClass(AdminUserForm::class);
+        exit;
         $html = Form::createElm()->setRuleByClass(AdminUserForm::class);
         $formScript = $html->formScript();
         View::assign('formScript', $formScript);
         return View::fetch('setting/user');
     }
-
 
     /**
      * 获取分组

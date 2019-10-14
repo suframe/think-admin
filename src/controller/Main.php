@@ -29,9 +29,9 @@ class Main extends Base
         $url = Request::root(true) . config('filesystem.disks.public.url') . '/' . $url;
         //todo 保存到数据库
         $id = 1; //存到数据库后返回id
-        return json_encode([
+        return json_return([
             'id' => $id,
-            'url' => $url
+            'filePath' => $url
         ]);
     }
 }

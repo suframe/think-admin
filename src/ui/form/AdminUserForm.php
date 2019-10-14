@@ -40,7 +40,27 @@ class AdminUserForm
             'field' => 'password',
             'props' => [
                 'placeholder' => '密码',
-            ]
+            ],
+            'callback' => function($element){
+                $element->showPassword(true);
+                return $element;
+            }
+        ];
+    }
+
+    public function repassword()
+    {
+        return [
+            'type' => 'password',
+            'title' => '重复输入密码',
+            'field' => 'repassword',
+            'props' => [
+                'placeholder' => '重复输入密码',
+            ],
+            'callback' => function($element){
+                $element->showPassword(true);
+                return $element;
+            }
         ];
     }
 

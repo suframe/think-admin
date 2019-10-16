@@ -48,12 +48,12 @@ class AdminUserForm
         ];
     }
 
-    public function repassword()
+    public function password_confirm()
     {
         return [
             'type' => 'password',
             'title' => '重复输入密码',
-            'field' => 'repassword',
+            'field' => 'password_confirm',
             'props' => [
                 'placeholder' => '重复输入密码',
             ],

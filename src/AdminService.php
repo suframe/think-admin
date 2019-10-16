@@ -51,8 +51,9 @@ class AdminService extends Service
      */
     protected function setRouter($route)
     {
-        return $route->group('thinkadmin', function () use ($route){
-            $controllers = config('thinkAdmin.controllers', ['apps', 'auth', 'logs', 'main', 'menu', 'setting', 'system', 'user']);
+        return $route->group('thinkadmin', function () use ($route) {
+            $controllers = config('thinkAdmin.controllers',
+                ['apps', 'auth', 'logs', 'main', 'menu', 'setting', 'system', 'user']);
             foreach ($controllers as $controller) {
                 $controllerUc = ucfirst($controller);
                 $route->any("{$controller}/:action", "\\suframe\\thinkAdmin\\controller\\{$controllerUc}@:action");

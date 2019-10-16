@@ -8,73 +8,18 @@ use suframe\thinkAdmin\model\AdminUsers;
 use suframe\thinkAdmin\ui\form\AdminUserForm;
 use think\facade\View;
 
-class User extends SystemBase
+class My extends Base
 {
 
-    public function index()
-    {
-        $this->setNav('user');
-        return View::fetch('user/index');
-    }
+    protected $urlPre = '/thinkadmin/my/';
 
-    /**
-     * 我的信息
-     * @return \think\response\Json
-     */
-    public function info()
+    protected function setNav($active)
     {
-        $rs = Admin::user()->info();
-        return json_return($rs);
-    }
-
-    /**
-     * 通过id查找管理员
-     * @return \think\response\Json
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \Exception
-     */
-    public function find()
-    {
-        $id = $this->requireParamInt('id');
-        /** @var AdminUsers $rs */
-        $rs = AdminUsers::find($id);
-        if ($rs) {
-            $rs = $rs->info();
-        }
-        return json_return($rs);
-    }
-
-    /**
-     * 搜索
-     * @return \think\Collection
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \Exception
-     */
-    public function search()
-    {
-        list($page, $nums) = $this->requestPage();
-        return AdminUsers::order('id', 'desc')
-            ->field('id,username,real_name,avatar,create_time,update_time,login_fail')
-            ->page($page, $nums)
-            ->select();
-    }
-
-    /**
-     * 新增
-     * @throws \Exception
-     */
-    public function add()
-    {
-        $menu = new AdminUsers();
-        $menu->username = $this->request->post('username');
-        $menu->password = Admin::auth()->hashPassword($this->requirePostInt('password'));
-        $menu->real_name = $this->requirePost('real_name');
-        $menu->avatar = $this->request->param('avatar');
-        return $menu->save();
+        $navs = [
+            'index' => ['基本信息', $this->urlA('index')],
+            'password' => ['修改密码', $this->urlA('password')],
+        ];
+        $this->setAdminNavs($navs, $active);
     }
 
     /**
@@ -84,9 +29,9 @@ class User extends SystemBase
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \Exception
      */
-    public function base()
+    public function index()
     {
-        $this->setNav('base');
+        $this->setNav('index');
         $admin = $this->getAdminUser();
         $fields = [
             'real_name',
@@ -103,7 +48,7 @@ class User extends SystemBase
         $form->setRuleByClass(AdminUserForm::class, [], $fields);
         $formScript = $form->formScript();
         View::assign('formScript', $formScript);
-        return View::fetch('user/base');
+        return View::fetch('my/base');
     }
 
     /**
@@ -138,23 +83,7 @@ class User extends SystemBase
         $form->setRuleByClass(AdminUserForm::class, [], ['password', 'password_confirm']);
         $formScript = $form->formScript();
         View::assign('formScript', $formScript);
-        return View::fetch('user/base');
+        return View::fetch('my/base');
     }
 
-    /**
-     * @return bool
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \Exception
-     */
-    public function delete()
-    {
-        $id = $this->requirePostInt('id');
-        $admin = AdminUsers::find($id);
-        if (!$admin) {
-            throw new \Exception('admin not exist');
-        }
-        return $admin->delete();
-    }
 }

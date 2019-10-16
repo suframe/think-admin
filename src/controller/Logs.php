@@ -2,13 +2,14 @@
 namespace suframe\thinkAdmin\controller;
 
 use suframe\thinkAdmin\model\AdminOperationLog;
+use think\facade\View;
 
 /**
  * 管理员操作日志
  * Class Logs
  * @package suframe\thinkAdmin\controller
  */
-class Logs extends Base
+class Logs extends SystemBase
 {
 
     /**
@@ -20,6 +21,10 @@ class Logs extends Base
      */
     public function index()
     {
+        $this->setNav('logs');
+        return View::fetch('logs/index');
+
+
         $user_id = $this->request->param('user_id', null, 'intval');
         list($page, $nums) = $this->requestPage();
         $menu = AdminOperationLog::order('id', 'desc')->page($page, $nums);

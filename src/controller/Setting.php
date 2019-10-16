@@ -11,28 +11,13 @@ use think\facade\View;
  * Class Setting
  * @package suframe\thinkAdmin\controller
  */
-class Setting extends Base
+class Setting extends SystemBase
 {
 
     public function index()
     {
+        $this->setNav('setting');
         return View::fetch('setting/index');
-    }
-
-    /**
-     * 个人设置
-     * @return string
-     * @throws \Exception
-     */
-    public function user()
-    {
-
-        Form::createElm()->getTpRuleByClass(AdminUserForm::class);
-        exit;
-        $html = Form::createElm()->setRuleByClass(AdminUserForm::class);
-        $formScript = $html->formScript();
-        View::assign('formScript', $formScript);
-        return View::fetch('setting/user');
     }
 
     /**

@@ -11,90 +11,99 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-<div id="app">
-    <el-container class="think-container">
-        <el-aside class="think-aside" width="64px">
-            <el-menu
-                    default-active="apps"
-                    class="think-el-menu"
-                    background-color="#2a68c9"
-                    text-color="#d7e6fe"
-                    active-text-color="#ffd04b"
-                    @select="handleSelect"
-                    :collapse="isCollapse">
-                <el-menu-item style="padding: 5px;">
-                    <a href="{:url('/thinkadmin/main/index')}">
-                        <img class="menu-logo" src="https://t1.picb.cc/uploads/2019/10/09/gLpZna.png" alt="">
-                    </a>
-                </el-menu-item>
-                <el-menu-item index="apps" style="padding: 0;">
-                    <i class="el-icon-star-on"></i>
-                    <div class="menu-text">应用</div>
-                </el-menu-item>
-                <div class="menu-bottom" style="padding: 0;">
-                    <el-menu-item @click="openUrl('{:url('/thinkadmin/main/message')}', '消息')">
-                        <i class="el-icon-chat-line-square"></i>
-                    </el-menu-item>
-                    <el-menu-item style="padding:0 11px;">
-                        <el-popover
-                                style="z-index: 999999998"
-                                width="114"
-                                placement="right"
-                                trigger="hover"
-                        >
-                            <div class="my-settings">
-                                <li @click="openUrl('{:url('/thinkadmin/setting/user')}', '个人设置')"><i class="el-icon-user"></i> 个人设置</li>
-                                {if $admin->isSupper()}
-                                <li @click="openUrl('{:url('/thinkadmin/setting/index')}', '系统设置')"><i class="el-icon-setting"></i> 系统设置</li>
-                                {/if}
-                                <li><a href="{:url('/thinkadmin/auth/logout')}"><i class="el-icon-right"></i> 退出登录</a></li>
-                            </div>
-                            <div slot="reference">
-                                <i class="el-icon-s-custom"></i>
-                            </div>
-                        </el-popover>
-                    </el-menu-item>
-                </div>
-            </el-menu>
-        </el-aside>
-        <el-main>
-            <div style="text-align: center; margin: 300px auto; width: 500px;">
-                <h1>欢迎登录 think-admin</h1>
-                <div style="color: #666666">
-                    <p>不要问我</p>
-                    <p>一生曾经爱过多少人</p>
-                    <p>你不懂我伤有多深</p>
-                    <p>要剥开伤口总是很残忍</p>
-                    <p>劝你别做痴心人</p>
-                    <p>多情暂且保留几分</p>
-                    <p>...</p>
+<div class="think-app">
+    <div id="app">
+        <template id="appcnt">
+            <el-container class="think-container">
+                <el-aside class="think-aside" width="64px">
+                    <el-menu
+                            default-active="apps"
+                            class="think-el-menu"
+                            background-color="#2a68c9"
+                            text-color="#d7e6fe"
+                            active-text-color="#ffd04b"
+                            @select="handleSelect"
+                            :collapse="isCollapse">
+                        <el-menu-item style="padding: 5px;">
+                            <a href="{:url('/thinkadmin/main/index')}">
+                                <img class="menu-logo" src="https://t1.picb.cc/uploads/2019/10/09/gLpZna.png" alt="">
+                            </a>
+                        </el-menu-item>
+                        <el-menu-item index="apps" style="padding: 0;">
+                            <i class="el-icon-star-on"></i>
+                            <div class="menu-text">应用</div>
+                        </el-menu-item>
+                        <div class="menu-bottom" style="padding: 0;">
+                            <el-menu-item @click="openUrl('{:url('/thinkadmin/main/message')}', '消息')">
+                                <i class="el-icon-chat-line-square"></i>
+                            </el-menu-item>
+                            <el-menu-item style="padding:0 11px;">
+                                <el-popover
+                                        style="z-index: 999999998"
+                                        width="114"
+                                        placement="right"
+                                        trigger="hover"
+                                >
+                                    <div class="my-settings">
+                                        <li @click="openUrl('{:url('/thinkadmin/my/index')}', '个人设置')"><i
+                                                class="el-icon-user"></i> 个人设置
+                                        </li>
+                                        {if $admin->isSupper()}
+                                        <li @click="openUrl('{:url('/thinkadmin/system/index')}', '系统设置')"><i
+                                                class="el-icon-setting"></i> 系统设置
+                                        </li>
+                                        {/if}
+                                        <li><a href="{:url('/thinkadmin/auth/logout')}"><i class="el-icon-right"></i>
+                                            退出登录</a></li>
+                                    </div>
+                                    <div slot="reference">
+                                        <i class="el-icon-s-custom"></i>
+                                    </div>
+                                </el-popover>
+                            </el-menu-item>
+                        </div>
+                    </el-menu>
+                </el-aside>
+                <el-main>
+                    <div style="text-align: center; margin: 300px auto; width: 500px;">
+                        <h1>欢迎登录 think-admin</h1>
+                        <div style="color: #666666">
+                            <p>不要问我</p>
+                            <p>一生曾经爱过多少人</p>
+                            <p>你不懂我伤有多深</p>
+                            <p>要剥开伤口总是很残忍</p>
+                            <p>劝你别做痴心人</p>
+                            <p>多情暂且保留几分</p>
+                            <p>...</p>
 
-                </div>
-                <el-alert
-                        title="除了退出登录，其他并没有开发"
-                        type="error">
-                </el-alert>
-            </div>
-        </el-main>
-    </el-container>
-
-    <el-drawer
-            z-index="999999999"
-            :modal="falseSetting"
-            class="apps-drawer"
-            title="应用"
-            size="400px"
-            :visible.sync="drawer"
-            :direction="direction"
-            :before-close="handleClose">
-        <el-row>
-            <div class="think-apps">
-                <el-col :span="6" v-for="n in 20">
-                    <span @click="openUrl('{:url('/thinkadmin/apps/demo')}', '应用' + n)"><i class="fa fa-apple"></i><span class="icon-name">应用{{n}}</span></span>
-                </el-col>
-            </div>
-        </el-row>
-    </el-drawer>
+                        </div>
+                        <el-alert
+                                title="除了退出登录，其他并没有开发"
+                                type="error">
+                        </el-alert>
+                    </div>
+                </el-main>
+                <el-drawer
+                        z-index="999999999"
+                        :modal="falseSetting"
+                        class="apps-drawer"
+                        title="应用"
+                        size="400px"
+                        :visible.sync="drawer"
+                        :direction="direction"
+                        :before-close="handleClose">
+                    <el-row>
+                        <div class="think-apps">
+                            <el-col :span="6" v-for="n in 20">
+                                <span @click="openUrl('{:url('/thinkadmin/apps/demo')}', '应用' + n)"><i
+                                        class="fa fa-apple"></i><span class="icon-name">应用{{n}}</span></span>
+                            </el-col>
+                        </div>
+                    </el-row>
+                </el-drawer>
+            </el-container>
+        </template>
+    </div>
 </div>
 </body>
 <!-- import Vue before Element -->
@@ -103,9 +112,11 @@
 <script src="https://cdn.bootcss.com/element-ui/2.12.0/index.js"></script>
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
+
 <script>
     new Vue({
         el: '#app',
+        template: "#appcnt",
         data: function () {
             return {
                 isCollapse: true,
@@ -128,7 +139,7 @@
                     area: [width + 'px', '750px'],
                     content: url,
                     zIndex: layer.zIndex,
-                    success: function(layero){
+                    success: function (layero) {
                         layer.setTop(layero); //重点2
                     }
                 });
@@ -159,23 +170,23 @@
     })
 </script>
 <style>
-    body, #app, html {
+    body, .think-app, html {
         height: 100%;
         padding: 0;
         margin: 0;
     }
 
-    #app .think-aside {
+    .think-app .think-aside {
         overflow: unset;
     }
 
-    #app .el-main {
+    .think-app .el-main {
         padding: 0;
     }
 
-    #app .think-container,
-    #app .think-container .think-aside,
-    #app .think-container .think-el-menu {
+    .think-app .think-container,
+    .think-app .think-container .think-aside,
+    .think-app .think-container .think-el-menu {
         height: 100%;
     }
 
@@ -223,7 +234,7 @@
         line-height: 56px;
     }
 
-    .my-settings li{
+    .my-settings li {
         list-style-type: none;
     }
 
@@ -233,7 +244,7 @@
         text-decoration: none;
     }
 
-    .my-settings li{
+    .my-settings li {
         cursor: pointer;
         color: #666;
         line-height: 37px;

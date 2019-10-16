@@ -30,6 +30,7 @@ return [
         'tokenName' => 'token',//token名称
         'max_fail' => '10', //最大登录错误次数
         'passwordSalt' => 'thinkAdmin', //密码加密后缀
+        'judgePassword' => 2, //密码强度，1-9
         'driver' => \suframe\thinkAdmin\auth\SessionDriver::class, //认证驱动
         //自定义密码加密
         //'passwordHashFunc' => function($password) {return $password},
@@ -47,7 +48,7 @@ return [
 
     'upload_url' => url('/thinkadmin/main/upload'),
 
-    'controllers' => ['apps', 'auth', 'logs', 'main', 'menu', 'setting', 'system', 'user'],
+    'controllers' => ['apps', 'auth', 'logs', 'main', 'menu', 'setting', 'system', 'user', 'my', 'group', 'permission'],
 
     'check_route_permission' => true, //
     'cache_admin_permission' => false, //缓存用户权限提高速度, 修改了权限需要更新缓存

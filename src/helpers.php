@@ -29,7 +29,7 @@ if (!function_exists('json_error')) {
     {
         return json([
             'code' => $code,
-            'message' => $message,
+            'msg' => $message,
             'data' => $data
         ]);
     }

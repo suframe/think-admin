@@ -6,14 +6,21 @@ use suframe\thinkAdmin\Admin;
 use suframe\thinkAdmin\model\AdminMenu;
 use suframe\thinkAdmin\model\AdminRoleMenu;
 use suframe\thinkAdmin\model\AdminRoleUsers;
+use think\facade\View;
 
 /**
  * 管理员菜单
  * Class Menu
  * @package suframe\thinkAdmin\controller
  */
-class Menu extends Base
+class Menu extends SystemBase
 {
+
+    public function index()
+    {
+        $this->setNav('menu');
+        return View::fetch('menu/index');
+    }
 
     /**
      * 所有菜单

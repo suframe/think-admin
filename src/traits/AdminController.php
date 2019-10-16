@@ -2,6 +2,7 @@
 
 namespace suframe\thinkAdmin\traits;
 
+use think\facade\View;
 use think\Request;
 use suframe\thinkAdmin\Admin;
 
@@ -93,7 +94,8 @@ trait AdminController
         }
         $nums = $nums > $numsMax ? $numsMax : $nums;
         return [
-            $page, $nums
+            $page,
+            $nums
         ];
     }
 
@@ -101,8 +103,36 @@ trait AdminController
      * 获取管理员
      * @return \suframe\thinkAdmin\model\AdminUsers
      */
-    protected function getAdminUser(){
+    protected function getAdminUser()
+    {
         return Admin::user();
     }
 
+    /**
+     * 返回处理
+     * @param $rs
+     * @param string $message
+     * @param array $data
+     * @return \think\response\Json
+     */
+    protected function handleResponse($rs, $message = '', $data = [])
+    {
+        if ($rs) {
+            return json_success($message ?: 'success', $data);
+        }
+        return json_error($message ?: 'error', $data);
+    }
+
+    protected $urlPre;
+
+    protected function urlA(string $url = '', array $vars = [], $suffix = true, $domain = false)
+    {
+        return url($this->urlPre . $url, $vars, $suffix, $domain)->build();
+    }
+
+    protected function setAdminNavs($navs, $active)
+    {
+        View::assign('adminNavs', $navs);
+        View::assign('adminNavActive', $active);
+    }
 }

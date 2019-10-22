@@ -2,18 +2,41 @@
 
 namespace suframe\thinkAdmin\controller;
 
-use suframe\thinkAdmin\Admin;
-use suframe\thinkAdmin\model\AdminApps;
+use suframe\form\facade\Form;
+use suframe\thinkAdmin\facade\Admin;
+use suframe\thinkAdmin\model\AdminSetting;
+use suframe\thinkAdmin\ui\form\SystemInfoForm;
 use think\facade\Cache;
 use think\facade\View;
 
 class System extends SystemBase
 {
 
+    /**
+     * 基本信息
+     * @return string
+     * @throws \FormBuilder\Exception\FormBuilderException
+     * @throws \ReflectionException
+     * @throws \Exception
+     */
     public function index()
     {
+        $group = 'system_info';
+        if ($this->request->isAjax() && $this->request->post()) {
+            $post = $this->request->post();
+            $rs = Admin::setting()->saveByGroup($group, $post);
+            return $this->handleResponse($rs);
+        }
+
+        $data = Admin::setting()->getGroupToArray($group);
         $this->setNav('system');
-        return View::fetch('system/index');
+        $form = Form::createElm();
+        $form->setData($data);
+        $form->setRuleByClass(SystemInfoForm::class);
+        $formScript = $form->formScript();
+        View::assign('formScript', $formScript);
+        View::assign('pageTitle', '基本信息');
+        return View::fetch('common/form');
     }
     /**
      * 清除缓存

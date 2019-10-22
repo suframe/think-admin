@@ -1,0 +1,13 @@
+{extend name="layout_container" /}
+
+{block name="main"}
+    <div id="base-form"></div>
+{/block}
+
+{block name="script"}
+{__block__}
+<script>
+    var create = {$formScript|raw};
+    var $f = create(document.getElementById('base-form'));
+</script>
+{/block}

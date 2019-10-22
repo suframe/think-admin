@@ -5,5 +5,8 @@
 {/block}
 
 {block name="main"}
-用户管理
+{$table->getHtml()|raw}
+{/block}
+{block name='script'}
+{$table->getJs()|raw}
 {/block}

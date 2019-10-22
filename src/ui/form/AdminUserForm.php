@@ -27,7 +27,7 @@ class AdminUserForm
             'field' => 'avatar',
             'action' => config('thinkAdmin.upload_url'),
             'props' => [
-                'placeholder' => '请上次头像',
+                'placeholder' => '请上传头像',
             ]
         ];
     }

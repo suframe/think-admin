@@ -1,9 +1,30 @@
 {extend name="layout_container" /}
 
 {block name="title"}
-系统设置
+基本信息
 {/block}
 
 {block name="main"}
-系统设置
+
+<el-tabs tab-position="left">
+    <el-tab-pane label="基本信息 ">
+        <div class="base-info-cnt">
+            <div id="user-form"></div>
+        </div>
+    </el-tab-pane>
+    <el-tab-pane label="密码修改">
+        <div class="user-info-cnt">
+            密码修改
+        </div>
+    </el-tab-pane>
+</el-tabs>
+</div>
+{/block}
+
+{block name="script"}
+{__block__}
+<script>
+    var create = {$formScript|raw};
+    var $f = create(document.getElementById('user-form'));
+</script>
 {/block}

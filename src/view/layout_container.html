@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>{block name="title"}管理{/block}</title>
+    <title>{block name="title"}{$pageTitle|default='管理'}{/block}</title>
     <!-- import CSS -->
     {block name='css'}
     {css href="https://cdn.bootcss.com/element-ui/2.12.0/theme-chalk/index.css" /}
@@ -22,35 +22,41 @@
             height: 100%;
             text-align: center;
         }
-        .el-aside > .el-menu .el-menu-item{
+        .el-aside > .el-menu .el-menu-item.is-active a{
+            color: #409EFF;
         }
         .block{
             padding: 15px;
             display: block;
+        }
+        a:-webkit-any-link{
+            display: block;
+            text-decoration: none;
+            color: #303133;
         }
     </style>
     {/block}
 </head>
 <body>
 <div id="app">
+<template id="appCnt">
 <el-container style="height: 100%">
     <el-aside width="200px" style="height: 100%">
         {block name="menu"}
         {if isset($adminNavs)}
         <el-menu default-active="{$adminNavActive}">
             {volist name="adminNavs" id="vo"}
-            <el-menu-item index="{$key}" @click="jumpUrl('{$vo[1]}')">{$vo[0]}</el-menu-item>
+            <el-menu-item index="{$key}"><a href="{$vo[1]}">{$vo[0]}</a></el-menu-item>
             {/volist}
         </el-menu>
         {/if}
         {/block}
     </el-aside>
     <el-main>
-        {block name="main"}
-        main
-        {/block}
+        {block name="main"}{/block}
     </el-main>
 </el-container>
+</template>
 </div>
 
 {block name='js'}
@@ -70,14 +76,12 @@
 <script>
     new Vue({
         el: '#app',
+        template: "#appCnt",
         data: function () {
             return {
             }
         },
         methods: {
-            jumpUrl(url){
-                window.location.href = url
-            }
         },
         created: function () {
         }

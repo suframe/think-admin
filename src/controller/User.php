@@ -6,6 +6,8 @@ use suframe\form\facade\Form;
 use suframe\thinkAdmin\Admin;
 use suframe\thinkAdmin\model\AdminUsers;
 use suframe\thinkAdmin\ui\form\AdminUserForm;
+use suframe\thinkAdmin\ui\table\UserTable;
+use suframe\thinkAdmin\ui\UITable;
 use think\facade\View;
 
 class User extends SystemBase
@@ -13,7 +15,12 @@ class User extends SystemBase
 
     public function index()
     {
+
+        $table = new UITable();
+        $table->createByClass(UserTable::class);
+
         $this->setNav('user');
+        View::assign('table', $table);
         return View::fetch('user/index');
     }
 

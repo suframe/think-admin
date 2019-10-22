@@ -9,5 +9,5 @@ use think\Model;
  */
 class AdminSetting extends Model
 {
-    //
+
 }

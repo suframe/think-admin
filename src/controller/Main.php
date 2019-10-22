@@ -3,15 +3,27 @@
 namespace suframe\thinkAdmin\controller;
 
 
+use suframe\thinkAdmin\facade\Admin;
 use think\facade\Request;
 use think\facade\View;
 
 class Main extends Base
 {
 
+    /**
+     * @return string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     public function index()
     {
-
+        $title = Admin::setting()->getKey('system_info.title');
+        $logo = Admin::setting()->getKey('system_info.logo');
+        View::assign('system_info', [
+            'title' => $title['value'] ?? '管理后台',
+            'logo' => $logo['value'] ?? 'https://t1.picb.cc/uploads/2019/10/09/gLpZna.png',
+        ]);
         View::assign('admin', $this->getAdminUser());
         return View::fetch('main/index');
     }

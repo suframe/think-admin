@@ -13,7 +13,7 @@ class Setting extends Collection
     /**
      * @param $key
      * @param string $default
-     * @return string
+     * @return mixed
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -42,6 +42,43 @@ class Setting extends Collection
         $setting = AdminSetting::where('group', $group);
         $setting->order('order', 'desc');
         return $setting->select() ?: $default;
+    }
+
+    /**
+     * @param $group
+     * @param array $default
+     * @return array|Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function getGroupToArray($group, $default = [])
+    {
+        $rs = $this->getGroup($group, $default);
+        if($rs && is_object($rs)){
+            $rs = $rs->column('value', 'key');
+        }
+        return $rs;
+    }
+
+    public function saveByGroup($group, $post = [])
+    {
+        $rs = false;
+        foreach ($post as $key => $item) {
+            $setting = AdminSetting::where('group', $group)
+                ->where('key', $key)->find();
+            if($setting){
+                $setting->value = $item;
+            } else {
+                $setting = new AdminSetting();
+                $setting->group = $group;
+                $setting->key = $key;
+                $setting->name = $key;
+                $setting->value = $item;
+            }
+            $rs = $setting->save() || $rs;
+        }
+        return $rs;
     }
 
     /**

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>管理</title>
+    <title>{$system_info['title']}</title>
     <!-- import CSS -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.12.0/theme-chalk/index.css">
     <link rel="stylesheet" href="https://cdn.bootcss.com/layer/2.3/skin/layer.css">
@@ -26,7 +26,7 @@
                             :collapse="isCollapse">
                         <el-menu-item style="padding: 5px;">
                             <a href="{:url('/thinkadmin/main/index')}">
-                                <img class="menu-logo" src="https://t1.picb.cc/uploads/2019/10/09/gLpZna.png" alt="">
+                                <img class="menu-logo" src="{$system_info['logo']}" alt="">
                             </a>
                         </el-menu-item>
                         <el-menu-item index="apps" style="padding: 0;">

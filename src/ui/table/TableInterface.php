@@ -23,5 +23,4 @@ interface TableInterface
      */
     public function ops();
 
-    public function sort();
 }

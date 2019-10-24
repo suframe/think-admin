@@ -129,6 +129,7 @@
             openUrl(url, title) {
                 this.drawer = false
                 var width = document.body.clientWidth;
+                var height = document.body.clientHeight - 60;
                 width = width > 1300 ? 1300 : (width - 70)
                 layer.open({
                     type: 2,
@@ -136,7 +137,7 @@
                     shadeClose: true,
                     shade: false,
                     maxmin: true, //开启最大化最小化按钮
-                    area: [width + 'px', '750px'],
+                    area: [width + 'px', height + 'px'],
                     content: url,
                     zIndex: layer.zIndex,
                     success: function (layero) {

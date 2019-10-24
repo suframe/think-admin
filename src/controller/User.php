@@ -15,10 +15,30 @@ class User extends SystemBase
 
     public function index()
     {
+        if($this->request->isAjax()){
+            $params = $this->request->get([
+                'id'
+            ]);
+            $users = AdminUsers::where($params)->field([
+                'id', 'username', 'real_name', 'create_time', 'avatar'
+            ]);
+            if($username = $this->request->get('username')){
+                $users->whereLike('username', "%{$username}%");
+            }
+            if($real_name = $this->request->get('real_name')){
+                $users->whereLike('real_name', "%{$real_name}%");
+            }
+            if($create_time = $this->request->get('create_time')){
+                $users->whereLike('create_time', "{$create_time}%");
+            }
+            if($create_times = $this->request->get('create_times')){
+                $users->whereBetweenTime('create_time', $create_times[0], $create_times[1]);
+            }
+            return json_return($users->select());
+        }
 
         $table = new UITable();
         $table->createByClass(UserTable::class);
-
         $this->setNav('user');
         View::assign('table', $table);
         return View::fetch('user/index');
@@ -126,15 +146,15 @@ class User extends SystemBase
         if ($this->request->isAjax() && $this->request->post()) {
             $password = $this->request->post('password');
             $password_confirm = $this->request->post('password_confirm');
-            if(!$password){
+            if (!$password) {
                 return $this->handleResponse(false, '请输入密码');
             }
-            if($password != $password_confirm){
+            if ($password != $password_confirm) {
                 return $this->handleResponse(false, '密码不一致');
             }
             $auth = Admin::auth();
             $score = $auth->judgePassword($password);
-            if($score < config('thinkAdmin.auth.judgePassword', 2)){
+            if ($score < config('thinkAdmin.auth.judgePassword', 2)) {
                 return $this->handleResponse(false, '密码不安全');
             }
             $admin = $this->getAdminUser();
@@ -157,10 +177,15 @@ class User extends SystemBase
      */
     public function delete()
     {
+
         $id = $this->requirePostInt('id');
+        /** @var AdminUsers $admin */
         $admin = AdminUsers::find($id);
         if (!$admin) {
-            throw new \Exception('admin not exist');
+            throw new \Exception('管理员不存在');
+        }
+        if ($admin->isSupper()) {
+            throw new \Exception('超级管理员不允许删除');
         }
         return $admin->delete();
     }

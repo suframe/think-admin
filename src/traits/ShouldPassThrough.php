@@ -15,6 +15,9 @@ trait ShouldPassThrough
     {
         $excepts = config('thinkAdmin.auth.excepts');
         $pathInfo = $request->pathinfo();
+        if($pathInfo == 'favicon.ico'){
+            return true;
+        }
         foreach ($excepts as $except) {
             if($pathInfo == $except){
                 return true;

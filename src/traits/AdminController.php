@@ -3,6 +3,7 @@
 namespace suframe\thinkAdmin\traits;
 
 use think\facade\View;
+use think\Model;
 use think\Request;
 use suframe\thinkAdmin\Admin;
 
@@ -134,5 +135,98 @@ trait AdminController
     {
         View::assign('adminNavs', $navs);
         View::assign('adminNavActive', $active);
+    }
+
+    /**
+     * 默认查询条件
+     * @param Model $model
+     * @param array $whereType
+     * @param array $tableFields
+     * @return mixed
+     */
+    protected function parseSearchWhere($model, $whereType = [], $tableFields = [])
+    {
+        $defaultParams = ['pageSize', 'sort', 'sortType'];
+
+        if (!$tableFields) {
+            $tableFields = $model->getTableFields();
+        }
+        foreach ($defaultParams as $defaultParam) {
+            $tableFields[] = $defaultParam;
+        }
+        $params = $this->request->param($tableFields);
+
+        //分页
+        $pageSize = $params['pageSize'] ?? 10;
+        $pageSize = intval($pageSize);
+        if ($pageSize < 1) {
+            $pageSize = 10;
+        }
+        if ($pageSize > 1000) {
+            $pageSize = 1000;
+        }
+
+        //排序
+        if (isset($params['sort'])) {
+            $order = $params['sortType'] ?? 'desc';
+            $model->order($params['sort'], $order === 'asc' ? 'asc' : 'desc');
+        }
+        foreach ($defaultParams as $defaultParam) {
+            if (isset($params[$defaultParam])) {
+                unset($params[$defaultParam]);
+            }
+        }
+
+        foreach ($params as $key => $param) {
+            if (is_array($params)) {
+                $type = 'in';
+            } else {
+                $type = 'eq';
+            }
+            foreach ($whereType as $k => $item) {
+                if (isset($params[$k])) {
+                    $type = $item;
+                }
+            }
+            switch ($type) {
+                case 'eq':
+                    $model->where($key, $param);
+                    break;
+                case 'neq':
+                    $model->where($key, '<>', $param);
+                    break;
+                case 'gt':
+                    $model->where($key, '>', $param);
+                    break;
+                case 'gtn':
+                    $model->where($key, '>=', $param);
+                    break;
+                case 'lt':
+                    $model->where($key, '<', $param);
+                    break;
+                case 'ltn':
+                    $model->where($key, '<=', $param);
+                    break;
+                case 'in':
+                    $model->whereIn($key, $param);
+                    break;
+                case 'notIn':
+                    $model->whereNotIn($key, $param);
+                    break;
+                case 'like':
+                    $model->whereLike($key, "%{$param}%");
+                    break;
+                case 'notLike':
+                    $model->whereNotLike($key, "%{$param}%");
+                    break;
+                case 'betweenTime':
+                    $model->whereBetweenTime($key, $param[0], $param[1]);
+                    break;
+                case 'between':
+                    $model->whereBetween($key, $param);
+                    break;
+            }
+        }
+        return $model->paginate($pageSize);
     }
 }

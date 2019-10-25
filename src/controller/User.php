@@ -16,25 +16,13 @@ class User extends SystemBase
     public function index()
     {
         if($this->request->isAjax()){
-            $params = $this->request->get([
-                'id'
-            ]);
-            $users = AdminUsers::where($params)->field([
+            $users = AdminUsers::field([
                 'id', 'username', 'real_name', 'create_time', 'avatar'
             ]);
-            if($username = $this->request->get('username')){
-                $users->whereLike('username', "%{$username}%");
-            }
-            if($real_name = $this->request->get('real_name')){
-                $users->whereLike('real_name', "%{$real_name}%");
-            }
-            if($create_time = $this->request->get('create_time')){
-                $users->whereLike('create_time', "{$create_time}%");
-            }
-            if($create_times = $this->request->get('create_times')){
-                $users->whereBetweenTime('create_time', $create_times[0], $create_times[1]);
-            }
-            return json_return($users->select());
+            $rs = $this->parseSearchWhere($users, [
+                'create_time' => 'betweenTime'
+            ]);
+            return json_return($rs);
         }
 
         $table = new UITable();

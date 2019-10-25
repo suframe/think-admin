@@ -1,8 +1,9 @@
-<?php if ($filter) {
-    $hasPickerOption = false;
-    $cascader = [];
+<?php
+$hasPickerOption = false;
+$cascader = [];
+if ($filter) {
     ?>
-    <el-form :inline="true" :model="searchParam" class="demo-form-inline">
+    <el-form :inline="true" :model="searchParam" ref="<?= $searchFormId ?>" class="demo-form-inline">
         <?php foreach ($filter as $key => $item) { ?>
             <el-form-item label="<?= $item['label'] ?>">
                 <?php
@@ -71,7 +72,7 @@
                         break;
                     default:
                         ?>
-                        <el-input size="small" v-model="searchParam.<?= $key ?>"
+                        <el-input size="small" clearable v-model="searchParam.<?= $key ?>"
                                   placeholder="<?= $item['label'] ?>"></el-input>
                         <?php
                         break;
@@ -80,15 +81,16 @@
             </el-form-item>
         <?php } ?>
 
-
         <el-form-item>
             <el-button size="small" type="primary" @click="onSubmit">搜索</el-button>
+            <el-button @click="resetForm('<?= $searchFormId ?>')">重置</el-button>
         </el-form-item>
     </el-form>
 <?php } ?>
 
 <el-table
         :data="tableData"
+        ref="thinkFilterTable<?=$id?>"
         border
         stripe
         @sort-change="handleSort"
@@ -212,6 +214,7 @@
 <el-pagination
         style="text-align: right;margin-top: 10px;"
         background
+        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         layout="total, sizes, prev, pager, next"
         :page-sizes="[10, 20, 50, 100]"
@@ -269,7 +272,7 @@
                 }
                 ?>
                 searchParam: {},
-                total: 1000,
+                total: 0,
                 currentPage: 1,
                 pageSize: 10,
                 sk: {},
@@ -280,9 +283,18 @@
             handleSort: function (params) {
                 console.log(`排序了哦: `);
                 console.log(params);
+                this.searchParam.sort = params.prop;
+                this.searchParam.sortType = params.order === 'ascending' ? 'asc' : 'desc';
+                this.getList()
+            },
+            handleSizeChange: function (val) {
+                this.currentPage = 1
+                this.pageSize = val
+                this.getList()
             },
             handleCurrentChange: function (val) {
                 console.log(`跳转页数: ${val}`);
+                this.currentPage = val
                 this.getList()
             },
             handlerFilter(filters) {
@@ -343,8 +355,8 @@
                 let _this = this
                 $.getJSON('<?= $apiUrl ?>', params, function (rs) {
                     if (rs.code === 200) {
-                        _this.tableData = rs.data
-                        _this.currentPage++;
+                        _this.tableData = rs.data.data
+                        _this.total = rs.data.total
                     } else {
                         _this.$message({
                             showClose: true,
@@ -355,6 +367,13 @@
                 })
             },
             onSubmit: function () {
+                this.currentPage = 1;
+                this.getList()
+            },
+            resetForm(formName) {
+                this.$refs[formName].resetFields()
+                this.searchParam = {}
+                this.$refs['thinkFilterTable<?=$id?>'].clearFilter()
                 this.currentPage = 1;
                 this.getList()
             }

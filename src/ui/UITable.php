@@ -7,6 +7,15 @@ use suframe\thinkAdmin\ui\table\TableInterface;
 class UITable
 {
     protected $id = 'app';
+    protected $searchFormId = 'thinkSearchForm';
+
+    /**
+     * @param string $searchFormId
+     */
+    public function setSearchFormId(string $searchFormId): void
+    {
+        $this->searchFormId = $searchFormId;
+    }
 
     protected $apiUrl;
 
@@ -136,6 +145,7 @@ class UITable
         $ops = $this->ops;
         $filter = $this->filter;
         $apiUrl = $this->getApiUrl();
+        $searchFormId = $this->searchFormId;
         require(__DIR__ . '/UITableTemplate.php');
         $rs = ob_get_clean();
         $rs = explode('<!-- split -->', $rs);

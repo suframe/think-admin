@@ -3,6 +3,7 @@
 namespace suframe\thinkAdmin;
 
 use DirectoryIterator;
+use think\facade\Config;
 use think\Route;
 use think\Service;
 
@@ -14,6 +15,9 @@ class AdminService extends Service
 
     public function register()
     {
+        $config = include (__DIR__ . '/config/thinkAdmin.php');
+        $config += config('thinkAdmin');
+        Config::set($config, 'thinkadmin');
         $this->enable = config('thinkAdmin.enable', false);
         if (!$this->enable) {
             return false;

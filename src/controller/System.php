@@ -2,9 +2,8 @@
 
 namespace suframe\thinkAdmin\controller;
 
-use suframe\form\facade\Form;
+use suframe\form\Form;
 use suframe\thinkAdmin\facade\Admin;
-use suframe\thinkAdmin\model\AdminSetting;
 use suframe\thinkAdmin\ui\form\SystemInfoForm;
 use think\facade\Cache;
 use think\facade\View;
@@ -30,7 +29,7 @@ class System extends SystemBase
 
         $data = Admin::setting()->getGroupToArray($group);
         $this->setNav('system');
-        $form = Form::createElm();
+        $form = (new Form)->createElm();
         $form->setData($data);
         $form->setRuleByClass(SystemInfoForm::class);
         $formScript = $form->formScript();

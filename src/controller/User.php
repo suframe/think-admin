@@ -2,7 +2,7 @@
 
 namespace suframe\thinkAdmin\controller;
 
-use suframe\form\facade\Form;
+use suframe\form\Form;
 use suframe\thinkAdmin\Admin;
 use suframe\thinkAdmin\model\AdminUsers;
 use suframe\thinkAdmin\ui\form\AdminUserForm;
@@ -68,7 +68,7 @@ class User extends SystemBase
             return $this->handleResponse($rs);
         }
         $admin = $this->getAdminUser();
-        $form = Form::createElm();
+        $form = (new Form)->createElm();
         $form->setData($admin->toArray());
         $form->setRuleByClass(AdminUserForm::class, [], $fields);
         $formScript = $form->formScript();

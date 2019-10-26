@@ -98,6 +98,34 @@ class UITable
         return $this;
     }
 
+    public function setEditOps($url, $vars, $config = []){
+        $default = [
+            'type' => 'link',
+            'label' => '编辑',
+            'icon' => 'el-icon-edit',
+            'vars' => ['id'],
+        ];
+        $config = $config + $default;
+        $config['url'] = $url;
+        $config['vars'] = $vars;
+        $this->setOps('edit', $config);
+        return $this;
+    }
+
+    public function setDeleteOps($url, $vars, $config = []){
+        $default = [
+            'type' => 'ajax',
+            'label' => '删除',
+            'icon' => 'el-icon-delete',
+            'confirm' => '确认删除？',
+        ];
+        $config = $config + $default;
+        $config['url'] = $url;
+        $config['vars'] = $vars;
+        $this->setOps('delete', $config);
+        return $this;
+    }
+
     protected $filter = [];
 
     public function setFilter($key, $value = null)

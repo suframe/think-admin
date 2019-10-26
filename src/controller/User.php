@@ -18,9 +18,10 @@ class User extends SystemBase
         if($this->request->isAjax()){
             $users = AdminUsers::field([
                 'id', 'username', 'real_name', 'create_time', 'avatar'
-            ]);
+            ])->order('id', 'desc');
             $rs = $this->parseSearchWhere($users, [
-                'create_time' => 'betweenTime'
+                'username' => 'like',
+                'create_time' => 'betweenTime',
             ]);
             return json_return($rs);
         }
@@ -29,53 +30,7 @@ class User extends SystemBase
         $table->createByClass(UserTable::class);
         $this->setNav('user');
         View::assign('table', $table);
-        return View::fetch('user/index');
-    }
-
-    /**
-     * 我的信息
-     * @return \think\response\Json
-     */
-    public function info()
-    {
-        $rs = Admin::user()->info();
-        return json_return($rs);
-    }
-
-    /**
-     * 通过id查找管理员
-     * @return \think\response\Json
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \Exception
-     */
-    public function find()
-    {
-        $id = $this->requireParamInt('id');
-        /** @var AdminUsers $rs */
-        $rs = AdminUsers::find($id);
-        if ($rs) {
-            $rs = $rs->info();
-        }
-        return json_return($rs);
-    }
-
-    /**
-     * 搜索
-     * @return \think\Collection
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \Exception
-     */
-    public function search()
-    {
-        list($page, $nums) = $this->requestPage();
-        return AdminUsers::order('id', 'desc')
-            ->field('id,username,real_name,avatar,create_time,update_time,login_fail')
-            ->page($page, $nums)
-            ->select();
+        return View::fetch('common/table');
     }
 
     /**
@@ -122,42 +77,7 @@ class User extends SystemBase
     }
 
     /**
-     * 修改密码
-     * @return string|\think\response\Json
-     * @throws \FormBuilder\Exception\FormBuilderException
-     * @throws \ReflectionException
-     * @throws \Exception
-     */
-    public function password()
-    {
-        $this->setNav('password');
-        if ($this->request->isAjax() && $this->request->post()) {
-            $password = $this->request->post('password');
-            $password_confirm = $this->request->post('password_confirm');
-            if (!$password) {
-                return $this->handleResponse(false, '请输入密码');
-            }
-            if ($password != $password_confirm) {
-                return $this->handleResponse(false, '密码不一致');
-            }
-            $auth = Admin::auth();
-            $score = $auth->judgePassword($password);
-            if ($score < config('thinkAdmin.auth.judgePassword', 2)) {
-                return $this->handleResponse(false, '密码不安全');
-            }
-            $admin = $this->getAdminUser();
-            $admin->password = Admin::auth()->hashPassword($password);
-            return $this->handleResponse($admin->save());
-        }
-        $form = Form::createElm();
-        $form->setRuleByClass(AdminUserForm::class, [], ['password', 'password_confirm']);
-        $formScript = $form->formScript();
-        View::assign('formScript', $formScript);
-        return View::fetch('user/base');
-    }
-
-    /**
-     * @return bool
+     * @return \think\response\Json
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -175,6 +95,6 @@ class User extends SystemBase
         if ($admin->isSupper()) {
             throw new \Exception('超级管理员不允许删除');
         }
-        return $admin->delete();
+        return $this->handleResponse($admin->delete(), '删除成功');
     }
 }

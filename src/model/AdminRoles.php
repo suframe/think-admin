@@ -7,8 +7,7 @@ use think\Model;
 /**
  * @mixin \think\Model
  */
-class AdminMenu extends Model
+class AdminRoles extends Model
 {
     //
-
 }

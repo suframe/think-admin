@@ -4,6 +4,7 @@ namespace suframe\thinkAdmin\traits;
 
 use think\facade\View;
 use think\Model;
+use think\Paginator;
 use think\Request;
 use suframe\thinkAdmin\Admin;
 
@@ -112,16 +113,17 @@ trait AdminController
     /**
      * 返回处理
      * @param $rs
-     * @param string $message
+     * @param string $successMessage
+     * @param string $errorMessage
      * @param array $data
      * @return \think\response\Json
      */
-    protected function handleResponse($rs, $message = '', $data = [])
+    protected function handleResponse($rs, $successMessage = '', $errorMessage = '', $data = [])
     {
         if ($rs) {
-            return json_success($message ?: 'success', $data);
+            return json_success($successMessage ?: 'success', $data);
         }
-        return json_error($message ?: 'error', $data);
+        return json_error($errorMessage ?: 'error', $data);
     }
 
     protected $urlPre;
@@ -135,17 +137,21 @@ trait AdminController
     {
         View::assign('adminNavs', $navs);
         View::assign('adminNavActive', $active);
+        View::assign('pageTitle', isset($navs[$active]) ? $navs[$active][0] : '管理');
     }
 
     /**
      * 默认查询条件
-     * @param Model $model
+     * @param Model|string $model
      * @param array $whereType
      * @param array $tableFields
-     * @return mixed
+     * @return mixed|Model
      */
     protected function parseSearchWhere($model, $whereType = [], $tableFields = [])
     {
+        if (is_string($model)) {
+            $model = $model::where(1, 1);
+        }
         $defaultParams = ['pageSize', 'sort', 'sortType'];
 
         if (!$tableFields) {
@@ -178,15 +184,16 @@ trait AdminController
         }
 
         foreach ($params as $key => $param) {
-            if (is_array($params)) {
+            if (!$param) {
+                continue;
+            }
+            if (is_array($param)) {
                 $type = 'in';
             } else {
                 $type = 'eq';
             }
-            foreach ($whereType as $k => $item) {
-                if (isset($params[$k])) {
-                    $type = $item;
-                }
+            if (isset($whereType[$key])) {
+                $type = $whereType[$key];
             }
             switch ($type) {
                 case 'eq':

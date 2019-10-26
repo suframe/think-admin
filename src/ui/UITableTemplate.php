@@ -90,7 +90,7 @@ if ($filter) {
 
 <el-table
         :data="tableData"
-        ref="thinkFilterTable<?=$id?>"
+        ref="thinkFilterTable<?= $id ?>"
         border
         stripe
         @sort-change="handleSort"
@@ -150,7 +150,7 @@ if ($filter) {
                             ?>
                             <template slot-scope="scope">
                                 <el-image
-                                        style="width: 50px; height: 50px"
+                                        style="width: 30px; height: 30px"
                                         :src="scope.row.<?= $key ?>"
                                         :preview-src-list="[scope.row.<?= $key ?>]">
                                 </el-image>
@@ -184,11 +184,16 @@ if ($filter) {
                         foreach ($vars as $var) {
                             $urlArgs[$var] = "__{$var}__";
                         }
-                        if (strpos('http', $item['url']) === 0) {
+                        if (is_object($item['url'])) {
+                            $rowClick['url'] = $item['url']->vars($urlArgs)->build();
+                        } elseif (strpos('http', $item['url']) === 0) {
                             $rowClick['url'] = $item['url'];
                         } else {
                             $rowClick['url'] = url($item['url'], $urlArgs)->build();
                         }
+                    }
+                    if(is_object($rowClick['url'])){
+                        $rowClick['url'] = $rowClick['url']->build();
                     }
 
                     if ($vars) {
@@ -328,6 +333,8 @@ if ($filter) {
                             message: rs.message || (rs.code === 200 ? '操作成功' : '操作失败'),
                             type: rs.code === 200 ? 'success' : 'error'
                         });
+                        _this.tableData = []
+                        _this.getList()
                         if (config.callback) {
                             if (typeof (eval(config.callback)) == "function") {
                                 config.callback(row, config, rs, _this);

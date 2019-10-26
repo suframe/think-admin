@@ -1,9 +1,10 @@
 <?php
 namespace suframe\thinkAdmin\controller;
 
-use suframe\form\facade\Form;
 use suframe\thinkAdmin\Admin;
-use suframe\thinkAdmin\ui\form\AdminUserForm;
+use suframe\thinkAdmin\model\AdminSetting;
+use suframe\thinkAdmin\ui\table\SettingTable;
+use suframe\thinkAdmin\ui\UITable;
 use think\facade\View;
 
 /**
@@ -16,8 +17,18 @@ class Setting extends SystemBase
 
     public function index()
     {
+        if($this->request->isAjax()){
+            $rs = $this->parseSearchWhere(AdminSetting::order('id', 'desc'), [
+                'name' => 'like', 'key' => 'like',
+            ]);
+            return json_return($rs);
+        }
+
+        $table = new UITable();
+        $table->createByClass(SettingTable::class);
         $this->setNav('setting');
-        return View::fetch('setting/index');
+        View::assign('table', $table);
+        return View::fetch('common/table');
     }
 
     /**

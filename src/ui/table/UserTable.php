@@ -2,7 +2,7 @@
 
 namespace suframe\thinkAdmin\ui\table;
 
-class UserTable implements TableInterface
+class UserTable extends TableInterface
 {
     public function header()
     {
@@ -18,7 +18,7 @@ class UserTable implements TableInterface
     public function filters()
     {
         return [
-            'id' => ['label' => 'ID', 'type' => 'text'],
+            'username' => ['label' => '用户名', 'type' => 'text'],
             'create_time' => ['label' => '创建时间', 'type' => 'daterange'],
         ];
     }

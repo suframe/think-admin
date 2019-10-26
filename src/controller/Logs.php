@@ -2,6 +2,8 @@
 namespace suframe\thinkAdmin\controller;
 
 use suframe\thinkAdmin\model\AdminOperationLog;
+use suframe\thinkAdmin\ui\table\LogsTable;
+use suframe\thinkAdmin\ui\UITable;
 use think\facade\View;
 
 /**
@@ -13,26 +15,23 @@ class Logs extends SystemBase
 {
 
     /**
-     * @return \think\response\Json
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @return string|\think\response\Json
      * @throws \Exception
      */
     public function index()
     {
-        $this->setNav('logs');
-        return View::fetch('logs/index');
-
-
-        $user_id = $this->request->param('user_id', null, 'intval');
-        list($page, $nums) = $this->requestPage();
-        $menu = AdminOperationLog::order('id', 'desc')->page($page, $nums);
-        if($user_id){
-            $menu->where('user_id', $user_id);
+        if($this->request->isAjax()){
+            $rs = $this->parseSearchWhere(AdminOperationLog::order('id', 'desc'), [
+                'path' => 'like', 'ip' => 'like', 'create_time' => 'betweenTime',
+            ]);
+            return json_return($rs);
         }
-        $list = $menu->select()->toArray();
-        return json_return($list);
+
+        $table = new UITable();
+        $table->createByClass(LogsTable::class);
+        $this->setNav('logs');
+        View::assign('table', $table);
+        return View::fetch('common/table');
     }
 
 }

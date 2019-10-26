@@ -13,7 +13,7 @@ class SystemBase extends \suframe\thinkAdmin\controller\Base
         $navs = [
             'system' => ['基本信息', $this->urlA('system/index')],
             'user' => ['用户管理', $this->urlA('user/index')],
-            'group' => ['用户组', $this->urlA('group/index')],
+            'role' => ['角色管理', $this->urlA('role/index')],
             'menu' => ['菜单管理', $this->urlA('menu/index')],
             'permission' => ['权限管理', $this->urlA('permission/index')],
             'logs' => ['系统日志', $this->urlA('logs/index')],

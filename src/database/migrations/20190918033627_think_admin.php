@@ -66,7 +66,9 @@ class ThinkAdmin extends Migrator
         $table->addColumn('name', 'string', ['comment' => '用户名', 'length' => 50])
             ->addColumn('slug', 'string', ['comment' => '标识', 'length' => 50])
             ->addTimestamps()
-            ->addIndex(['name', 'slug'], ['unique' => true])
+            ->addIndex(['create_time'])
+            ->addIndex(['name'], ['unique' => true])
+            ->addIndex(['slug'], ['unique' => true])
             ->create();
         $admin = [
             'id' => 1,
@@ -87,6 +89,7 @@ class ThinkAdmin extends Migrator
             ->addColumn('http_method', 'string', ['comment' => '请求method', 'null' => true])
             ->addColumn('http_path', 'string', ['comment' => '请求path', 'null' => true])
             ->addTimestamps()
+            ->addIndex(['create_time'])
             ->addIndex(['name'], ['unique' => true])
             ->addIndex(['slug'], ['unique' => true])
             ->create();
@@ -104,7 +107,10 @@ class ThinkAdmin extends Migrator
             ->addColumn('icon', 'string', ['comment' => '菜单图标', 'length' => 50, 'null' => true])
             ->addColumn('uri', 'string', ['comment' => '路由', 'length' => 50])
             ->addColumn('permission', 'string', ['comment' => '权限', 'null' => true])
+            ->addIndex(['parent_id'])
             ->addIndex(['order'])
+            ->addIndex(['title'])
+            ->addIndex(['uri'])
             ->create();
 
         //管理员角色表
@@ -173,6 +179,7 @@ class ThinkAdmin extends Migrator
             ->addColumn('input', 'string', ['comment' => '参数'])
             ->addTimestamps()
             ->addIndex(['user_id'])
+            ->addIndex(['create_time'])
             ->create();
 
         //通用配置表
@@ -212,7 +219,9 @@ class ThinkAdmin extends Migrator
             ->addColumn('setting_class', 'string', ['comment' => '安装的class', 'length' => 255])
             ->addTimestamps()
             ->addIndex(['app_name'], ['unique' => true])
+            ->addIndex(['title'])
             ->addIndex(['order'])
+            ->addIndex(['create_time'])
             ->addIndex(['installed'])
             ->create();
 

@@ -2,7 +2,7 @@
 
 namespace suframe\thinkAdmin\ui\table;
 
-class DemoTable implements TableInterface
+class DemoTable extends TableInterface
 {
     public function header()
     {

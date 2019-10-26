@@ -5,7 +5,11 @@ namespace suframe\thinkAdmin\controller;
 use suframe\thinkAdmin\Admin;
 use suframe\thinkAdmin\model\AdminMenu;
 use suframe\thinkAdmin\model\AdminRoleMenu;
+use suframe\thinkAdmin\model\AdminRoles;
 use suframe\thinkAdmin\model\AdminRoleUsers;
+use suframe\thinkAdmin\ui\table\MenuTable;
+use suframe\thinkAdmin\ui\table\RoleTable;
+use suframe\thinkAdmin\ui\UITable;
 use think\facade\View;
 
 /**
@@ -16,10 +20,26 @@ use think\facade\View;
 class Menu extends SystemBase
 {
 
+    /**
+     * @return string|\think\response\Json
+     * @throws \Exception
+     */
     public function index()
     {
+        if($this->request->isAjax()){
+            $rs = $this->parseSearchWhere(AdminMenu::order('id', 'desc'), [
+                'title' => 'like', 'uri' => 'like'
+            ]);
+            return json_return($rs);
+        }
+
+        $table = new UITable();
+        $table->setEditOps(url('/thinkadmin/menu/eidt'), ['id']);
+        $table->setDeleteOps(url('/thinkadmin/menu/delete'), ['id']);
+        $table->createByClass(MenuTable::class);
         $this->setNav('menu');
-        return View::fetch('menu/index');
+        View::assign('table', $table);
+        return View::fetch('common/table');
     }
 
     /**
@@ -90,7 +110,7 @@ class Menu extends SystemBase
     }
 
     /**
-     * @return bool
+     * @return \think\response\Json
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -103,6 +123,6 @@ class Menu extends SystemBase
         if (!$menu) {
             throw new \Exception('menu not exist');
         }
-        return $menu->delete();
+        return $this->handleResponse($menu->delete(), '删除成功', '删除失败');
     }
 }

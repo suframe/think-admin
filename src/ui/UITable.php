@@ -164,6 +164,23 @@ class UITable
         return $this->js;
     }
 
+    protected $buttons = [];
+
+    /**
+     * @param $key
+     * @param null $value
+     * @return UITable
+     */
+    public function setButtons($key, $value = null)
+    {
+        if (is_array($key)) {
+            $this->buttons = $key;
+        } else {
+            $this->buttons[$key] = $value;
+        }
+        return $this;
+    }
+
     protected function loadTemplate()
     {
         ob_start();
@@ -174,6 +191,7 @@ class UITable
         $filter = $this->filter;
         $apiUrl = $this->getApiUrl();
         $searchFormId = $this->searchFormId;
+        $buttons = $this->buttons;
         require(__DIR__ . '/UITableTemplate.php');
         $rs = ob_get_clean();
         $rs = explode('<!-- split -->', $rs);

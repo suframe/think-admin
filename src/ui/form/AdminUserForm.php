@@ -4,6 +4,22 @@ namespace suframe\thinkAdmin\ui\form;
 class AdminUserForm
 {
 
+    public function username()
+    {
+        return [
+            'type' => 'input',
+            'title' => '用户名',
+            'field' => 'username',
+            'props' => [
+                'placeholder' => '请输入用户名',
+            ],
+            'validate' => [
+                ['required' => true, 'message' => '不能为空']
+            ]
+        ];
+    }
+
+
     public function real_name()
     {
         return [

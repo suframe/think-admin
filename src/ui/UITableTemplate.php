@@ -1,92 +1,112 @@
-<?php
-$hasPickerOption = false;
-$cascader = [];
-if ($filter) {
-    ?>
-    <el-form :inline="true" :model="searchParam" ref="<?= $searchFormId ?>" class="demo-form-inline">
-        <?php foreach ($filter as $key => $item) { ?>
-            <el-form-item label="<?= $item['label'] ?>">
-                <?php
-                switch ($item['type']) {
-                    case 'select':
-                        $multiple = isset($item['multiple']) && $item['multiple'] ? 'multiple' : null;
-                        ?>
-                        <el-select size="small" v-model="searchParam.<?= $key ?>" <?= $multiple ?>
-                                   filterable
-                                   placeholder="<?= $item['label'] ?>">
-                            <?php foreach ($item['value'] as $k => $v) { ?>
-                                <el-option label="<?= $v ?>" value="<?= $k ?>"></el-option>
-                            <?php } ?>
-                        </el-select>
+<el-row>
+    <el-col :span="<?= $buttons ? 20 : 24 ?>">
+        <?php
+        $hasPickerOption = false;
+        $cascader = [];
+        if ($filter) {
+            ?>
+            <el-form :inline="true" :model="searchParam" ref="<?= $searchFormId ?>" class="demo-form-inline">
+                <?php foreach ($filter as $key => $item) { ?>
+                    <el-form-item label="<?= $item['label'] ?>">
                         <?php
-                        break;
-                    case 'date':
-                    case 'datetime':
-                        $valueFormat = $item['type'] == 'date' ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss';
+                        switch ($item['type']) {
+                            case 'select':
+                                $multiple = isset($item['multiple']) && $item['multiple'] ? 'multiple' : null;
+                                ?>
+                                <el-select size="small" v-model="searchParam.<?= $key ?>" <?= $multiple ?>
+                                           filterable
+                                           placeholder="<?= $item['label'] ?>">
+                                    <?php foreach ($item['value'] as $k => $v) { ?>
+                                        <el-option label="<?= $v ?>" value="<?= $k ?>"></el-option>
+                                    <?php } ?>
+                                </el-select>
+                                <?php
+                                break;
+                            case 'date':
+                            case 'datetime':
+                                $valueFormat = $item['type'] == 'date' ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss';
+                                ?>
+                                <el-date-picker
+                                        value-format="<?= $valueFormat ?>"
+                                        size="small"
+                                        v-model="searchParam.<?= $key ?>"
+                                        type="<?= $item['type'] ?>"
+                                        placeholder="<?= $item['label'] ?>">
+                                </el-date-picker>
+                                <?php
+                                break;
+                            case 'daterange':
+                            case 'datetimerange':
+                                $valueFormat = $item['type'] == 'daterange' ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss';
+                                $hasPickerOption = true;
+                                ?>
+                                <el-date-picker
+                                        value-format="<?= $valueFormat ?>"
+                                        size="small"
+                                        v-model="searchParam.<?= $key ?>"
+                                        type="<?= $item['type'] ?>"
+                                        align="right"
+                                        unlink-panels
+                                        range-separator="至"
+                                        start-placeholder="开始日期"
+                                        end-placeholder="结束日期"
+                                        :picker-options="pickerOptions">
+                                </el-date-picker>
+                                <?php
+                                break;
+                            case 'cascader':
+                                $cascader[$key] = json_encode($item['value']);
+                                $props = [
+                                    'expandTrigger' => $item['expandTrigger'] ?? 'hover',
+                                ];
+                                isset($item['multiple']) && $item['multiple'] && ($props['multiple'] = $item['multiple']);
+                                isset($item['checkStrictly']) && $item['checkStrictly'] && ($props['checkStrictly'] = $item['checkStrictly']);
+                                $props = json_encode($props);
+                                ?>
+                                <el-cascader
+                                        clearable
+                                        :show-all-levels="false"
+                                        :props='<?= $props ?>'
+                                        v-model="searchParam.<?= $key ?>"
+                                        :options="cascader_<?= $key ?>"
+                                ></el-cascader>
+                                <?php
+                                break;
+                            default:
+                                ?>
+                                <el-input size="small" clearable v-model="searchParam.<?= $key ?>"
+                                          placeholder="<?= $item['label'] ?>"></el-input>
+                                <?php
+                                break;
+                        }
                         ?>
-                        <el-date-picker
-                                value-format="<?= $valueFormat ?>"
-                                size="small"
-                                v-model="searchParam.<?= $key ?>"
-                                type="<?= $item['type'] ?>"
-                                placeholder="<?= $item['label'] ?>">
-                        </el-date-picker>
-                        <?php
-                        break;
-                    case 'daterange':
-                    case 'datetimerange':
-                        $valueFormat = $item['type'] == 'daterange' ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss';
-                        $hasPickerOption = true;
-                        ?>
-                        <el-date-picker
-                                value-format="<?= $valueFormat ?>"
-                                size="small"
-                                v-model="searchParam.<?= $key ?>"
-                                type="<?= $item['type'] ?>"
-                                align="right"
-                                unlink-panels
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
-                                :picker-options="pickerOptions">
-                        </el-date-picker>
-                        <?php
-                        break;
-                    case 'cascader':
-                        $cascader[$key] = json_encode($item['value']);
-                        $props = [
-                            'expandTrigger' => $item['expandTrigger'] ?? 'hover',
-                        ];
-                        isset($item['multiple']) && $item['multiple'] && ($props['multiple'] = $item['multiple']);
-                        isset($item['checkStrictly']) && $item['checkStrictly'] && ($props['checkStrictly'] = $item['checkStrictly']);
-                        $props = json_encode($props);
-                        ?>
-                        <el-cascader
-                                clearable
-                                :show-all-levels="false"
-                                :props='<?= $props ?>'
-                                v-model="searchParam.<?= $key ?>"
-                                :options="cascader_<?= $key ?>"
-                        ></el-cascader>
-                        <?php
-                        break;
-                    default:
-                        ?>
-                        <el-input size="small" clearable v-model="searchParam.<?= $key ?>"
-                                  placeholder="<?= $item['label'] ?>"></el-input>
-                        <?php
-                        break;
-                }
-                ?>
-            </el-form-item>
-        <?php } ?>
+                    </el-form-item>
+                <?php } ?>
 
-        <el-form-item>
-            <el-button size="small" type="primary" @click="onSubmit">搜索</el-button>
-            <el-button @click="resetForm('<?= $searchFormId ?>')">重置</el-button>
-        </el-form-item>
-    </el-form>
-<?php } ?>
+                <el-form-item>
+                    <el-button size="small" type="primary" @click="onSubmit">搜索</el-button>
+                    <el-button size="small" @click="resetForm('<?= $searchFormId ?>')">重置</el-button>
+                </el-form-item>
+            </el-form>
+        <?php } ?>
+    </el-col>
+    <?php
+    if ($buttons) {
+        ?>
+        <el-col style="margin-top: 4px" :span="4">
+            <el-dropdown size="small" split-button type="primary" @command="handleCommand">
+                操作
+                <el-dropdown-menu slot="dropdown">
+                    <?php foreach ($buttons as $key => $item) { ?>
+                        <el-dropdown-item :command='<?= json_encode($item) ?>'><?= $item['title'] ?></el-dropdown-item>
+                    <?php } ?>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </el-col>
+        <?php
+    }
+    ?>
+</el-row>
 
 <el-table
         :data="tableData"
@@ -150,6 +170,7 @@ if ($filter) {
                             ?>
                             <template slot-scope="scope">
                                 <el-image
+                                        v-if="scope.row.<?= $key ?>"
                                         style="width: 30px; height: 30px"
                                         :src="scope.row.<?= $key ?>"
                                         :preview-src-list="[scope.row.<?= $key ?>]">
@@ -192,7 +213,7 @@ if ($filter) {
                             $rowClick['url'] = url($item['url'], $urlArgs)->build();
                         }
                     }
-                    if(is_object($rowClick['url'])){
+                    if (is_object($rowClick['url'])) {
                         $rowClick['url'] = $rowClick['url']->build();
                     }
 
@@ -383,6 +404,34 @@ if ($filter) {
                 this.$refs['thinkFilterTable<?=$id?>'].clearFilter()
                 this.currentPage = 1;
                 this.getList()
+            },
+            handleCommand(command) {
+                console.log(command)
+                this.$message('click on item ' + command);
+                if (command.target) {
+                    if(parent && parent.layer){
+                        var width = parent.document.body.clientWidth;
+                        var height = parent.document.body.clientHeight - 60;
+                        width = width > 1300 ? 1300 : (width - 70)
+                        parent.layer.open({
+                            type: 2,
+                            title: command.title,
+                            shadeClose: true,
+                            shade: false,
+                            maxmin: true, //开启最大化最小化按钮
+                            area: [width + 'px', height + 'px'],
+                            content: command.url,
+                            zIndex: parent.layer.zIndex,
+                            success: function (layero) {
+                                parent.layer.setTop(layero); //重点2
+                            }
+                        });
+                    } else {
+                        window.open(command.url)
+                    }
+                } else {
+                    window.location.href = command.url
+                }
             }
         },
         created: function () {

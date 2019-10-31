@@ -1,7 +1,15 @@
 {extend name="layout_container" /}
 
 {block name="main"}
-    <div id="base-form"></div>
+<el-row>
+    <el-col :span="24">
+        <el-page-header @back="goBack" content="编辑" style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eaeefb">
+        </el-page-header>
+    </el-col>
+</el-row>
+
+<div id="base-form">
+</div>
 {/block}
 
 {block name="script"}

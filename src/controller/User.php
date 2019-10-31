@@ -28,10 +28,13 @@ class User extends SystemBase
 
         $table = new UITable();
         $table->createByClass(UserTable::class);
+        $table->setButtons('add', ['title' => '增加', 'url' => $this->urlA('user/add')]);
+
         $this->setNav('user');
         View::assign('table', $table);
         return View::fetch('common/table');
     }
+
 
     /**
      * 新增
@@ -39,12 +42,22 @@ class User extends SystemBase
      */
     public function add()
     {
-        $menu = new AdminUsers();
-        $menu->username = $this->request->post('username');
-        $menu->password = Admin::auth()->hashPassword($this->requirePostInt('password'));
-        $menu->real_name = $this->requirePost('real_name');
-        $menu->avatar = $this->request->param('avatar');
-        return $menu->save();
+        if($this->request->isPost()){
+            $menu = new AdminUsers();
+            $menu->username = $this->request->post('username');
+            $menu->password = Admin::auth()->hashPassword($this->requirePostInt('password'));
+            $menu->real_name = $this->requirePost('real_name');
+            $menu->avatar = $this->request->param('avatar');
+            $rs = $menu->save();
+            return $this->handleResponse($rs);
+        }
+        $this->setNav('user');
+        $form = (new Form)->createElm();
+        $form->setData($this->request->port());
+        $form->setRuleByClass(AdminUserForm::class);
+        $formScript = $form->formScript();
+        View::assign('formScript', $formScript);
+        return View::fetch('common/form');
     }
 
     /**

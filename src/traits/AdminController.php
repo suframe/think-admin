@@ -128,7 +128,7 @@ trait AdminController
 
     protected $urlPre;
 
-    protected function urlA(string $url = '', array $vars = [], $suffix = true, $domain = false)
+    protected function urlA($url = '', array $vars = [], $suffix = true, $domain = false)
     {
         return url($this->urlPre . $url, $vars, $suffix, $domain)->build();
     }

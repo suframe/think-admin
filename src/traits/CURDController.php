@@ -2,11 +2,7 @@
 
 namespace suframe\thinkAdmin\traits;
 
-use FormBuilder\Exception\FormBuilderException;
 use suframe\form\Form;
-use suframe\thinkAdmin\model\AdminRoles;
-use suframe\thinkAdmin\ui\form\AdminRoleForm;
-use suframe\thinkAdmin\ui\table\RoleTable;
 use suframe\thinkAdmin\ui\UITable;
 use think\facade\View;
 

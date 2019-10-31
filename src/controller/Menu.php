@@ -2,13 +2,11 @@
 
 namespace suframe\thinkAdmin\controller;
 
-use suframe\thinkAdmin\Admin;
 use suframe\thinkAdmin\model\AdminMenu;
 use suframe\thinkAdmin\traits\CURDController;
 use suframe\thinkAdmin\ui\form\MenuForm;
 use suframe\thinkAdmin\ui\table\MenuTable;
 use suframe\thinkAdmin\ui\UITable;
-use think\facade\View;
 
 /**
  * 管理员菜单

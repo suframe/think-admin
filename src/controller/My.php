@@ -16,8 +16,8 @@ class My extends Base
     protected function setNav($active)
     {
         $navs = [
-            'index' => ['基本信息', $this->urlA('index')],
-            'password' => ['修改密码', $this->urlA('password')],
+            'index' => ['基本信息', $this->urlABuild('index')],
+            'password' => ['修改密码', $this->urlABuild('password')],
         ];
         $this->setAdminNavs($navs, $active);
     }
@@ -46,8 +46,7 @@ class My extends Base
         $form = (new Form)->createElm();
         $form->setData($admin->toArray());
         $form->setRuleByClass(AdminUserForm::class, [], $fields);
-        $formScript = $form->formScript();
-        View::assign('formScript', $formScript);
+        View::assign('form', $form);
         return View::fetch('my/base');
     }
 
@@ -81,8 +80,7 @@ class My extends Base
         }
         $form = (new Form)->createElm();
         $form->setRuleByClass(AdminUserForm::class, [], ['password', 'password_confirm']);
-        $formScript = $form->formScript();
-        View::assign('formScript', $formScript);
+        View::assign('form', $form);
         return View::fetch('my/base');
     }
 

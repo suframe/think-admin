@@ -11,6 +11,7 @@ class AdminUserForm
             'title' => '真实姓名',
             'field' => 'real_name',
             'props' => [
+                'autocomplete' => 'off',
                 'placeholder' => '请输入名称',
             ],
             'validate' => [
@@ -39,6 +40,7 @@ class AdminUserForm
             'title' => '密码',
             'field' => 'password',
             'props' => [
+                'autocomplete' => 'new-password',
                 'placeholder' => '密码',
             ],
             'callback' => function($element){
@@ -55,6 +57,7 @@ class AdminUserForm
             'title' => '重复输入密码',
             'field' => 'password_confirm',
             'props' => [
+                'autocomplete' => 'new-password',
                 'placeholder' => '重复输入密码',
             ],
             'callback' => function($element){

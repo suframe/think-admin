@@ -2,99 +2,97 @@
 
 namespace suframe\thinkAdmin\controller;
 
-use suframe\form\Form;
+use FormBuilder\Exception\FormBuilderException;
 use suframe\thinkAdmin\Admin;
 use suframe\thinkAdmin\model\AdminUsers;
+use suframe\thinkAdmin\traits\CURLController;
 use suframe\thinkAdmin\ui\form\AdminUserForm;
 use suframe\thinkAdmin\ui\table\UserTable;
 use suframe\thinkAdmin\ui\UITable;
-use think\facade\View;
 
 class User extends SystemBase
 {
 
-    public function index()
-    {
-        if($this->request->isAjax()){
-            $users = AdminUsers::field([
-                'id', 'username', 'real_name', 'create_time', 'avatar'
-            ])->order('id', 'desc');
-            $rs = $this->parseSearchWhere($users, [
-                'username' => 'like',
-                'create_time' => 'betweenTime',
-            ]);
-            return json_return($rs);
-        }
+    use CURLController;
 
-        $table = new UITable();
+    private function curlInit()
+    {
+        $this->currentNav = 'user';
+        $this->currentNavZh = '用户';
+    }
+
+    private function getManageModel()
+    {
+        return AdminUsers::class;
+    }
+
+    /**
+     * @param UITable $table
+     */
+    private function getTableSetting($table){
         $table->createByClass(UserTable::class);
-        $this->setNav('user');
-        View::assign('table', $table);
-        return View::fetch('common/table');
     }
 
     /**
-     * 新增
-     * @throws \Exception
+     * @param \suframe\form\Form $form
+     * @throws FormBuilderException
+     * @throws \ReflectionException
      */
-    public function add()
+    private function getFormSetting($form)
     {
-        $menu = new AdminUsers();
-        $menu->username = $this->request->post('username');
-        $menu->password = Admin::auth()->hashPassword($this->requirePostInt('password'));
-        $menu->real_name = $this->requirePost('real_name');
-        $menu->avatar = $this->request->param('avatar');
-        return $menu->save();
+        $form->setRuleByClass(AdminUserForm::class);
+    }
+
+    private function ajaxSearch()
+    {
+        $users = AdminUsers::field([
+            'id',
+            'username',
+            'real_name',
+            'create_time',
+            'avatar'
+        ])->order('id', 'desc');
+        $rs = $this->parseSearchWhere($users, [
+            'username' => 'like',
+            'create_time' => 'betweenTime',
+        ]);
+        return json_return($rs);
     }
 
     /**
-     * @return string|\think\response\Json
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @param \think\Model  $info
+     * @param $post
+     * @return mixed
      * @throws \Exception
      */
-    public function base()
+    private function beforeSave($info, $post)
     {
-        $this->setNav('base');
-        $admin = $this->getAdminUser();
-        $fields = [
+        $info->allowField([
+            'password',
             'real_name',
             'avatar',
-        ];
-        if ($this->request->isAjax() && $this->request->post()) {
-            $post = $this->request->post();
-            $rs = $admin->allowField($fields)->save($post);
-            return $this->handleResponse($rs);
+        ]);
+        $password = $this->request->param('password');
+        if($password) {
+            $password_confirm = $this->requirePost('password_confirm');
+            if($password !== $password_confirm){
+                throw new \Exception('两次密码不一致');
+            }
+            $post['password'] = Admin::auth()->hashPassword($password);
+        } else {
+            unset($post['password']);
         }
-        $admin = $this->getAdminUser();
-        $form = (new Form)->createElm();
-        $form->setData($admin->toArray());
-        $form->setRuleByClass(AdminUserForm::class, [], $fields);
-        $formScript = $form->formScript();
-        View::assign('formScript', $formScript);
-        return View::fetch('user/base');
+        return $post;
     }
 
     /**
-     * @return \think\response\Json
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @param AdminUsers $model
      * @throws \Exception
      */
-    public function delete()
+    private function beforeDelete($model)
     {
-
-        $id = $this->requirePostInt('id');
-        /** @var AdminUsers $admin */
-        $admin = AdminUsers::find($id);
-        if (!$admin) {
-            throw new \Exception('管理员不存在');
-        }
-        if ($admin->isSupper()) {
+        if ($model->isSupper()) {
             throw new \Exception('超级管理员不允许删除');
         }
-        return $this->handleResponse($admin->delete(), '删除成功');
     }
 }

@@ -128,9 +128,14 @@ trait AdminController
 
     protected $urlPre;
 
+    protected function urlABuild(string $url = '', array $vars = [], $suffix = true, $domain = false)
+    {
+        return $this->urlA($url, $vars, $suffix, $domain)->build();
+    }
+
     protected function urlA(string $url = '', array $vars = [], $suffix = true, $domain = false)
     {
-        return url($this->urlPre . $url, $vars, $suffix, $domain)->build();
+        return url($this->urlPre . $url, $vars, $suffix, $domain);
     }
 
     protected function setAdminNavs($navs, $active)

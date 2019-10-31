@@ -32,8 +32,7 @@ class System extends SystemBase
         $form = (new Form)->createElm();
         $form->setData($data);
         $form->setRuleByClass(SystemInfoForm::class);
-        $formScript = $form->formScript();
-        View::assign('formScript', $formScript);
+        View::assign('form', $form);
         View::assign('pageTitle', '基本信息');
         return View::fetch('common/form');
     }

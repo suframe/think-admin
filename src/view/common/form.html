@@ -7,7 +7,7 @@
 {block name="script"}
 {__block__}
 <script>
-    var create = {$formScript|raw};
+    var create = {$form->formScript()|raw};
     var $f = create(document.getElementById('base-form'));
 </script>
 {/block}

@@ -11,13 +11,13 @@ use suframe\thinkAdmin\ui\UITable;
 use think\facade\View;
 
 /**
- * Trait CURLController
+ * Trait CURDController
  * @property  \think\Request request
  * @mixin AdminController
  * @method setNav($title)
  * @package suframe\thinkAdmin\traits
  */
-trait CURLController
+trait CURDController
 {
 
     protected $currentNav;
@@ -85,14 +85,13 @@ trait CURLController
 
     /**
      * @return mixed
-     * @throws \Exception
      */
     private function getUpdateInfo()
     {
         if ($id = $this->request->param('id')) {
             return $this->getManageModel()::find($id);
         }
-        throw new \Exception('info not found');
+        return [];
     }
 
     /**
@@ -112,7 +111,8 @@ trait CURLController
         if ($this->request->isAjax() && $this->request->post()) {
             $post = $this->request->post();
             if (!$info) {
-                $info = new $this->getManageModel();
+                $class = $this->getManageModel();
+                $info = new $class;
             }
             $post = $this->beforeSave($info, $post);
             $rs = $info->save($post);
@@ -124,7 +124,8 @@ trait CURLController
         $form = (new Form)->createElm();
         $form->setData($info);
         $this->getFormSetting($form);
-        View::assign('pageTitle', $this->currentNavZh . '修改');
+        $title = $this->currentNavZh . ($info ? '编辑' : '新增');
+        View::assign('pageTitle', $title);
         View::assign('form', $form);
         $this->beforeUpdateRender($form);
         return View::fetch('common/form');

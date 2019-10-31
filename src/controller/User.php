@@ -5,15 +5,15 @@ namespace suframe\thinkAdmin\controller;
 use FormBuilder\Exception\FormBuilderException;
 use suframe\thinkAdmin\Admin;
 use suframe\thinkAdmin\model\AdminUsers;
-use suframe\thinkAdmin\traits\CURLController;
+use suframe\thinkAdmin\traits\CURDController;
 use suframe\thinkAdmin\ui\form\AdminUserForm;
 use suframe\thinkAdmin\ui\table\UserTable;
 use suframe\thinkAdmin\ui\UITable;
 
 class User extends SystemBase
 {
-
-    use CURLController;
+    protected $urlPre = '/thinkadmin/user/';
+    use CURDController;
 
     private function curlInit()
     {
@@ -30,6 +30,7 @@ class User extends SystemBase
      * @param UITable $table
      */
     private function getTableSetting($table){
+        $table->setButtons('add', ['title' => '增加', 'url' => $this->urlABuild('update')]);
         $table->createByClass(UserTable::class);
     }
 
@@ -60,6 +61,23 @@ class User extends SystemBase
     }
 
     /**
+     * @return mixed
+     */
+    private function getUpdateInfo()
+    {
+        if ($id = $this->request->param('id')) {
+            return $this->getManageModel()::field([
+                'id',
+                'username',
+                'real_name',
+                'avatar'
+            ])->find($id);
+        }
+        return [];
+    }
+
+
+    /**
      * @param \think\Model  $info
      * @param $post
      * @return mixed
@@ -67,11 +85,13 @@ class User extends SystemBase
      */
     private function beforeSave($info, $post)
     {
-        $info->allowField([
-            'password',
-            'real_name',
-            'avatar',
-        ]);
+        if(isset($post['id']) && $post['id']){
+            $info->allowField([
+                'password',
+                'real_name',
+                'avatar',
+            ]);
+        }
         $password = $this->request->param('password');
         if($password) {
             $password_confirm = $this->requirePost('password_confirm');

@@ -1,14 +1,15 @@
 <?php
 namespace suframe\thinkAdmin\controller;
 use suframe\thinkAdmin\model\AdminRoles;
-use suframe\thinkAdmin\traits\CURLController;
+use suframe\thinkAdmin\traits\CURDController;
 use suframe\thinkAdmin\ui\form\AdminRoleForm;
 use suframe\thinkAdmin\ui\table\RoleTable;
 use suframe\thinkAdmin\ui\UITable;
 
 class Role extends SystemBase
 {
-    use CURLController;
+    protected $urlPre = '/thinkadmin/role/';
+    use CURDController;
 
     private function curlInit(){
         $this->currentNav = 'role';
@@ -22,7 +23,7 @@ class Role extends SystemBase
 
     private function ajaxSearch()
     {
-        $rs = $this->parseSearchWhere($this->getManageModel(), [
+        $rs = $this->parseSearchWhere($this->getManageModel()::order('id', 'desc'), [
             'name' => 'like',
         ]);
         return json_return($rs);
@@ -43,7 +44,8 @@ class Role extends SystemBase
      */
     private function getTableSetting($table){
         $table->createByClass(RoleTable::class);
-        $table->setEditOps($this->urlA('role/update'), ['id']);
-        $table->setDeleteOps($this->urlA('role/delete'), ['id']);
+        $table->setButtons('add', ['title' => '增加', 'url' => $this->urlABuild('update')]);
+        $table->setEditOps($this->urlA('update'), ['id']);
+        $table->setDeleteOps($this->urlA('delete'), ['id']);
     }
 }

@@ -3,6 +3,8 @@ namespace suframe\thinkAdmin\controller;
 
 use suframe\thinkAdmin\Admin;
 use suframe\thinkAdmin\model\AdminSetting;
+use suframe\thinkAdmin\traits\CURDController;
+use suframe\thinkAdmin\ui\form\AdminSettingForm;
 use suframe\thinkAdmin\ui\table\SettingTable;
 use suframe\thinkAdmin\ui\UITable;
 use think\facade\View;
@@ -15,75 +17,47 @@ use think\facade\View;
 class Setting extends SystemBase
 {
 
-    public function index()
-    {
-        if($this->request->isAjax()){
-            $rs = $this->parseSearchWhere(AdminSetting::order('id', 'desc'), [
-                'name' => 'like', 'key' => 'like',
-            ]);
-            return json_return($rs);
-        }
+    protected $urlPre = '/thinkadmin/setting/';
+    use CURDController;
 
-        $table = new UITable();
+    private function curlInit()
+    {
+        $this->currentNav = 'setting';
+        $this->currentNavZh = '角色';
+    }
+
+    private function getManageModel()
+    {
+        return AdminSetting::class;
+    }
+
+    private function ajaxSearch()
+    {
+        $rs = $this->parseSearchWhere($this->getManageModel()::order('id', 'desc'), [
+            'name' => 'like', 'key' => 'like',
+        ]);
+        return json_return($rs);
+    }
+
+    /**
+     * @param \suframe\form\Form $form
+     * @throws \FormBuilder\Exception\FormBuilderException
+     * @throws \ReflectionException
+     */
+    private function getFormSetting($form)
+    {
+        $form->setRuleByClass(AdminSettingForm::class);
+    }
+
+    /**
+     * @param UITable $table
+     */
+    private function getTableSetting($table)
+    {
         $table->createByClass(SettingTable::class);
-        $this->setNav('setting');
-        View::assign('table', $table);
-        return View::fetch('common/table');
-    }
-
-    /**
-     * 获取分组
-     * @return mixed
-     */
-    public function group()
-    {
-        return json_return(config('thinkAdmin.configGroups'));
-    }
-
-    /**
-     * 获取分组下配置
-     * @return array|\think\Collection
-     * @throws \Exception
-     */
-    public function findByGroup()
-    {
-        $group = $this->requireParam('group');
-        return Admin::setting()->getGroup($group);
-    }
-
-    /**
-     * 通过key获取单个配置
-     * @throws \Exception
-     */
-    public function get()
-    {
-        $key = $this->requireParam('key');
-        return Admin::setting()->getKey($key);
-    }
-
-    /**
-     * 更新
-     * @return string
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \Exception
-     */
-    public function update()
-    {
-        $key = $this->requireParam('key');
-        $value = $this->requireParam('value');
-        return Admin::setting()->save($key, $value);
-    }
-
-    /**
-     * @return bool
-     * @throws \Exception
-     */
-    public function delete()
-    {
-        $key = $this->requireParam('key');
-        return Admin::setting()->delete($key);
+        $table->setButtons('add', ['title' => '增加', 'url' => $this->urlABuild('update')]);
+        $table->setEditOps($this->urlA('update'), ['id']);
+        $table->setDeleteOps($this->urlA('delete'), ['id']);
     }
 
 }

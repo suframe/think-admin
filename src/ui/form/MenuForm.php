@@ -8,16 +8,7 @@ class MenuForm
 
     public function parent_id()
     {
-        $data = AdminMenu::order('parent_id', 0)
-            ->field(['id', 'title'])
-            ->select();
-
-        $options = [
-            ['value' => "0", 'label' => "请选择"]
-        ];
-        foreach ($data as $item) {
-            $options[] = ['value' => $item['id'], 'label' => $item['title']];
-        }
+        $options = AdminMenu::buildOptions(0, true);
         return [
             'type' => 'select',
             'title' => '父菜单',

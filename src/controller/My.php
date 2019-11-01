@@ -74,6 +74,7 @@ class My extends Base
             if($score < config('thinkAdmin.auth.judgePassword', 2)){
                 return $this->handleResponse(false, '密码不安全');
             }
+            throw new \Exception('不好意思，不能修改了现在');
             $admin = $this->getAdminUser();
             $admin->password = Admin::auth()->hashPassword($password);
             return $this->handleResponse($admin->save());

@@ -102,6 +102,7 @@ class User extends SystemBase
         } else {
             unset($post['password']);
         }
+        throw new \Exception('不好意思，不能修改了现在');
         return $post;
     }
 

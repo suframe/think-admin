@@ -15,7 +15,7 @@ class AdminMenu extends Model
      * @param int $parent_id
      * @param bool $hasAll
      */
-    public function buildOptions($parent_id = 0, $hasAll = false)
+    public static function buildOptions($parent_id = 0, $hasAll = false)
     {
         try {
             $data = AdminMenu::where('parent_id', $parent_id)

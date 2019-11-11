@@ -3,6 +3,7 @@
 namespace suframe\thinkAdmin\controller;
 
 use suframe\thinkAdmin\model\AdminMenu;
+use suframe\thinkAdmin\model\AdminRoleMenu;
 use suframe\thinkAdmin\traits\CURDController;
 use suframe\thinkAdmin\ui\form\MenuForm;
 use suframe\thinkAdmin\ui\table\MenuTable;
@@ -56,4 +57,19 @@ class Menu extends SystemBase
         $table->setDeleteOps($this->urlA('delete'), ['id']);
     }
 
+    /**
+     * @return \think\response\Json
+     * @throws \Exception
+     */
+    public function roleMenu()
+    {
+        $role_id = $this->requireParamInt('role_id');
+        $all = AdminMenu::buildOptions('all', false, 'key');
+        $my = AdminRoleMenu::where('role_id', $role_id)->field('menu_id')->select()->column('menu_id');
+        $rs = [
+            'all' => $all,
+            'my' => $my,
+        ];
+        return json_return($rs);
+    }
 }

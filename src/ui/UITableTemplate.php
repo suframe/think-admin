@@ -190,7 +190,7 @@
         <el-table-column
                 fixed="right"
                 label="操作"
-                width="160">
+                width="<?= $configs['opsWidth'] ?? 160 ?>">
             <template slot-scope="scope">
                 <?php foreach ($ops as $key => $item) {
                     $rowClick = [
@@ -406,8 +406,6 @@
                 this.getList()
             },
             handleCommand(command) {
-                console.log(command)
-                this.$message('click on item ' + command);
                 if (command.target) {
                     if(parent && parent.layer){
                         var width = parent.document.body.clientWidth;

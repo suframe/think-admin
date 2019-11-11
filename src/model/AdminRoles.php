@@ -33,4 +33,5 @@ class AdminRoles extends Model
             return [];
         }
     }
+
 }

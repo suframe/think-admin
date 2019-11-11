@@ -47,6 +47,18 @@ class UITable
         return $this;
     }
 
+    protected $configs = [];
+
+    public function setConfigs($key, $value = null)
+    {
+        if (is_array($key)) {
+            $this->configs = $key;
+        } else {
+            $this->configs[$key] = $value;
+        }
+        return $this;
+    }
+
     protected $header = [];
 
     public function setHeader($key, $value = null)
@@ -192,6 +204,7 @@ class UITable
         $apiUrl = $this->getApiUrl();
         $searchFormId = $this->searchFormId;
         $buttons = $this->buttons;
+        $configs = $this->configs;
         require(__DIR__ . '/UITableTemplate.php');
         $rs = ob_get_clean();
         $rs = explode('<!-- split -->', $rs);

@@ -27,4 +27,21 @@ class AdminUsers extends Model
     {
         return $this->supper == 1;
     }
+
+    public function getMyRole()
+    {
+        return AdminRoleUsers::where('user_id', $this->id)
+            ->field('role_id')
+            ->column('role_id');
+    }
+
+    public function getMyMenu()
+    {
+        $role = $this->getMyRole();
+        if (!$role) {
+            return [];
+        }
+        return AdminRoleMenu::where('role_id', 'in', $role)
+            ->select();
+    }
 }

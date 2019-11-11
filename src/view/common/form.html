@@ -16,6 +16,6 @@
 {__block__}
 <script>
     var create = {$form->formScript()|raw};
-    var $f = create(document.getElementById('base-form'));
+    var $f = create({el: document.getElementById('base-form')});
 </script>
 {/block}

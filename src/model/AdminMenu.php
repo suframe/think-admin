@@ -39,4 +39,22 @@ class AdminMenu extends Model
         }
     }
 
+    public static function buildTree($pid = 0)
+    {
+        $rs = [];
+        $data = AdminMenu::order('order', 'desc')->where('parent_id', $pid)->select();
+        if (!$data) {
+            return $data;
+        }
+        foreach ($data as $key => $item) {
+            $children = static::buildTree($item['id']);
+            $rs[$key] = [
+                'id' => $item['id'],
+                'label' => $item['title'],
+                'children' => $children
+            ];
+        }
+        return $rs;
+    }
+
 }

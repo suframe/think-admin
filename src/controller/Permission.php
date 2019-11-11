@@ -2,17 +2,12 @@
 
 namespace suframe\thinkAdmin\controller;
 
-use suframe\thinkAdmin\Admin;
-use suframe\thinkAdmin\model\AdminApps;
 use suframe\thinkAdmin\model\AdminPermissions;
-use suframe\thinkAdmin\model\AdminRoles;
+use suframe\thinkAdmin\model\AdminRolePermissions;
 use suframe\thinkAdmin\traits\CURDController;
 use suframe\thinkAdmin\ui\form\AdminPermissionForm;
 use suframe\thinkAdmin\ui\table\PermissionTable;
-use suframe\thinkAdmin\ui\table\RoleTable;
 use suframe\thinkAdmin\ui\UITable;
-use think\facade\Cache;
-use think\facade\View;
 
 class Permission extends SystemBase
 {
@@ -58,6 +53,22 @@ class Permission extends SystemBase
         $table->setButtons('add', ['title' => '增加', 'url' => $this->urlABuild('update')]);
         $table->setEditOps($this->urlA('update'), ['id']);
         $table->setDeleteOps($this->urlA('delete'), ['id']);
+    }
+
+    /**
+     * @return \think\response\Json
+     * @throws \Exception
+     */
+    public function rolePermission()
+    {
+        $role_id = $this->requireParamInt('role_id');
+        $all = AdminPermissions::buildOptions();
+        $my = AdminRolePermissions::where('role_id', $role_id)->field('permission_id')->select()->column('permission_id');
+        $rs = [
+            'all' => $all,
+            'my' => $my,
+        ];
+        return json_return($rs);
     }
 
 }

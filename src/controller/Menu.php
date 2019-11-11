@@ -72,4 +72,23 @@ class Menu extends SystemBase
         ];
         return json_return($rs);
     }
+
+
+    /**
+     * @return \think\response\Json
+     * @throws \Exception
+     */
+    public function roleMenuTree()
+    {
+        $role_id = $this->requireParamInt('role_id');
+        $all = AdminMenu::buildTree();
+        $my = AdminRoleMenu::where('role_id', $role_id)->field('menu_id')->select()->column('menu_id');
+        $rs = [
+            'all' => $all,
+            'my' => $my,
+        ];
+        return json_return($rs);
+    }
+
+
 }

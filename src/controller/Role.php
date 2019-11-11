@@ -102,6 +102,33 @@ class Role extends SystemBase
     {
         $id = $this->requireParamInt('id');
         if ($this->request->isAjax() && $this->request->isPost()) {
+            $checked = $this->requirePost('checked');
+            $data_id = $this->requirePost('data_id');
+            if ($checked == 'true') {
+                //增加
+                $rs = AdminRoleMenu::insert([
+                    'role_id' => $id,
+                    'menu_id' => $data_id,
+                ]);
+            } else {
+                $rs = AdminRoleMenu::where('role_id', $id)->where('menu_id', $data_id)->delete();
+            }
+            return $this->handleResponse($rs);
+        }
+        $this->setNav('role');
+        View::assign('id', $id);
+        View::assign('pageTitle', '角色菜单编辑');
+        return View::fetch('role/menu');
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function permissions()
+    {
+        $id = $this->requireParamInt('id');
+        if ($this->request->isAjax() && $this->request->isPost()) {
             $direction = $this->requirePost('direction');
             $movedKeys = $this->requirePost('movedKeys');
             if ($direction == 'right') {
@@ -110,18 +137,18 @@ class Role extends SystemBase
                 foreach ($movedKeys as $movedKey) {
                     $data[] = [
                         'role_id' => $id,
-                        'menu_id' => $movedKey,
+                        'permission_id' => $movedKey,
                     ];
                 }
-                $rs = AdminRoleMenu::insertAll($data);
+                $rs = AdminRolePermissions::insertAll($data);
             } else {
-                $rs = AdminRoleMenu::where('role_id', $id)->whereIn('menu_id', $movedKeys)->delete();
+                $rs = AdminRolePermissions::where('role_id', $id)->whereIn('permission_id', $movedKeys)->delete();
             }
             return $this->handleResponse($rs);
         }
         $this->setNav('role');
         View::assign('id', $id);
-        View::assign('pageTitle', '角色菜单编辑');
-        return View::fetch('role/menu');
+        View::assign('pageTitle', '角色权限编辑');
+        return View::fetch('role/permissions');
     }
 }

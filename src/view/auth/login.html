@@ -62,6 +62,7 @@
         {if $message}
         <div style="background: #fef0f0; color: #f56c6c; padding: 8px 16px;">{$message}</div>
         {/if}
+        <input type="hidden" name="parent_url" id="parent_url" value="">
         <p><input type="text" name="username" placeholder="请输入账户"/></p>
         <p><input type="password" name="password" placeholder="请输入密码"/></p>
         <p><input class="login-form-submit" type="submit" value="登 录"/></p>
@@ -229,5 +230,11 @@
     sizeCanvas();
     requestAnimationFrame(function () {animate();});
     window.addEventListener('resize', sizeCanvas);
+</script>
+
+<script>
+    if((window.self !== window.top) && document.referrer){
+        document.getElementById('parent_url').value = document.referrer
+    }
 </script>
 </html>

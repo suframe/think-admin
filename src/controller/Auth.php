@@ -38,9 +38,10 @@ class Auth extends Base
                 $password = $this->requirePost('password','请输入密码');
                 $rs = Admin::auth()->login($username, $password);
                 if ($rs) {
-                    return redirect('/thinkadmin/main/index');
+                    $parent_url = $this->request->param('parent_url');
+                    return redirect($parent_url ?: '/thinkadmin/main/index');
                 }
-                return $rs ? '登录成功' : '登录失败';
+                Session::set('login_message', '用户名或密码错误');
             } catch (\Exception $e) {
                 Session::set('login_message', $e->getMessage());
                 return redirect('/thinkadmin/main/index');

@@ -1,6 +1,9 @@
 # think-admin
 基于thinkphp6的管理中控台库
 
+QQ群：647344518   [立即加群](http://shang.qq.com/wpa/qunwpa?idkey=83a58116f995c9f83af6dc2b4ea372e38397349c8f1973d8c9827e4ae4d9f50e)     
+体验地址： [thinkadmin.zacms.com](http://thinkadmin.zacms.com)  账户：admin,密码：admin,**请勿乱更改信息**
+
 ## 安装
 ```
 //设置阿里云composer镜像：

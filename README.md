@@ -1,5 +1,7 @@
 # think-admin
 基于thinkphp6的管理中控台库
+
+## 安装
 ```
 //设置阿里云composer镜像：
 composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
@@ -28,8 +30,20 @@ php think migrate:run
 ```
 \think\middleware\SessionInit::class,
 ```
-运行:
+## 运行:
 ```
 php think run -H 0.0.0.0
 ```
- 访问：http://127.0.0.1:8000
+## 访问
+ http://127.0.0.1:8000
+
+预览
+![1](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/1.png)
+
+![2](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/2.png)
+
+![3](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/3.png)
+
+![4](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/4.png)
+
+![5](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/5.png)

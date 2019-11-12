@@ -33,6 +33,7 @@ php think migrate:run
 ```
 \think\middleware\SessionInit::class,
 ```
+
 然后去 config/middleware.php 里面的 priority里面加上相同的项目,这里是因为这个中间件执行比较靠前，需要提前初始化
 ```
 'priority' => [

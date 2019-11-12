@@ -1,6 +1,7 @@
 /.idea
 /.vscode
 /vendor
+/dev
 /composer.lock
 *.log
 .env

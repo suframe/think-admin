@@ -28,11 +28,18 @@ php think migrate:run
 ```
 注意下面这个步骤很重要
 
-**编辑文件 app/middleware.php ,return数组里面加入(注意不是config下面的middleware.php)**
+**编辑文件 app/middleware.php ,return数组里面加入**
 
 ```
 \think\middleware\SessionInit::class,
 ```
+然后去 config/middleware.php 里面的 priority里面加上相同的项目,这里是因为这个中间件执行比较靠前，需要提前初始化
+```
+'priority' => [
+    \think\middleware\SessionInit::class,
+],
+```
+
 ## 运行:
 ```
 php think run -H 0.0.0.0

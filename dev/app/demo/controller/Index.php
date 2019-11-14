@@ -14,7 +14,7 @@ class Index
     public function index()
     {
         $user = Db::table('admin_users');
-        print_r($user->select());
+//        print_r($user->select());
         return '您好！这是一个[demo]示例应用';
     }
 }

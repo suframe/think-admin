@@ -28,8 +28,9 @@ class Permission
             $this->shouldPassThrough($request)) {
             return $next($request);
         }
-
-        if(!app('admin')->auth()->check($request->pathinfo(), $request->method())){
+        /** @var \suframe\thinkAdmin\Auth $auth */
+        $auth = app('admin')->auth();
+        if(!$auth->check($request->pathinfo(), $request->method())){
             throw new \Exception('Permission denied', 5005);
         }
 

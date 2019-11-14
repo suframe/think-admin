@@ -23,10 +23,10 @@ class AdminRoles extends Model
                 ->select();
             $options = [];
             if ($hasAll) {
-                $options[] = ['value' => "0", 'label' => "请选择"];
+                $options[] = ['value' => 0, 'label' => "请选择"];
             }
             foreach ($data as $item) {
-                $options[] = ['value' => "{$item['id']}", 'label' => $item['name']];
+                $options[] = ['value' => $item['id'], 'label' => $item['name']];
             }
             return $options;
         } catch (\Exception $e) {

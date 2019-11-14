@@ -4,11 +4,15 @@ namespace suframe\thinkAdmin\controller;
 
 use FormBuilder\Exception\FormBuilderException;
 use suframe\thinkAdmin\Admin;
+use suframe\thinkAdmin\model\AdminMenu;
+use suframe\thinkAdmin\model\AdminRoles;
+use suframe\thinkAdmin\model\AdminRoleUsers;
 use suframe\thinkAdmin\model\AdminUsers;
 use suframe\thinkAdmin\traits\CURDController;
 use suframe\thinkAdmin\ui\form\AdminUserForm;
 use suframe\thinkAdmin\ui\table\UserTable;
 use suframe\thinkAdmin\ui\UITable;
+use think\facade\View;
 
 class User extends SystemBase
 {
@@ -27,11 +31,69 @@ class User extends SystemBase
     }
 
     /**
+     * 管理员角色
+     * @throws \Exception
+     */
+    public function roles()
+    {
+        $id = $this->requireParamInt('id');
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $direction = $this->requirePost('direction');
+            $movedKeys = $this->requirePost('movedKeys');
+            if ($direction == 'right') {
+                //增加
+                $data = [];
+                foreach ($movedKeys as $movedKey) {
+                    $data[] = [
+                        'user_id' => $id,
+                        'role_id' => $movedKey,
+                    ];
+                }
+                $rs = AdminRoleUsers::insertAll($data);
+            } else {
+                $rs = AdminRoleUsers::where('user_id', $id)->whereIn('role_id', $movedKeys)->delete();
+            }
+            return $this->handleResponse($rs);
+        }
+        $this->setNav('user');
+        View::assign('id', $id);
+        View::assign('pageTitle', '管理员权限编辑');
+        return View::fetch('user/roles');
+    }
+
+    /**
+     * @return \think\response\Json
+     * @throws \Exception
+     */
+    public function myRoles()
+    {
+        $user_id = $this->requireParamInt('user_id');
+        $all = AdminRoles::buildOptions();
+        $my = AdminRoleUsers::where('user_id', $user_id)->field('role_id')->select()->column('role_id');
+        $rs = [
+            'all' => $all,
+            'my' => $my,
+        ];
+        return json_return($rs);
+    }
+
+    /**
      * @param UITable $table
      */
     private function getTableSetting($table){
-        $table->setButtons('add', ['title' => '增加', 'url' => $this->urlABuild('update')]);
         $table->createByClass(UserTable::class);
+        $table->setButtons('add', ['title' => '增加', 'url' => $this->urlABuild('update')]);
+        $table->setEditOps($this->urlA('update'), ['id']);
+        $table->setDeleteOps($this->urlA('delete'), ['id']);
+        $configMenu = [
+            'type' => 'link',
+            'label' => '角色',
+            'icon' => 'el-icon-menu',
+            'url' => $this->urlA('roles'),
+            'vars' => ['id'],
+        ];
+        $table->setOps('roles', $configMenu);
+        $table->setConfigs('opsWidth', 180);
     }
 
     /**
@@ -102,7 +164,6 @@ class User extends SystemBase
         } else {
             unset($post['password']);
         }
-        throw new \Exception('不好意思，不能修改了现在');
         return $post;
     }
 

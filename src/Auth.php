@@ -95,10 +95,21 @@ class Auth
         if (!$rs) {
             //匹配通配符*
             $likes = $permission
-                ->whereLike('http_path', '*')
-                ->where('http_method', $http_method)
+                ->whereIn('http_method', [$http_method, '*'])
                 ->filter(function ($item) use ($http_path) {
+                    if ($item['http_path'] === $http_path) {
+                        return true;
+                    }
+                    $pos = strpos($item['http_path'], '*');
+                    if ($pos === false) {
+                        return false;
+                    }
+                    //模糊搜索
                     $path = str_replace('*', '', $item['http_path']);
+                    if ($pos > 0) {
+                        //非*开头的必须匹配开头
+                        return strpos($http_path, $path) === 0;
+                    }
                     return strpos($http_path, $path) !== false;
                 });
             $rs = !$likes->isEmpty();

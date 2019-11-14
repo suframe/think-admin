@@ -23,25 +23,4 @@ class UserTable extends TableInterface
         ];
     }
 
-    public function ops()
-    {
-        return [
-            'edit' => [
-                'type' => 'link',
-                'label' => '编辑',
-                'icon' => 'el-icon-edit',
-                'url' => '/thinkadmin/user/update',
-                'vars' => ['id'],
-            ],
-            'del' => [
-                'type' => 'ajax',
-                'label' => '删除',
-                'icon' => 'el-icon-delete',
-                'url' => '/thinkadmin/user/delete',
-                'vars' => ['id'],
-                'confirm' => '是否删除管理员？',
-            ]
-        ];
-    }
-
 }

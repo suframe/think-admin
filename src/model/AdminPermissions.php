@@ -11,6 +11,7 @@ class AdminPermissions extends Model
 {
     //
     static public $methods = [
+        '*' => 'ALL',
         'GET' => 'GET',
         'POST' => 'POST',
         'PUT' => 'PUT',

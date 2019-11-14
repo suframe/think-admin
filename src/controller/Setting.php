@@ -1,13 +1,11 @@
 <?php
 namespace suframe\thinkAdmin\controller;
 
-use suframe\thinkAdmin\Admin;
 use suframe\thinkAdmin\model\AdminSetting;
 use suframe\thinkAdmin\traits\CURDController;
 use suframe\thinkAdmin\ui\form\AdminSettingForm;
 use suframe\thinkAdmin\ui\table\SettingTable;
 use suframe\thinkAdmin\ui\UITable;
-use think\facade\View;
 
 /**
  * 后台通用设置

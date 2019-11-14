@@ -9,7 +9,28 @@ use think\Model;
  */
 class AdminUsers extends Model
 {
-    //
+    /**
+     * 下拉options
+     * @param int $parent_id
+     * @param bool $hasAll
+     */
+    public static function buildOptions($hasAll = false)
+    {
+        try {
+            $data = AdminUsers::field(['id', 'username', 'real_name'])
+                ->select();
+            $options = [];
+            if ($hasAll) {
+                $options[] = ['value' => 0, 'label' => "请选择"];
+            }
+            foreach ($data as $item) {
+                $options[] = ['value' => $item['id'], 'label' => $item['real_name'] ?: $item['username']];
+            }
+            return $options;
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
 
     public function info()
     {

@@ -1,0 +1,76 @@
+{extend name="layout_container" /}
+
+{block name="title"}
+应用用户授权
+{/block}
+
+{block name="main"}
+<el-row>
+    <el-col :span="24">
+        <el-page-header @back="goBack" content="{$pageTitle?:'编辑'}" style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eaeefb">
+        </el-page-header>
+    </el-col>
+</el-row>
+<div style="text-align: center">
+    <el-transfer v-model="value"
+                 style="text-align: left; display: inline-block;"
+                 filterable
+                 :props="{key: 'value',label: 'label'}"
+                 :titles="['所有用户', '授权用户']"
+                 @change="handleChange"
+                 :data="data"></el-transfer>
+</div>
+{/block}
+
+{block name='style'}
+{__block__}
+<style>
+    .el-transfer-panel__body{
+        height: 700px
+    }
+    ..el-transfer-panel__list.is-filterable{
+        height: 694px
+    }
+</style>
+{/block}
+{block name='script'}
+<script>
+    var app_id = {$id};
+    new Vue({
+        el: '#app',
+        template: "#appCnt",
+        data: function () {
+            return {
+                data: this.generateData(),
+                value: []
+            }
+        },
+        methods: {
+            handleChange: function (value, direction, movedKeys) {
+                var _this = this
+                $.post('', {id: app_id, direction: direction, movedKeys: movedKeys}, function (rs) {
+                    if(rs.code === 200) {
+                        _this.$message.success(rs.message ? rs.message : '操作成功');
+                    } else {
+                        _this.$message.error(rs.message ? rs.message : '操作错误');
+                    }
+                })
+            },
+            generateData: function () {
+                var _this = this
+                $.get('{:url("/thinkadmin/apps/userSearch")}', {app_id: app_id}, function (rs) {
+                    if (rs.code === 200) {
+                        _this.data = rs.data.all;
+                        _this.value = rs.data.my;
+                    }
+                })
+            },
+            goBack: function () {
+                window.location.href = document.referrer
+            }
+        },
+        created: function () {
+        }
+    })
+</script>
+{/block}

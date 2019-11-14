@@ -85,14 +85,14 @@ class User extends SystemBase
         $table->setButtons('add', ['title' => '增加', 'url' => $this->urlABuild('update')]);
         $table->setEditOps($this->urlA('update'), ['id']);
         $table->setDeleteOps($this->urlA('delete'), ['id']);
-        $configMenu = [
+        $configRole = [
             'type' => 'link',
             'label' => '角色',
             'icon' => 'el-icon-menu',
             'url' => $this->urlA('roles'),
             'vars' => ['id'],
         ];
-        $table->setOps('roles', $configMenu);
+        $table->setOps('roles', $configRole);
         $table->setConfigs('opsWidth', 180);
     }
 

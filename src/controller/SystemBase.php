@@ -18,6 +18,7 @@ class SystemBase extends \suframe\thinkAdmin\controller\Base
             'permission' => ['权限管理', url('/thinkadmin/permission/index')->build()],
             'logs' => ['系统日志', url('/thinkadmin/logs/index')->build()],
             'setting' => ['系统配置', url('/thinkadmin/setting/index')->build()],
+            'apps' => ['应用管理', url('/thinkadmin/apps/index')->build()],
         ];
         $this->setAdminNavs($navs, $active);
     }

@@ -4,6 +4,8 @@ namespace suframe\thinkAdmin\controller;
 
 
 use suframe\thinkAdmin\facade\Admin;
+use suframe\thinkAdmin\model\AdminAppsUser;
+use suframe\thinkAdmin\model\AdminRoleMenu;
 use think\facade\Request;
 use think\facade\View;
 
@@ -45,5 +47,23 @@ class Main extends Base
             'id' => $id,
             'filePath' => $url
         ]);
+    }
+
+    /**
+     * 我的应用
+     */
+    public function getMyApps()
+    {
+        $rs = AdminAppsUser::getAppsByUser($this->getAdminUser()->id);
+        return json_return($rs);
+    }
+
+    /**
+     * 我的菜单
+     */
+    public function getMyMenus()
+    {
+        $rs = AdminRoleMenu::getMenuByUser($this->getAdminUser()->id);
+        return json_return($rs);
     }
 }

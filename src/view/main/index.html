@@ -33,6 +33,23 @@
                             <i class="el-icon-star-on"></i>
                             <div class="menu-text">应用</div>
                         </el-menu-item>
+
+                        <el-submenu :index="index" v-for="(menu, index) in menus">
+                            <template slot="title" v-if="!menu.child">
+                                <a href="javascript:void(0)" @click="openUrl(menu.uri, menu.title)"  :class="menu.icon"></a>
+                            </template>
+                            <template slot="title" v-if="menu.child">
+                                <a href="javascript:void(0)" :class="menu.icon"></a>
+                                <span slot="title">{{menu.title}}</span>
+                            </template>
+
+                            <el-menu-item @click="openUrl(child.uri, child.title)"
+                                          v-if="!child.child" v-for="(child, childIndex) in menu.child"
+                            >
+                                {{child.title}}sdf
+                            </el-menu-item>
+                        </el-submenu>
+
                         <div class="menu-bottom" style="padding: 0;">
                             <el-menu-item @click="openUrl('{:url('/thinkadmin/main/message')}', '消息')">
                                 <i class="el-icon-chat-line-square"></i>
@@ -94,9 +111,10 @@
                         :before-close="handleClose">
                     <el-row>
                         <div class="think-apps">
-                            <el-col :span="6" v-for="n in 20">
-                                <span @click="openUrl('{:url('/thinkadmin/apps/demo')}', '应用' + n)"><i
-                                        class="fa fa-apple"></i><span class="icon-name">应用{{n}}</span></span>
+                            <el-col :span="6" v-for="n in apps">
+                                <span @click="openUrl(n.entry, n.title)">
+                                    <img :src="n.icon" alt="">
+                                    <span class="icon-name">{{n.title}}</span></span>
                             </el-col>
                         </div>
                     </el-row>
@@ -119,6 +137,8 @@
         template: "#appcnt",
         data: function () {
             return {
+                apps: [],
+                menus: [],
                 isCollapse: true,
                 falseSetting: false,
                 drawer: false,
@@ -129,8 +149,9 @@
             openUrl(url, title) {
                 this.drawer = false
                 var width = document.body.clientWidth;
-                var height = document.body.clientHeight - 60;
-                width = width > 1300 ? 1300 : (width - 70)
+                var height = document.body.clientHeight - 40;
+                var maxWidth = 1400
+                width = width > maxWidth ? maxWidth : width - 140
                 layer.open({
                     type: 2,
                     title: title,
@@ -159,9 +180,29 @@
                     this.drawer = !this.drawer
                 }
                 console.log(key, keyPath);
+            },
+            getMyApps() {
+                let _this = this
+                $.getJSON("{:url('/thinkadmin/main/getMyApps')}", function (rs) {
+                    if (rs.code !== 200) {
+                        return false;
+                    }
+                    _this.apps = rs.data
+                })
+            },
+            getMyMenus() {
+                let _this = this
+                $.getJSON("{:url('/thinkadmin/main/getMyMenus')}", function (rs) {
+                    if (rs.code !== 200) {
+                        return false;
+                    }
+                    _this.menus = rs.data
+                })
             }
         },
         created: function () {
+            this.getMyMenus()
+            this.getMyApps()
             this.$notify({
                 title: '欢迎访问',
                 message: '不要问我，一生爱过多少人',
@@ -265,14 +306,15 @@
     }
 
     .think-apps > .el-col {
-        margin-bottom: 20px;
-        height: 120px;
+        height: 100px;
         cursor: pointer;
     }
 
-    .think-apps i {
+    .think-apps img {
         display: block;
-        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        margin: 0 auto;
     }
 
 </style>

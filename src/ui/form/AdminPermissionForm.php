@@ -10,10 +10,10 @@ class AdminPermissionForm
     {
         return [
             'type' => 'input',
-            'title' => '用户名',
+            'title' => '权限名称',
             'field' => 'name',
             'props' => [
-                'placeholder' => '请输入用户名',
+                'placeholder' => '请输入权限名称',
             ],
             'validate' => [
                 ['required' => true, 'message' => '不能为空']
@@ -25,7 +25,7 @@ class AdminPermissionForm
     {
         return [
             'type' => 'input',
-            'title' => '标识',
+            'title' => '标识(英文单词)',
             'field' => 'slug',
             'props' => [
                 'placeholder' => '请输入标识',

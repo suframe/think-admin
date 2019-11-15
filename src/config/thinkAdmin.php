@@ -24,6 +24,7 @@ return [
         'operation_log_table' => 'admin_operation_log',
         'setting' => 'admin_setting',
         'apps' => 'admin_apps',
+        'apps_user' => 'admin_apps_user',
     ],
 
     'auth' => [

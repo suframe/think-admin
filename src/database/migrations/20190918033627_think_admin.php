@@ -225,6 +225,18 @@ class ThinkAdmin extends Migrator
             ->addIndex(['installed'])
             ->create();
 
+        //apps_user表
+        $table = $this->table(
+            config('thinkAdmin.database.apps_user'),
+            array(
+                'engine' => 'InnoDB',
+                'comment' => '应用用户',
+            ));
+        $table->addColumn('user_id', 'integer', ['comment' => '用户ID', 'length' => 11])
+            ->addColumn('app_id', 'integer', ['comment' => '应用ID', 'length' => 11])
+            ->addTimestamps()
+            ->addIndex(['user_id', 'app_id'], ['unique' => true])
+            ->create();
     }
 
     /**

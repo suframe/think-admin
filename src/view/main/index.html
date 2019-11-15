@@ -15,7 +15,7 @@
     <div id="app">
         <template id="appcnt">
             <el-container class="think-container">
-                <el-aside class="think-aside" width="64px">
+                <el-aside class="think-aside">
                     <el-menu
                             default-active="apps"
                             class="think-el-menu"
@@ -24,37 +24,50 @@
                             active-text-color="#ffd04b"
                             @select="handleSelect"
                             :collapse="isCollapse">
+
+                        <el-menu-item index="collapse" style="padding: 0; height: 12px; font-size: 0px;background: rgb(34, 83, 161);">
+                            展开
+                        </el-menu-item>
                         <el-menu-item style="padding: 5px;">
                             <a href="{:url('/thinkadmin/main/index')}">
                                 <img class="menu-logo" src="{$system_info['logo']}" alt="">
                             </a>
                         </el-menu-item>
-                        <el-menu-item index="apps" style="padding: 0;">
+                        <el-menu-item index="apps">
                             <i class="el-icon-star-on"></i>
-                            <div class="menu-text">应用</div>
+                            <span slot="title">应用</span>
                         </el-menu-item>
 
-                        <el-submenu :index="index" v-for="(menu, index) in menus">
-                            <template slot="title" v-if="!menu.child">
-                                <a href="javascript:void(0)" @click="openUrl(menu.uri, menu.title)"  :class="menu.icon"></a>
-                            </template>
-                            <template slot="title" v-if="menu.child">
-                                <a href="javascript:void(0)" :class="menu.icon"></a>
+
+                        <template v-for="(menu, index) in menus">
+                            <el-menu-item :index="index" v-if="!menu.child" @click="openUrl(menu.uri, menu.title)">
+                                <i :class="menu.icon"></i>
                                 <span slot="title">{{menu.title}}</span>
-                            </template>
-
-                            <el-menu-item @click="openUrl(child.uri, child.title)"
-                                          v-if="!child.child" v-for="(child, childIndex) in menu.child"
-                            >
-                                {{child.title}}sdf
                             </el-menu-item>
-                        </el-submenu>
 
-                        <div class="menu-bottom" style="padding: 0;">
+                            <el-submenu :index="index" v-if="menu.child">
+                                <template slot="title">
+                                    <i :class="menu.icon"></i>
+                                    <span>{{menu.title}}</span>
+                                </template>
+
+                                <template v-for="(child, childIndex) in menu.child">
+                                    <el-menu-item :index="childIndex" v-if="!child.child">{{child.title}}</el-menu-item>
+                                    <el-submenu :index="childIndex" v-if="child.child">
+                                        <template slot="title">{{child.title}}</template>
+                                        <el-menu-item :index="childSecIndex" v-for="(childSec, childSecIndex) in child.child">{{childSec.title}}</el-menu-item>
+                                    </el-submenu>
+                                </template>
+                            </el-submenu>
+
+                        </template>
+
+
+                        <div class="menu-bottom">
                             <el-menu-item @click="openUrl('{:url('/thinkadmin/main/message')}', '消息')">
                                 <i class="el-icon-chat-line-square"></i>
                             </el-menu-item>
-                            <el-menu-item style="padding:0 11px;">
+                            <el-menu-item>
                                 <el-popover
                                         style="z-index: 999999998"
                                         width="114"
@@ -139,7 +152,7 @@
             return {
                 apps: [],
                 menus: [],
-                isCollapse: true,
+                isCollapse: false,
                 falseSetting: false,
                 drawer: false,
                 direction: 'ltr'
@@ -178,6 +191,8 @@
                 this.drawer = false
                 if (key === 'apps') {
                     this.drawer = !this.drawer
+                } else if (key === 'collapse') {
+                    this.isCollapse = this.isCollapse ? false : true
                 }
                 console.log(key, keyPath);
             },
@@ -236,34 +251,12 @@
         left: 64px;
     }
 
-    .think-el-menu .el-menu-item {
-        line-height: 36px;
-        font-size: 12px;
-        margin: 0;
-        text-align: center;
-    }
-
-    .think-el-menu a {
-        color: #d7e6fe;
-        text-decoration: none;
-    }
-
-    .think-el-menu .is-active a {
-        color: #ffd04b;
-    }
-
-    .think-el-menu .menu-text {
-        line-height: 120%;
-    }
-
-    .think-el-menu .el-menu-item [class^=el-icon-] {
-        color: #d7e6fe;
-        font-size: 22px;
-    }
 
     .think-el-menu .menu-logo {
-        width: 100%;
+        width: 54px;
+        height: 54px;
     }
+
 
     .think-el-menu .menu-bottom {
         position: absolute;
@@ -272,8 +265,29 @@
         width: 100%;
     }
 
-    .think-el-menu .menu-bottom .el-menu-item {
-        line-height: 56px;
+    .think-el-menu i {
+        color: #d7e6fe;
+        margin-right: 5px;
+        width: 24px;
+        text-align: center;
+        font-size: 18px;
+        vertical-align: middle;
+    }
+
+    .el-menu--collapse > .el-menu-item i, .el-menu--collapse > .el-submenu i {
+        color: #d7e6fe;
+        speak: none;
+        font-style: normal;
+        font-weight: 400;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        margin: 0;
+        vertical-align: middle;
+        width: 24px;
+        text-align: center;
     }
 
     .my-settings li {

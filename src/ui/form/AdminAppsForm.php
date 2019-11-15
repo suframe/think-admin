@@ -1,8 +1,21 @@
 <?php
 namespace suframe\thinkAdmin\ui\form;
 
+use suframe\thinkAdmin\model\AdminApps;
+
 class AdminAppsForm
 {
+
+    public function type()
+    {
+        $options = AdminApps::getTypeOptions();
+        return [
+            'type' => 'select',
+            'title' => '应用类型',
+            'field' => 'type',
+            'options' => $options,
+        ];
+    }
 
     public function app_name()
     {

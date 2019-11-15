@@ -26,6 +26,7 @@ class Apps extends SystemBase
 
     private function getManageModel()
     {
+
         return AdminApps::class;
     }
 
@@ -33,7 +34,7 @@ class Apps extends SystemBase
     {
         $rs = $this->parseSearchWhere($this->getManageModel()::order('id', 'desc'), [
             'name' => 'like'
-        ]);
+        ])->append(['type_name']);
         return json_return($rs);
     }
 

@@ -60,6 +60,7 @@ class Apps
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
+     * @throws \Exception
      */
     public function install($appName)
     {
@@ -68,10 +69,13 @@ class Apps
         if (!$app) {
             throw new Exception('应用未找到');
         }
-        if($app->isInstalled()){
+        if ($app->isInstalled()) {
             throw new Exception('应用已安装过，请勿重复安装');
         }
         $class = $app['setting_class'];
+        if (!$class || !class_exists($class)) {
+            throw new \Exception($class . "配置类不存在");
+        }
         return (new $class)->install();
     }
 

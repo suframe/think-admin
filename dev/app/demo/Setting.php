@@ -12,11 +12,13 @@ class Setting extends AppSettingInterface
         return [
             'app_name' => 'demo',
             'title' => 'demo',
-            'icon' => '',
+            'image' => 'https://s2.ax1x.com/2019/11/18/Mci8XV.png',
             'auth' => 'suframe',
             'version' => '1.0',
             'desc' => 'demo app',
-            'entry' => url('/demo/index/index')->build()
+            'entry' => url('/demo/index/index')->build(),
+            'menu_title' => 'demo',
+            'menu_icon' => 'el-icon-s-goods',
         ];
     }
 

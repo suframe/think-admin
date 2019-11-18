@@ -1,4 +1,5 @@
 <?php
+
 namespace suframe\thinkAdmin\ui\form;
 
 use suframe\thinkAdmin\model\AdminApps;
@@ -28,6 +29,19 @@ class AdminAppsForm
             ],
             'validate' => [
                 ['required' => true, 'message' => '不能为空']
+            ]
+        ];
+    }
+
+    public function image()
+    {
+        return [
+            'type' => 'uploadImage',
+            'title' => '应用封面',
+            'field' => 'image',
+            'action' => config('thinkAdmin.upload_url'),
+            'props' => [
+                'placeholder' => '请上传封面',
             ]
         ];
     }
@@ -62,18 +76,36 @@ class AdminAppsForm
         ];
     }
 
-    public function icon()
+    public function menu_title()
     {
         return [
-            'type' => 'uploadImage',
-            'title' => '应用图标',
-            'field' => 'icon',
-            'action' => config('thinkAdmin.upload_url'),
+            'type' => 'input',
+            'title' => '菜单标题',
+            'field' => 'menu_title',
             'props' => [
-                'placeholder' => '请上传头像',
+                'placeholder' => '请输入菜单标题',
+            ],
+            'validate' => [
+                ['required' => true, 'message' => '不能为空']
             ]
         ];
     }
+
+    public function menu_icon()
+    {
+        return [
+            'type' => 'input',
+            'title' => '菜单图标',
+            'field' => 'menu_icon',
+            'props' => [
+                'placeholder' => '请输入菜单图标',
+            ],
+            'validate' => [
+                ['required' => true, 'message' => '不能为空']
+            ]
+        ];
+    }
+
 
     public function auth()
     {

@@ -6,6 +6,8 @@ use app\BaseController;
 use DirectoryIterator;
 use ReflectionMethod;
 use suframe\thinkAdmin\model\AdminApps;
+use suframe\thinkAdmin\model\AdminMenu;
+use suframe\thinkAdmin\model\AdminPermissions;
 use think\Collection;
 use think\facade\Db;
 
@@ -80,6 +82,18 @@ abstract class AppSettingInterface
         if (!is_dir($controllerDir)) {
             throw new \Exception('controller dir not found');
         }
+        //新增顶级菜单
+        $info = $this->info();
+        $installMenu= $this->insertMenu(
+            $info['menu_title'] ?? $info['title'],
+            $info['entry'],
+            0,
+            $info['menu_icon'] ?? 'el-icon-apple'
+        );
+        if ($installMenu) {
+            $parentMenuId = $installMenu->id;
+        }
+
         foreach (new DirectoryIterator($controllerDir) as $fileInfo) {
             $fileName = $fileInfo->getFilename();
             if ($fileInfo->isDot()) {
@@ -96,54 +110,159 @@ abstract class AppSettingInterface
             if (!class_exists($class)) {
                 continue;
             }
-
+            $installMenu = null;
             $objRef = new \ReflectionClass($class);
+            if ($doc = $objRef->getDocComment()) {
+                $doc = $this->parseDoc($doc);
+                if (isset($doc['menu']) && $doc['menu']) {
+                    //类注释的菜单(二级)
+                    $installMenu = $this->installMenu($parentMenuId, $doc, $class);
+                    if ($installMenu) {
+                        $parentMenuId = $installMenu->id;
+                    }
+                }
+                //增加权限
+                $this->installPermissions($doc, $class, $installMenu);
+            }
             foreach ($objRef->getMethods() as $method) {
                 if (!$method->isPublic()) {
                     continue;
                 }
                 $doc = $this->parseDoc($method->getDocComment());
-                $this->installMenu($method, $doc);
-                $this->installPermissions($method, $doc);
+                //method注释的菜单(二/三级)
+                $installMenu = $this->installMenu($parentMenuId, $doc, $class, $method);
+                //增加权限
+                $this->installPermissions($doc, $class, $installMenu, $method);
             }
         }
         return true;
     }
 
+    protected function insertMenu($title, $uri, $pid = 0, $icon = null)
+    {
+        $menuInfo = [
+            'title' => $title,
+            'uri' => $uri,
+            'parent_id' => $pid,
+        ];
+        if ($icon) {
+            $menuInfo['icon'] = $icon;
+        }
+        if ($menu = AdminMenu::where($menuInfo)->find()) {
+            return $menu;
+        }
+        return AdminMenu::create($menuInfo);
+    }
+
     /**
      * 安装菜单
-     * @param ReflectionMethod $method
+     * @param $parentMenuId
      * @param $doc
+     * @param $class
+     * @param ReflectionMethod $method
+     * @return bool
      */
-    protected function installMenu(ReflectionMethod $method, $doc)
+    protected function installMenu($parentMenuId, $doc, $class, ReflectionMethod $method = null)
     {
-        echo '<pre>';
-            print_r($method);
-        echo '<pre>';exit;
         if (!isset($doc['menu'])) {
             return false;
         }
         $menu = $doc['menu'];
-        if(strpos($menu, '{') === false) {
+        if (strpos($menu, '{') === false) {
             $title = trim($menu);
+            $uri = $this->getUriByClass($class);
+            if ($method) {
+                $uri .= '/' . lcfirst($method->getName());
+            }
         } else {
             $menu = json_decode($menu, true);
             $title = $menu['title'] ?? '';
+            $uri = $menu['uri'] ?? '';
         }
-        echo '<pre>';
-        print_r($doc);
-        echo '<pre>';
-        exit;
+
+        return $this->insertMenu(
+            $title,
+            $uri,
+            $parentMenuId
+        );
+    }
+
+    protected $uriClassStore = [];
+
+    protected function getUriByClass($class)
+    {
+        if (isset($this->uriClassStore[$class])) {
+            return $this->uriClassStore[$class];
+        }
+        $uri = str_replace([
+            '\\' . app()->getNamespace() . '\\',
+            '\\' . config('route.controller_layer') . '\\'
+        ], '\\', '\\' . $class);
+        $uri = str_replace('\\', '/', $uri);
+        $uri = explode('/', ltrim($uri, '/'));
+        $uri = array_map(function ($value) {
+            return lcfirst($value);
+        }, $uri);
+        $uri = '/' . implode('/', $uri);
+        $this->uriClassStore[$class] = $uri;
+        return $uri;
     }
 
     /**
      * 安装权限
-     * @param ReflectionMethod $method
      * @param $doc
+     * @param $class
+     * @param array $installMenu
+     * @param ReflectionMethod|null $method
+     * @return bool
      */
-    protected function installPermissions(ReflectionMethod $method, $doc)
+    protected function installPermissions($doc, $class, $installMenu = [], ReflectionMethod $method = null)
     {
-        exit;
+        $permissions = [];
+        if (isset($doc['permissions'])) {
+            $permissions = json_decode($doc['permissions'], true);
+        }
+        if (isset($doc['permission'])) {
+            if (strpos($doc['permission'], '{') !== false) {
+                $permissions[] = json_decode($doc['permission'], true);
+            } else {
+                $permissions[] = $doc['permission'];
+            }
+        }
+        if (!$permissions) {
+            return false;
+        }
+        $data = [];
+        foreach ($permissions as $permission) {
+            if (!is_array($permission) && $permission === '*') {
+                $info['http_method'] = AdminPermissions::$methods['*'];
+            } else {
+                $info = $permission;
+            }
+            if (!isset($info['http_path'])) {
+                $info['http_path'] = $this->getUriByClass($class);
+                if ($method) {
+                    $info['http_path'] .= '/' . lcfirst($method->getName());
+                } else {
+                    $info['http_path'] .= '/*';
+                }
+            }
+            if (!isset($info['name'])) {
+                if ($installMenu) {
+                    $info['name'] = $installMenu['title'];
+                } else {
+                    $info['name'] = $info['http_path'];
+                }
+            }
+            if (!isset($info['slug'])) {
+                $info['slug'] = $info['http_path'];
+            }
+            $data[] = $info;
+        }
+
+        if ($permissions) {
+            AdminPermissions::insertAll($data);
+        }
     }
 
     protected function parseDoc($docComment)

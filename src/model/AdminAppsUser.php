@@ -13,22 +13,29 @@ use think\Model;
 class AdminAppsUser extends Model
 {
     /**
-     * @param $user_id
+     * @param AdminUsers $user
      * @return array|\think\Collection
      */
-    public static function getAppsByUser($user_id)
+    public static function getAppsByUser(AdminUsers $user)
     {
-        $appIds = AdminAppsUser::where('user_id', $user_id)
-            ->field('app_id')
-            ->column('app_id');
+
+        if ($user->isSupper()) {
+            $appIds = 'all';
+        } else {
+            $appIds = AdminAppsUser::where('user_id', $user_id)
+                ->field('app_id')
+                ->column('app_id');
+        }
         if (!$appIds) {
             return [];
         }
         try {
-            $rs = AdminApps::order('order', 'desc')
-                ->field(['app_name', 'title', 'icon', 'entry'])
-                ->whereIn('id', $appIds)
-                ->select()->toArray();
+            $adminApps = AdminApps::order('order', 'desc')
+                ->field(['app_name', 'title', 'icon', 'entry']);
+            if ($appIds !== 'all') {
+                $adminApps->whereIn('id', $appIds);
+            }
+            $rs = $adminApps->select()->toArray();
             foreach ($rs as $k => $r) {
                 $isUrl = (strpos($r['entry'], 'http') === 0) ||
                     (strpos($r['entry'], '//') === 0);

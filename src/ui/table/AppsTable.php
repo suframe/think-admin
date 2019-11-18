@@ -8,7 +8,7 @@ class AppsTable extends TableInterface
     {
         return [
             'id' => ['label' => 'ID', 'sort' => true, 'fixed' => 'left', 'width' => 80],
-            'icon' => ['label' => '应用图标', 'type' => 'image'],
+            'image' => ['label' => '应用封面', 'type' => 'image'],
             'type_name' => '应用类型',
             'app_name' => '应用标识',
             'title' => '应用名称',

@@ -14,22 +14,33 @@ class AdminRoleMenu extends Model
 {
     //
 
-    public static function getMenuByUser($user_id)
+    /**
+     * @param AdminUsers $user
+     * @return array
+     */
+    public static function getMenuByUser(AdminUsers $user)
     {
-        $role_ids = AdminRoleUsers::getRoleByUser($user_id);
-        if (!$role_ids) {
-            return [];
+        if ($user->isSupper()) {
+            $menu_ids = 'all';
+        } else {
+            $user_id = $user->id;
+            $role_ids = AdminRoleUsers::getRoleByUser($user_id);
+            if (!$role_ids) {
+                return [];
+            }
+            $menu_ids = AdminRoleMenu::whereIn('role_id', $role_ids)
+                ->field('menu_id')
+                ->column('menu_id');
+            if (!$menu_ids) {
+                return [];
+            }
         }
-        $menu_ids = AdminRoleMenu::whereIn('role_id', $role_ids)
-            ->field('menu_id')
-            ->column('menu_id');
-        if (!$menu_ids) {
-            return [];
+        $adminMenu = AdminMenu::order('order', 'desc');
+        if ($menu_ids !== 'all') {
+            $adminMenu->whereIn('id', $menu_ids);
         }
-        $rs = AdminMenu::order('order', 'desc')
-            ->whereIn('id', $menu_ids)
-            ->select()->toArray();
-        if(!$rs) {
+        $rs = $menu_ids->select()->toArray();
+        if (!$rs) {
             return [];
         }
         //组织成树形
@@ -40,7 +51,7 @@ class AdminRoleMenu extends Model
     {
         $rs = [];
         foreach ($menus as $key => $menu) {
-            if($menu['parent_id'] == $pid) {
+            if ($menu['parent_id'] == $pid) {
                 $isUrl = (strpos($menu['uri'], 'http') === 0) ||
                     (strpos($menu['uri'], '//') === 0);
                 $rs[$key] = [
@@ -51,7 +62,7 @@ class AdminRoleMenu extends Model
                 unset($menus[$key]);
                 //查找子类
                 $child = static::buildTree($menus, $menu['id']);
-                if($child){
+                if ($child) {
                     $rs[$key]['child'] = $child;
                 }
             }

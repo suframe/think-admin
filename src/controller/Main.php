@@ -54,7 +54,7 @@ class Main extends Base
      */
     public function getMyApps()
     {
-        $rs = AdminAppsUser::getAppsByUser($this->getAdminUser()->id);
+        $rs = AdminAppsUser::getAppsByUser($this->getAdminUser());
         return json_return($rs);
     }
 
@@ -63,7 +63,7 @@ class Main extends Base
      */
     public function getMyMenus()
     {
-        $rs = AdminRoleMenu::getMenuByUser($this->getAdminUser()->id);
+        $rs = AdminRoleMenu::getMenuByUser($this->getAdminUser());
         return json_return($rs);
     }
 }

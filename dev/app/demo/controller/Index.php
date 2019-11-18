@@ -5,6 +5,12 @@ namespace app\demo\controller;
 
 use think\facade\Db;
 
+/**
+ * Class Index
+ * @package app\demo\controller
+ * @menu 测试
+ * @permission *
+ */
 class Index
 {
     /**

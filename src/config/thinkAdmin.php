@@ -39,6 +39,7 @@ return [
         'excepts' => [
             'thinkadmin/auth/login',
             'thinkadmin/auth/logout',
+            'captcha.html'
         ]
     ],
 
@@ -46,6 +47,8 @@ return [
         'system' => '系统配置',
         'other' => '其他配置'
     ],
+
+    'captcha' => true,
 
     'upload_url' => url('/thinkadmin/main/upload'),
 

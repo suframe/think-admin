@@ -63,7 +63,7 @@ class Auth extends Base
 
     protected function hasCaptcha()
     {
-        return class_exists("\\think\\captcha\\CaptchaController");
+        return config('thinkAdmin.auth.captcha') && class_exists("\\think\\captcha\\CaptchaController");
     }
 
     public function captcha($id = '')

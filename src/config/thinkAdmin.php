@@ -32,6 +32,7 @@ return [
         'max_fail' => '10', //最大登录错误次数
         'passwordSalt' => 'thinkAdmin', //密码加密后缀
         'judgePassword' => 2, //密码强度，1-9
+        'captcha' => true,
         'driver' => \suframe\thinkAdmin\auth\SessionDriver::class, //认证驱动
         //自定义密码加密
         //'passwordHashFunc' => function($password) {return $password},

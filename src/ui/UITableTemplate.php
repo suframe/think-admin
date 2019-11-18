@@ -427,6 +427,16 @@
                     } else {
                         window.open(command.url)
                     }
+                } else if (command.isAjax) {
+                    let _this = this
+                    $.getJSON(command.url, function (rs) {
+                        _this.$message({
+                            showClose: true,
+                            message: rs.message || (rs.code === 200 ? '操作成功' : '操作失败'),
+                            type: rs.code === 200 ? 'success' : 'error'
+                        });
+                        _this.getList()
+                    })
                 } else {
                     window.location.href = command.url
                 }

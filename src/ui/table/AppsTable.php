@@ -14,6 +14,7 @@ class AppsTable extends TableInterface
             'auth' => '开发者',
             'version' => '版本',
             'desc' => '应用描述',
+            'installedName' => ['label' => '是否安装', 'type' => 'link'],
         ];
     }
 

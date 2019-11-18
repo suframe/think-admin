@@ -33,7 +33,7 @@ class Apps extends SystemBase
     {
         $rs = $this->parseSearchWhere($this->getManageModel()::order('id', 'desc'), [
             'name' => 'like'
-        ]);
+        ])->append(['installedName']);
         return json_return($rs);
     }
 
@@ -92,6 +92,7 @@ class Apps extends SystemBase
     {
         $table->createByClass(AppsTable::class);
         $table->setButtons('add', ['title' => '增加', 'url' => $this->urlABuild('update')]);
+        $table->setButtons('checkNewApp', ['title' => '检测新应用', 'url' => $this->urlABuild('checkNewApp'), 'isAjax' => true]);
         $table->setDeleteOps($this->urlA('delete'), ['id']);
         $table->setEditOps($this->urlA('update'), ['id']);
         $configUsers = [
@@ -122,8 +123,12 @@ class Apps extends SystemBase
      */
     public function checkNewApp()
     {
-        $rs = Admin::apps()->checkNewApp();
-        return $rs ? json_success() : json_error();
+        try{
+            $rs = Admin::apps()->checkNewApp();
+            return $rs ? json_success() : json_error();
+        } catch (\Exception $e) {
+            return json_error($e->getMessage());
+        }
     }
 
     /**

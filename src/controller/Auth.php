@@ -36,12 +36,12 @@ class Auth extends Base
         if ($this->request->isPost()) {
             try {
                 $captcha = $this->requirePost('captcha');
-                if(!captcha_check($captcha)){
+                if (!captcha_check($captcha)) {
                     //验证失败
                     throw new \Exception('验证码错误');
                 }
                 $username = $this->requirePost('username', '请输入用户名');
-                $password = $this->requirePost('password','请输入密码');
+                $password = $this->requirePost('password', '请输入密码');
                 $rs = Admin::auth()->login($username, $password);
                 if ($rs) {
                     $parent_url = $this->request->param('parent_url');

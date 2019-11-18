@@ -40,6 +40,7 @@ class Apps
                 continue;
             }
             $apps[$info['app_name']] = $info;
+            $apps[$info['app_name']]['setting_class'] = $class;
         }
 
         if (!$apps) {
@@ -62,9 +63,13 @@ class Apps
      */
     public function install($appName)
     {
+        /** @var AdminApps $app */
         $app = AdminApps::where('app_name', $appName)->find();
         if (!$app) {
-            throw new Exception('app not found');
+            throw new Exception('应用未找到');
+        }
+        if($app->isInstalled()){
+            throw new Exception('应用已安装过，请勿重复安装');
         }
         $class = $app['setting_class'];
         return (new $class)->install();

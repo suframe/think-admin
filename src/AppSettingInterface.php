@@ -4,6 +4,8 @@ namespace suframe\thinkAdmin;
 
 use app\BaseController;
 use DirectoryIterator;
+use ReflectionMethod;
+use suframe\thinkAdmin\model\AdminApps;
 use think\Collection;
 use think\facade\Db;
 
@@ -16,6 +18,7 @@ abstract class AppSettingInterface
 {
 
     abstract function info();
+
     abstract function remove();
 
     /**
@@ -30,7 +33,7 @@ abstract class AppSettingInterface
         Db::startTrans();
         try {
             //初始化菜单
-            $this->installMenu();
+            $this->installMenuAndPermissions($app);
             //数据库
             $this->installDb();
             //更新状态
@@ -45,7 +48,7 @@ abstract class AppSettingInterface
     }
 
     /**
-     * @return array|\think\Model|null
+     * @return AdminApps
      * @throws \Exception
      */
     protected function check()
@@ -59,9 +62,13 @@ abstract class AppSettingInterface
 
     /**
      * 安装菜单
+     * @param AdminApps $app
+     * @param string $dirName
+     * @return bool
+     * @throws \ReflectionException
      * @throws \Exception
      */
-    protected function installMenu($dirName = '')
+    protected function installMenuAndPermissions(AdminApps $app, $dirName = '')
     {
         $ref = new \ReflectionClass($this);
         $dir = dirname($ref->getFileName());
@@ -70,7 +77,7 @@ abstract class AppSettingInterface
             . $controller_layer . DIRECTORY_SEPARATOR
             . $dirName;
 
-        if(!is_dir($controllerDir)){
+        if (!is_dir($controllerDir)) {
             throw new \Exception('controller dir not found');
         }
         foreach (new DirectoryIterator($controllerDir) as $fileInfo) {
@@ -78,32 +85,65 @@ abstract class AppSettingInterface
             if ($fileInfo->isDot()) {
                 continue;
             }
-            if(is_dir($fileName)){
-                $this->installMenu($fileName);
+            if (is_dir($fileName)) {
+                $this->installMenuAndPermissions($app, $fileName);
             }
-            if('php' != $fileInfo->getExtension()){
+            if ('php' != $fileInfo->getExtension()) {
                 continue;
             }
-            $class = $ref->getNamespaceName() . "\\{$controller_layer}\\" . ucfirst(substr($fileName, 0, strlen($fileName) - 4));
-            if(!class_exists($class)){
+            $class = $ref->getNamespaceName() . "\\{$controller_layer}\\" . ucfirst(substr($fileName, 0,
+                    strlen($fileName) - 4));
+            if (!class_exists($class)) {
                 continue;
             }
 
             $objRef = new \ReflectionClass($class);
             foreach ($objRef->getMethods() as $method) {
-                if(!$method->isPublic()){
+                if (!$method->isPublic()) {
                     continue;
                 }
                 $doc = $this->parseDoc($method->getDocComment());
-                echo '<pre>';
-                    print_r($doc);
-                echo '<pre>';exit;
+                $this->installMenu($method, $doc);
+                $this->installPermissions($method, $doc);
             }
-            echo '<pre>';
-            print_r($objRef->getMethods());
-            echo '<pre>';exit;
         }
+        return true;
+    }
 
+    /**
+     * 安装菜单
+     * @param ReflectionMethod $method
+     * @param $doc
+     */
+    protected function installMenu(ReflectionMethod $method, $doc)
+    {
+        echo '<pre>';
+            print_r($method);
+        echo '<pre>';exit;
+        if (!isset($doc['menu'])) {
+            return false;
+        }
+        $menu = $doc['menu'];
+        if(strpos($menu, '{') === false) {
+            $title = trim($menu);
+        } else {
+            $menu = json_decode($menu, true);
+            $title = $menu['title'] ?? '';
+        }
+        echo '<pre>';
+        print_r($doc);
+        echo '<pre>';
+        exit;
+    }
+
+    /**
+     * 安装权限
+     * @param ReflectionMethod $method
+     * @param $doc
+     */
+    protected function installPermissions(ReflectionMethod $method, $doc)
+    {
+        exit;
     }
 
     protected function parseDoc($docComment)
@@ -113,11 +153,11 @@ abstract class AppSettingInterface
         array_pop($docs);
         $rs = [];
         foreach ($docs as $doc) {
-            if(strpos($doc, '* @') === false){
+            if (strpos($doc, '* @') === false) {
                 continue;
             }
             $doc = substr($doc, strpos($doc, '* @') + 3, strlen($doc));
-            if(!$doc){
+            if (!$doc) {
                 continue;
             }
             $splitPos = strpos($doc, ' ');
@@ -125,11 +165,7 @@ abstract class AppSettingInterface
             $desc = rtrim(substr($doc, $splitPos + 1, strlen($doc)));
             $rs[$name] = $desc;
         }
-        echo '<pre>';
-            print_r($rs);
-        echo '<pre>';exit;
-        $rs = [];
-        return new Collection($rs);
+        return $rs;
     }
 
     /**
@@ -140,12 +176,13 @@ abstract class AppSettingInterface
     }
 
     /**
-     * @return array|\think\Model|null
+     * @return AdminApps
      * @throws \Exception
      */
     protected function getApp()
     {
         $name = $this->info()['app_name'];
+        /** @var AdminApps $app */
         $app = Admin::apps()->find($name);
         if (!$app) {
             throw new \Exception('app not found, please check new apps.');

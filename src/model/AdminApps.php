@@ -12,7 +12,12 @@ class AdminApps extends Model
     //
     public function getInstalledNameAttr()
     {
-        return $this->installed === 1 ? '已安装' : '未安装';
+        return $this->isInstalled() ? '已安装' : '未安装';
+    }
+
+    public function isInstalled()
+    {
+        return $this->installed === 1;
     }
 
 }

@@ -15,6 +15,13 @@ class AppsTable extends TableInterface
             'auth' => '开发者',
             'version' => '版本',
             'desc' => '应用描述',
+            'installedName' => [
+                'label' => '是否安装',
+                'type' => 'link',
+                'linkConfig'  => [
+                    ['key' => 'installed', 'value' => 0, 'label' => '安装', 'icon' => 'fa fa-random', 'url' => '/thinkadmin/apps/install', 'vars' =>['app_name'], 'type' => 'ajax']
+                ]
+            ],
         ];
     }
 

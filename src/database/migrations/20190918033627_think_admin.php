@@ -208,7 +208,7 @@ class ThinkAdmin extends Migrator
                 'comment' => '应用管理',
             ));
         $table->addColumn('app_name', 'string', ['comment' => '应用标识', 'length' => 64])
-            ->addColumn('type', 'string', ['comment' => '应用类型', 'length' => 32])
+            ->addColumn('type', 'string', ['comment' => '应用类型', 'length' => 32, 'local'])
             ->addColumn('title', 'string', ['comment' => '应用标题', 'length' => 128])
             ->addColumn('icon', 'string', ['comment' => '应用图标', 'length' => 128])
             ->addColumn('auth', 'string', ['comment' => '开发者', 'length' => 128])
@@ -256,5 +256,6 @@ class ThinkAdmin extends Migrator
         $this->table(config('thinkAdmin.database.role_permissions_table'))->drop();
         $this->table(config('thinkAdmin.database.setting'))->drop();
         $this->table(config('thinkAdmin.database.apps'))->drop();
+        $this->table(config('thinkAdmin.database.apps_user'))->drop();
     }
 }

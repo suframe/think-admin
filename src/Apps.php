@@ -14,7 +14,7 @@ class Apps
 
     public function checkNewApp()
     {
-        $dir = dirname(app()->getAppPath());
+        $dir = app()->getBasePath();
         $exclude = [
             'controller',
             'middleware',
@@ -22,6 +22,7 @@ class Apps
             'validate'
         ];
         $apps = [];
+        $appsExist = AdminApps::order('order', 'asc')->column('app_name');
         foreach (new DirectoryIterator($dir) as $fileInfo) {
             $fileName = $fileInfo->getFilename();
             if ($fileInfo->isDot() ||
@@ -34,24 +35,21 @@ class Apps
             if (!class_exists($class)) {
                 continue;
             }
-            $apps[$fileName] = (new $class)->info();
-            $apps[$fileName]['setting_class'] = $class;
-        }
-        if (!$apps) {
-            return false;
-        }
-        $appsDb = AdminApps::order('order', 'asc')->column('app_name');
-        if ($appsDb) {
-            //过滤已经安装的
-            $apps = new Collection($apps);
-            $apps = $apps->whereNotIn('app_name', $appsDb);
+            $info = (new $class)->info();
+            if (in_array($info['app_name'], $appsExist)) {
+                continue;
+            }
+            $apps[$info['app_name']] = $info;
+            $apps[$info['app_name']]['setting_class'] = $class;
         }
 
+        if (!$apps) {
+            throw new \Exception('未检测到新应用');
+        }
         foreach ($apps as $app) {
             $newApp = new AdminApps();
             $newApp->save($app);
         }
-
         return true;
     }
 
@@ -65,17 +63,16 @@ class Apps
      */
     public function install($appName)
     {
+        /** @var AdminApps $app */
         $app = AdminApps::where('app_name', $appName)->find();
         if (!$app) {
-            throw new Exception('app not found');
+            throw new Exception('应用未找到');
+        }
+        if($app->isInstalled()){
+            throw new Exception('应用已安装过，请勿重复安装');
         }
         $class = $app['setting_class'];
-        $rs = (new $class)->install();
-        if($rs){
-            $app->installed = 1;
-            $app->save();
-        }
-        return $rs;
+        return (new $class)->install();
     }
 
     /**

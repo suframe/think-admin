@@ -25,7 +25,8 @@
                             @select="handleSelect"
                             :collapse="isCollapse">
 
-                        <el-menu-item index="collapse" style="padding: 0; height: 12px; font-size: 0px;background: rgb(34, 83, 161);">
+                        <el-menu-item index="collapse"
+                                      style="padding: 0; height: 12px; font-size: 0px;background: rgb(34, 83, 161);">
                             展开
                         </el-menu-item>
                         <el-menu-item style="padding: 5px; text-align: center;">
@@ -52,20 +53,26 @@
                                 </template>
 
                                 <template v-for="(child, childIndex) in menu.child">
-                                    <el-menu-item :index="childIndex" v-if="!child.child">{{child.title}}</el-menu-item>
+                                    <el-menu-item :index="childIndex" @click="openUrl(child.uri, child.title)"
+                                                  v-if="!child.child">{{child.title}}
+                                    </el-menu-item>
                                     <el-submenu :index="childIndex" v-if="child.child">
                                         <template slot="title">{{child.title}}</template>
                                         <el-menu-item :index="childSecIndex" @click="openUrl(childSec.uri, childSec.title)" v-for="(childSec, childSecIndex) in child.child">{{childSec.title}}</el-menu-item>
+                                        <el-menu-item :index="childSecIndex"
+                                                      @click="openUrl(childSec.uri, childSec.title)"
+                                                      v-for="(childSec, childSecIndex) in child.child">
+                                            {{childSec.title}}
+                                        </el-menu-item>
                                     </el-submenu>
                                 </template>
                             </el-submenu>
-
                         </template>
-
 
                         <div class="menu-bottom">
                             <el-menu-item @click="openUrl('{:url('/thinkadmin/main/message')}', '消息')">
                                 <i class="el-icon-chat-line-square"></i>
+                                <span slot="title">消息</span>
                             </el-menu-item>
                             <el-menu-item>
                                 <el-popover
@@ -89,6 +96,7 @@
                                     <div slot="reference">
                                         <i class="el-icon-s-custom"></i>
                                     </div>
+
                                 </el-popover>
                             </el-menu-item>
                         </div>
@@ -212,6 +220,9 @@
                         return false;
                     }
                     _this.menus = rs.data
+                    if (rs.data.length > 13) {
+                        $(".menu-bottom").css('position', 'unset');
+                    }
                 })
             }
         },
@@ -260,7 +271,7 @@
 
     .think-el-menu .menu-bottom {
         position: absolute;
-        bottom: 42px;
+        bottom: 20px;
         display: block;
         width: 100%;
     }

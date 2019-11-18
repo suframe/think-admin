@@ -3,7 +3,7 @@
 namespace suframe\thinkAdmin\controller;
 
 use suframe\thinkAdmin\Admin;
-use think\exception\ValidateException;
+use think\facade\Route as RouteAlias;
 use think\facade\Session;
 use think\facade\View;
 
@@ -32,10 +32,16 @@ class Auth extends Base
      */
     public function login()
     {
+        $hasCaptcha = $this->hasCaptcha();
         if ($this->request->isPost()) {
             try {
+                $captcha = $this->requirePost('captcha');
+                if (!captcha_check($captcha)) {
+                    //验证失败
+                    throw new \Exception('验证码错误');
+                }
                 $username = $this->requirePost('username', '请输入用户名');
-                $password = $this->requirePost('password','请输入密码');
+                $password = $this->requirePost('password', '请输入密码');
                 $rs = Admin::auth()->login($username, $password);
                 if ($rs) {
                     $parent_url = $this->request->param('parent_url');
@@ -48,7 +54,21 @@ class Auth extends Base
             }
         }
         View::assign('message', Session::pull('login_message'));
+        if ($hasCaptcha) {
+            RouteAlias::get('captcha/[:id]', "\\think\\captcha\\CaptchaController@index");
+        }
+        View::assign('hasCaptcha', $hasCaptcha);
         return View::fetch('auth/login');
+    }
+
+    protected function hasCaptcha()
+    {
+        return config('thinkAdmin.auth.captcha') && class_exists("\\think\\captcha\\CaptchaController");
+    }
+
+    public function captcha($id = '')
+    {
+        return captcha($id);
     }
 
 }

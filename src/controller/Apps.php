@@ -26,7 +26,6 @@ class Apps extends SystemBase
 
     private function getManageModel()
     {
-
         return AdminApps::class;
     }
 
@@ -34,7 +33,7 @@ class Apps extends SystemBase
     {
         $rs = $this->parseSearchWhere($this->getManageModel()::order('id', 'desc'), [
             'name' => 'like'
-        ])->append(['type_name']);
+        ])->append(['installedName', 'type_name']);
         return json_return($rs);
     }
 
@@ -93,6 +92,7 @@ class Apps extends SystemBase
     {
         $table->createByClass(AppsTable::class);
         $table->setButtons('add', ['title' => '增加', 'url' => $this->urlABuild('update')]);
+        $table->setButtons('checkNewApp', ['title' => '检测新应用', 'url' => $this->urlABuild('checkNewApp'), 'isAjax' => true]);
         $table->setDeleteOps($this->urlA('delete'), ['id']);
         $table->setEditOps($this->urlA('update'), ['id']);
         $configUsers = [
@@ -123,8 +123,12 @@ class Apps extends SystemBase
      */
     public function checkNewApp()
     {
-        $rs = Admin::apps()->checkNewApp();
-        return $rs ? json_success() : json_error();
+        try{
+            $rs = Admin::apps()->checkNewApp();
+            return $rs ? json_success() : json_error();
+        } catch (\Exception $e) {
+            return json_error($e->getMessage());
+        }
     }
 
     /**
@@ -160,19 +164,15 @@ class Apps extends SystemBase
     }
 
     /**
-     * 删除
-     * @return \think\response\Json
-     * @throws \think\Exception
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @param \think\Model $model
      * @throws \Exception
      */
-    public function delete()
+    private function beforeDelete($model)
     {
-        $app_name = $this->requireParam('app_name');
-        $rs = Admin::apps()->remove($app_name);
-        return $rs ? json_success() : json_error();
+        $rs = AdminAppsUser::where('app_id', $model->id)->count();
+        if ($rs) {
+            throw new \Exception('此应用下有:' . $rs . '用户，删除失败');
+        }
     }
 
 }

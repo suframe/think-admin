@@ -9,7 +9,6 @@ use think\Model;
  */
 class AdminMenu extends Model
 {
-    //
     /**
      * 下拉options
      * @param int $parent_id
@@ -39,10 +38,19 @@ class AdminMenu extends Model
         }
     }
 
+    /**
+     * @param int $pid
+     * @return array|\think\Collection
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     public static function buildTree($pid = 0)
     {
         $rs = [];
-        $data = AdminMenu::order('order', 'desc')->where('parent_id', $pid)->select();
+        $data = AdminMenu::order('order', 'desc')
+            ->where('parent_id', $pid)
+            ->select();
         if (!$data) {
             return $data;
         }

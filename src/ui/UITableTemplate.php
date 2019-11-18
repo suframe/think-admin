@@ -1,3 +1,40 @@
+<?php
+function __UITableBuildItemsUrl($item)
+{
+    $rowClick = [
+        'type' => $item['type']
+    ];
+    $vars = $item['vars'] ?? [];
+    if (isset($item['url'])) {
+        $rowClick['url'] = $item['url'];
+    }
+    if (in_array($item['type'], ['link', 'dialog']) && isset($item['url'])) {
+        $urlArgs = [];
+        foreach ($vars as $var) {
+            $urlArgs[$var] = "__{$var}__";
+        }
+        if (is_object($item['url'])) {
+            $rowClick['url'] = $item['url']->vars($urlArgs)->build();
+        } elseif (strpos('http', $item['url']) === 0) {
+            $rowClick['url'] = $item['url'];
+        } else {
+            $rowClick['url'] = url($item['url'], $urlArgs)->build();
+        }
+    }
+    if (is_object($rowClick['url'])) {
+        $rowClick['url'] = $rowClick['url']->build();
+    }
+
+    if ($vars) {
+        $rowClick['vars'] = $vars;
+    }
+    if (isset($item['confirm'])) {
+        $rowClick['confirm'] = $item['confirm'];
+    }
+    $rowClick = json_encode($rowClick);
+    return $rowClick;
+}
+?>
 <el-row>
     <el-col :span="<?= $buttons ? 20 : 24 ?>">
         <?php
@@ -166,6 +203,25 @@
                 $columType = $column[$key]['type'] ?? null;
                 if ($columType) {
                     switch ($columType) {
+                        case 'link':
+                            ?>
+                            <template slot-scope="scope">
+                                <?php foreach ($column[$key]['linkConfig'] as $k => $v) { ?>
+                                    {{scope.row.<?= $key ?>}}
+                                    <?php if(isset($v['url'])){
+                                        $rowClick = __UITableBuildItemsUrl($v);
+                                        ?>
+                                        <el-button type="text" size="small" v-if="scope.row.<?= $v['key'] ?>===<?= $v['value'] ?>" @click='handleOps(scope.row, <?= $rowClick ?>)'>
+                                            <?php if (isset($v['icon'])) { ?>
+                                                <i class="<?= $v['icon'] ?>"></i>
+                                            <?php } ?>
+                                            <?= $v['label'] ?>
+                                        </el-button>
+                                    <?php } ?>
+                                <?php } ?>
+                            </template>
+                            <?php
+                            break;
                         case 'image':
                             ?>
                             <template slot-scope="scope">
@@ -193,37 +249,7 @@
                 width="<?= $configs['opsWidth'] ?? 160 ?>">
             <template slot-scope="scope">
                 <?php foreach ($ops as $key => $item) {
-                    $rowClick = [
-                        'type' => $item['type']
-                    ];
-                    $vars = $item['vars'] ?? [];
-                    if (isset($item['url'])) {
-                        $rowClick['url'] = $item['url'];
-                    }
-                    if (in_array($item['type'], ['link', 'dialog']) && isset($item['url'])) {
-                        $urlArgs = [];
-                        foreach ($vars as $var) {
-                            $urlArgs[$var] = "__{$var}__";
-                        }
-                        if (is_object($item['url'])) {
-                            $rowClick['url'] = $item['url']->vars($urlArgs)->build();
-                        } elseif (strpos('http', $item['url']) === 0) {
-                            $rowClick['url'] = $item['url'];
-                        } else {
-                            $rowClick['url'] = url($item['url'], $urlArgs)->build();
-                        }
-                    }
-                    if (is_object($rowClick['url'])) {
-                        $rowClick['url'] = $rowClick['url']->build();
-                    }
-
-                    if ($vars) {
-                        $rowClick['vars'] = $vars;
-                    }
-                    if (isset($item['confirm'])) {
-                        $rowClick['confirm'] = $item['confirm'];
-                    }
-                    $rowClick = json_encode($rowClick);
+                    $rowClick = __UITableBuildItemsUrl($item);
                     ?>
                     <el-button type="text" size="small" @click='handleOps(scope.row, <?= $rowClick ?>)'>
                         <?php if (isset($item['icon'])) { ?>
@@ -427,6 +453,16 @@
                     } else {
                         window.open(command.url)
                     }
+                } else if (command.isAjax) {
+                    let _this = this
+                    $.getJSON(command.url, function (rs) {
+                        _this.$message({
+                            showClose: true,
+                            message: rs.message || (rs.code === 200 ? '操作成功' : '操作失败'),
+                            type: rs.code === 200 ? 'success' : 'error'
+                        });
+                        _this.getList()
+                    })
                 } else {
                     window.location.href = command.url
                 }

@@ -53,4 +53,15 @@ class AdminApps extends Model
         $status = [-1=>'删除',0=>'禁用',1=>'正常',2=>'待审核'];
         return $status[0];
     }
+    //
+    public function getInstalledNameAttr()
+    {
+        return $this->isInstalled() ? '已安装' : '未安装';
+    }
+
+    public function isInstalled()
+    {
+        return $this->installed === 1;
+    }
+
 }

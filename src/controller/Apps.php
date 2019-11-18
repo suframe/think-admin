@@ -143,35 +143,15 @@ class Apps extends SystemBase
     }
 
     /**
-     * 卸载
-     * @return \think\response\Json
-     * @throws \think\Exception
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @param \think\Model $model
      * @throws \Exception
      */
-    public function remove()
+    private function beforeDelete($model)
     {
-        $app_name = $this->requireParam('app_name');
-        $rs = Admin::apps()->remove($app_name);
-        return $rs ? json_success() : json_error();
-    }
-
-    /**
-     * 删除
-     * @return \think\response\Json
-     * @throws \think\Exception
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \Exception
-     */
-    public function delete()
-    {
-        $app_name = $this->requireParam('app_name');
-        $rs = Admin::apps()->remove($app_name);
-        return $rs ? json_success() : json_error();
+        $rs = AdminAppsUser::where('app_id', $model->id)->count();
+        if ($rs) {
+            throw new \Exception('此应用下有:' . $rs . '用户，删除失败');
+        }
     }
 
 }

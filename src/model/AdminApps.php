@@ -15,6 +15,7 @@ class AdminApps extends Model
     public static function getAllNames()
     {
         return AdminApps::field(['app_name', 'title'])
+            ->where('installed', 1)
             ->column('title', 'app_name');
     }
 

@@ -35,10 +35,12 @@ class Auth extends Base
         $hasCaptcha = $this->hasCaptcha();
         if ($this->request->isPost()) {
             try {
-                $captcha = $this->requirePost('captcha');
-                if (!captcha_check($captcha)) {
-                    //验证失败
-                    throw new \Exception('验证码错误');
+                if ($hasCaptcha) {
+                    $captcha = $this->requirePost('captcha');
+                    if (!captcha_check($captcha)) {
+                        //验证失败
+                        throw new \Exception('验证码错误');
+                    }
                 }
                 $username = $this->requirePost('username', '请输入用户名');
                 $password = $this->requirePost('password', '请输入密码');

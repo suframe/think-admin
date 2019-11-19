@@ -2,6 +2,8 @@
 
 namespace suframe\thinkAdmin\ui\table;
 
+use suframe\thinkAdmin\model\AdminApps;
+
 class MenuTable extends TableInterface
 {
     public function header()
@@ -13,6 +15,7 @@ class MenuTable extends TableInterface
             'parent_id' => '父id',
             'icon' => '菜单图标',
             'order' => ['label' => '排序', 'sort' => true, 'width' => 80],
+            'app_name_zh' => ['label' => '应用', 'field' => 'app_name', 'width' => 120, 'filter' => AdminApps::getAllNames()],
         ];
     }
 

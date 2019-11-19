@@ -88,10 +88,12 @@ class ThinkAdmin extends Migrator
             ->addColumn('slug', 'string', ['comment' => '标识', 'length' => 50])
             ->addColumn('http_method', 'string', ['comment' => '请求method', 'null' => true])
             ->addColumn('http_path', 'string', ['comment' => '请求path', 'null' => true])
+            ->addColumn('app_name', 'string', ['comment' => '应用菜单', 'length' => 64, 'null' => true])
             ->addTimestamps()
             ->addIndex(['create_time'])
             ->addIndex(['name'], ['unique' => true])
             ->addIndex(['slug'], ['unique' => true])
+            ->addIndex(['app_name'])
             ->create();
 
         //管理菜单
@@ -107,10 +109,12 @@ class ThinkAdmin extends Migrator
             ->addColumn('icon', 'string', ['comment' => '菜单图标', 'length' => 50, 'null' => true])
             ->addColumn('uri', 'string', ['comment' => '路由', 'length' => 50, 'null' => true])
             ->addColumn('permission', 'string', ['comment' => '权限', 'null' => true])
+            ->addColumn('app_name', 'string', ['comment' => '应用菜单', 'length' => 64, 'null' => true])
             ->addIndex(['parent_id'])
             ->addIndex(['order'])
             ->addIndex(['title'])
             ->addIndex(['uri'])
+            ->addIndex(['app_name'])
             ->create();
 
         //管理员角色表

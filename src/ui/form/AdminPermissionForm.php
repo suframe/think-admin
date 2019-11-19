@@ -66,7 +66,15 @@ class AdminPermissionForm
                 ['required' => true, 'message' => '不能为空']
             ]
         ];
+    }
 
+    public function app_name()
+    {
+        return [
+            'type' => 'input',
+            'title' => '应用',
+            'field' => 'app_name',
+        ];
     }
 
 }

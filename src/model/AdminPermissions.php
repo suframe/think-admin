@@ -19,6 +19,14 @@ class AdminPermissions extends Model
         'DELETE' => 'DELETE',
     ];
 
+    public function getAppNameZhAttr($value, $data)
+    {
+        if(!$data['app_name']){
+            return '';
+        }
+        return AdminApps::where('app_name', $data['app_name'])->field('title')->value('title');
+    }
+
     /**
      * 下拉options
      * @param int $parent_id

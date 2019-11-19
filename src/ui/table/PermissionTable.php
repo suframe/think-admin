@@ -2,6 +2,7 @@
 
 namespace suframe\thinkAdmin\ui\table;
 
+use suframe\thinkAdmin\model\AdminApps;
 use suframe\thinkAdmin\model\AdminPermissions;
 
 class PermissionTable extends TableInterface
@@ -11,11 +12,11 @@ class PermissionTable extends TableInterface
 
         return [
             'id' => ['label' => 'ID', 'sort' => true, 'fixed' => 'left', 'width' => 80],
-            'order' => ['label' => '排序', 'sort' => true, 'width' => 80],
             'name' => '权限名称',
             'slug' => '标识',
             'http_path' => '请求path',
             'http_method' => ['label' => '请求method', 'width' => 120, 'filter' => AdminPermissions::$methods],
+            'app_name_zh' => ['label' => '应用', 'field' => 'app_name', 'width' => 120, 'filter' => AdminApps::getAllNames()],
         ];
     }
 

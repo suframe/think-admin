@@ -63,6 +63,7 @@ abstract class AppSettingInterface
         return $app;
     }
 
+    protected $app_name;
     /**
      * 安装菜单
      * @param AdminApps $app
@@ -75,6 +76,7 @@ abstract class AppSettingInterface
     {
         //配置菜单
         $info = $this->info();
+        $this->app_name = $info['app_name'];
         $installMenu = $this->insertMenu(
             $info['menu_title'] ?? $info['title'],
             $info['entry'],
@@ -108,6 +110,7 @@ abstract class AppSettingInterface
             'title' => $title,
             'uri' => $uri,
             'parent_id' => $pid,
+            'app_name' => $this->app_name,
         ];
         if ($icon) {
             $menuInfo['icon'] = $icon;
@@ -165,6 +168,7 @@ abstract class AppSettingInterface
             if (!isset($item['slug']) || AdminPermissions::getBySlug($item['slug'])) {
                 continue;
             }
+            $item['app_name'] = $this->app_name;
             AdminPermissions::insert($item);
         }
     }
@@ -331,10 +335,14 @@ abstract class AppSettingInterface
             if (!isset($info['slug'])) {
                 $info['slug'] = $info['http_path'];
             }
+            if (AdminPermissions::getBySlug($info['slug'])) {
+                continue;
+            }
+            $info['app_name'] = $this->app_name;
             $data[] = $info;
         }
 
-        if ($permissions) {
+        if ($permissions && $data) {
             AdminPermissions::insertAll($data);
         }
     }

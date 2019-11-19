@@ -8,12 +8,15 @@ class MenuForm
 
     public function parent_id()
     {
-        $options = AdminMenu::buildOptions(0, true);
+        $options = AdminMenu::buildOptions('all', true);
         return [
             'type' => 'select',
             'title' => '父菜单',
             'field' => 'parent_id',
             'options' => $options,
+            'props' => [
+                'filterable' => true,
+            ],
         ];
     }
 

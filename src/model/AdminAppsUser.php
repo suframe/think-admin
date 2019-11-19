@@ -31,14 +31,16 @@ class AdminAppsUser extends Model
         }
         try {
             $adminApps = AdminApps::order('order', 'desc')
-                ->field(['app_name', 'title', 'icon', 'entry']);
+                ->field(['app_name', 'menu_title', 'menu_icon', 'entry']);
             if ($appIds !== 'all') {
                 $adminApps->whereIn('id', $appIds);
             }
             $rs = $adminApps->select()->toArray();
             foreach ($rs as $k => $r) {
                 $isUrl = (strpos($r['entry'], 'http') === 0) ||
-                    (strpos($r['entry'], '//') === 0);
+                    (strpos($r['entry'], '//') === 0) ||
+                    (strpos($r['entry'], '.html') !== false)
+                ;
                 $rs[$k]['entry'] = $isUrl ? $r['entry'] : url($r['entry'])->build();
             }
             return $rs;

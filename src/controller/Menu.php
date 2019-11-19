@@ -33,7 +33,7 @@ class Menu extends SystemBase
     {
         $rs = $this->parseSearchWhere($this->getManageModel()::order('id', 'desc'), [
             'title' => 'like', 'uri' => 'like'
-        ]);
+        ])->append(['app_name_zh']);
         return json_return($rs);
     }
 

@@ -9,6 +9,14 @@ use think\Model;
  */
 class AdminMenu extends Model
 {
+    public function getAppNameZhAttr($value, $data)
+    {
+        if(!$data['app_name']){
+            return '';
+        }
+        return AdminApps::where('app_name', $data['app_name'])->field('title')->value('title');
+    }
+
     /**
      * 下拉options
      * @param int $parent_id
@@ -20,7 +28,7 @@ class AdminMenu extends Model
     {
         try {
             $model = AdminMenu::order('order', 'desc');
-            if ($parent_id != 'all') {
+            if ($parent_id !== 'all') {
                 $model->where('parent_id', $parent_id);
             }
             $data = $model->field(['id', 'title'])->select();

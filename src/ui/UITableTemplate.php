@@ -157,7 +157,7 @@ function __UITableBuildItemsUrl($item)
     <?php foreach ($header as $key => $item) { ?>
         <el-table-column
                 prop="<?= $key ?>"
-                column-key="<?= $key ?>"
+                column-key="<?= $column[$key]['field'] ?? $key ?>"
                 label="<?= $item ?>"
             <?php if (isset($column[$key])) { ?>
                 <?php

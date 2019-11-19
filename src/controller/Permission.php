@@ -30,7 +30,7 @@ class Permission extends SystemBase
     {
         $rs = $this->parseSearchWhere($this->getManageModel()::order('id', 'desc'), [
             'name' => 'like', 'slug' => 'like', 'http_path' => 'like'
-        ]);
+        ])->append(['app_name_zh']);
         return json_return($rs);
     }
 

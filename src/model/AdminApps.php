@@ -12,6 +12,12 @@ class AdminApps extends Model
     const TYPE_LOCAL = 'local';
     const TYPE_REMOTE = 'remote';
 
+    public static function getAllNames()
+    {
+        return AdminApps::field(['app_name', 'title'])
+            ->column('title', 'app_name');
+    }
+
     /**
      * 获取类型
      * @param null $key

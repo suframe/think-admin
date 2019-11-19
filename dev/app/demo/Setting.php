@@ -27,4 +27,10 @@ class Setting extends AppSettingInterface
 
     }
 
+    public function menu()
+    {
+        return [
+            ['title' => '测试菜单', 'uri' => url('/demo/index/index')->build(), 'icon' => 'el-icon-s-goods']
+        ];
+    }
 }

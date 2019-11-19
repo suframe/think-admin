@@ -5,13 +5,16 @@ namespace suframe\thinkAdmin;
 use DirectoryIterator;
 use suframe\thinkAdmin\model\AdminApps;
 use suframe\thinkAdmin\traits\SingleInstance;
-use think\Collection;
 use think\Exception;
 
 class Apps
 {
     use SingleInstance;
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     public function checkNewApp()
     {
         $dir = app()->getBasePath();
@@ -41,6 +44,7 @@ class Apps
             }
             $apps[$info['app_name']] = $info;
             $apps[$info['app_name']]['setting_class'] = $class;
+            $apps[$info['app_name']]['type'] = AdminApps::TYPE_LOCAL;
         }
 
         if (!$apps) {

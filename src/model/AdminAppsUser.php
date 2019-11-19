@@ -22,7 +22,7 @@ class AdminAppsUser extends Model
         if ($user->isSupper()) {
             $appIds = 'all';
         } else {
-            $appIds = AdminAppsUser::where('user_id', $user_id)
+            $appIds = AdminAppsUser::where('user_id', $user->id)
                 ->field('app_id')
                 ->column('app_id');
         }

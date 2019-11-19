@@ -50,7 +50,7 @@ class ThinkAdmin extends Migrator
             ->create();
         $admin = [
             'username' => 'admin',
-            'password' => 'admin',
+            'password' => '8659ae75747cc60aee5df2a651db7463',
             'real_name' => '超级管理员',
             'supper' => 1,
         ];
@@ -66,7 +66,9 @@ class ThinkAdmin extends Migrator
         $table->addColumn('name', 'string', ['comment' => '用户名', 'length' => 50])
             ->addColumn('slug', 'string', ['comment' => '标识', 'length' => 50])
             ->addTimestamps()
-            ->addIndex(['name', 'slug'], ['unique' => true])
+            ->addIndex(['create_time'])
+            ->addIndex(['name'], ['unique' => true])
+            ->addIndex(['slug'], ['unique' => true])
             ->create();
         $admin = [
             'id' => 1,
@@ -87,6 +89,7 @@ class ThinkAdmin extends Migrator
             ->addColumn('http_method', 'string', ['comment' => '请求method', 'null' => true])
             ->addColumn('http_path', 'string', ['comment' => '请求path', 'null' => true])
             ->addTimestamps()
+            ->addIndex(['create_time'])
             ->addIndex(['name'], ['unique' => true])
             ->addIndex(['slug'], ['unique' => true])
             ->create();
@@ -102,9 +105,12 @@ class ThinkAdmin extends Migrator
             ->addColumn('order', 'integer', ['comment' => '排序', 'default' => 100])
             ->addColumn('title', 'string', ['comment' => '菜单名称', 'length' => 50])
             ->addColumn('icon', 'string', ['comment' => '菜单图标', 'length' => 50, 'null' => true])
-            ->addColumn('uri', 'string', ['comment' => '路由', 'length' => 50])
+            ->addColumn('uri', 'string', ['comment' => '路由', 'length' => 50, 'null' => true])
             ->addColumn('permission', 'string', ['comment' => '权限', 'null' => true])
+            ->addIndex(['parent_id'])
             ->addIndex(['order'])
+            ->addIndex(['title'])
+            ->addIndex(['uri'])
             ->create();
 
         //管理员角色表
@@ -170,9 +176,10 @@ class ThinkAdmin extends Migrator
             ->addColumn('path', 'string', ['comment' => '路径'])
             ->addColumn('method', 'string', ['comment' => '方法'])
             ->addColumn('ip', 'string', ['comment' => 'IP'])
-            ->addColumn('input', 'string', ['comment' => '参数'])
+            ->addColumn('input', 'text', ['comment' => '参数'])
             ->addTimestamps()
             ->addIndex(['user_id'])
+            ->addIndex(['create_time'])
             ->create();
 
         //通用配置表
@@ -201,21 +208,38 @@ class ThinkAdmin extends Migrator
                 'comment' => '应用管理',
             ));
         $table->addColumn('app_name', 'string', ['comment' => '应用标识', 'length' => 64])
+            ->addColumn('type', 'string', ['comment' => '应用类型', 'length' => 32, 'default' => 'local'])
             ->addColumn('title', 'string', ['comment' => '应用标题', 'length' => 128])
-            ->addColumn('icon', 'string', ['comment' => '应用图标', 'length' => 128])
+            ->addColumn('image', 'string', ['comment' => '应用封面', 'length' => 255])
             ->addColumn('auth', 'string', ['comment' => '开发者', 'length' => 128])
             ->addColumn('version', 'string', ['comment' => '版本', 'length' => 64])
             ->addColumn('desc', 'string', ['comment' => '应用描述', 'length' => 255])
+            ->addColumn('menu_title', 'string', ['comment' => '链接标题', 'length' => 128])
+            ->addColumn('menu_icon', 'string', ['comment' => '链接图标', 'length' => 128])
             ->addColumn('entry', 'string', ['comment' => '应用入口', 'length' => 255])
             ->addColumn('order', 'integer', ['comment' => '显示排序', 'null' => true, 'default' => 100])
             ->addColumn('installed', 'integer', ['comment' => '是否已安装：1是', 'null' => true, 'default' => 0])
             ->addColumn('setting_class', 'string', ['comment' => '安装的class', 'length' => 255])
             ->addTimestamps()
             ->addIndex(['app_name'], ['unique' => true])
+            ->addIndex(['title'])
             ->addIndex(['order'])
+            ->addIndex(['create_time'])
             ->addIndex(['installed'])
             ->create();
 
+        //apps_user表
+        $table = $this->table(
+            config('thinkAdmin.database.apps_user'),
+            array(
+                'engine' => 'InnoDB',
+                'comment' => '应用用户',
+            ));
+        $table->addColumn('user_id', 'integer', ['comment' => '用户ID', 'length' => 11])
+            ->addColumn('app_id', 'integer', ['comment' => '应用ID', 'length' => 11])
+            ->addTimestamps()
+            ->addIndex(['user_id', 'app_id'], ['unique' => true])
+            ->create();
     }
 
     /**
@@ -234,5 +258,6 @@ class ThinkAdmin extends Migrator
         $this->table(config('thinkAdmin.database.role_permissions_table'))->drop();
         $this->table(config('thinkAdmin.database.setting'))->drop();
         $this->table(config('thinkAdmin.database.apps'))->drop();
+        $this->table(config('thinkAdmin.database.apps_user'))->drop();
     }
 }

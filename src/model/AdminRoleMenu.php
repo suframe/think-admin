@@ -2,9 +2,6 @@
 
 namespace suframe\thinkAdmin\model;
 
-use think\db\exception\DataNotFoundException;
-use think\db\exception\DbException;
-use think\db\exception\ModelNotFoundException;
 use think\Model;
 
 /**
@@ -39,7 +36,7 @@ class AdminRoleMenu extends Model
         if ($menu_ids !== 'all') {
             $adminMenu->whereIn('id', $menu_ids);
         }
-        $rs = $menu_ids->select()->toArray();
+        $rs = $adminMenu->select()->toArray();
         if (!$rs) {
             return [];
         }

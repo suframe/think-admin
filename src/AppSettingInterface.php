@@ -2,13 +2,14 @@
 
 namespace suframe\thinkAdmin;
 
-use app\BaseController;
 use DirectoryIterator;
 use ReflectionMethod;
 use suframe\thinkAdmin\model\AdminApps;
 use suframe\thinkAdmin\model\AdminMenu;
 use suframe\thinkAdmin\model\AdminPermissions;
-use think\Collection;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\facade\Db;
 
 /**
@@ -72,72 +73,35 @@ abstract class AppSettingInterface
      */
     protected function installMenuAndPermissions(AdminApps $app, $dirName = '')
     {
-        $ref = new \ReflectionClass($this);
-        $dir = dirname($ref->getFileName());
-        $controller_layer = config('route.controller_layer');
-        $controllerDir = $dir . DIRECTORY_SEPARATOR
-            . $controller_layer . DIRECTORY_SEPARATOR
-            . $dirName;
-
-        if (!is_dir($controllerDir)) {
-            throw new \Exception('controller dir not found');
-        }
-        //新增顶级菜单
+        //配置菜单
         $info = $this->info();
-        $installMenu= $this->insertMenu(
+        $installMenu = $this->insertMenu(
             $info['menu_title'] ?? $info['title'],
             $info['entry'],
             0,
             $info['menu_icon'] ?? 'el-icon-apple'
         );
-        if ($installMenu) {
-            $parentMenuId = $installMenu->id;
+        if (!$installMenu) {
+            throw new \Exception('应用没有配置入口');
         }
-
-        foreach (new DirectoryIterator($controllerDir) as $fileInfo) {
-            $fileName = $fileInfo->getFilename();
-            if ($fileInfo->isDot()) {
-                continue;
-            }
-            if (is_dir($fileName)) {
-                $this->installMenuAndPermissions($app, $fileName);
-            }
-            if ('php' != $fileInfo->getExtension()) {
-                continue;
-            }
-            $class = $ref->getNamespaceName() . "\\{$controller_layer}\\" . ucfirst(substr($fileName, 0,
-                    strlen($fileName) - 4));
-            if (!class_exists($class)) {
-                continue;
-            }
-            $installMenu = null;
-            $objRef = new \ReflectionClass($class);
-            if ($doc = $objRef->getDocComment()) {
-                $doc = $this->parseDoc($doc);
-                if (isset($doc['menu']) && $doc['menu']) {
-                    //类注释的菜单(二级)
-                    $installMenu = $this->installMenu($parentMenuId, $doc, $class);
-                    if ($installMenu) {
-                        $parentMenuId = $installMenu->id;
-                    }
-                }
-                //增加权限
-                $this->installPermissions($doc, $class, $installMenu);
-            }
-            foreach ($objRef->getMethods() as $method) {
-                if (!$method->isPublic()) {
-                    continue;
-                }
-                $doc = $this->parseDoc($method->getDocComment());
-                //method注释的菜单(二/三级)
-                $installMenu = $this->installMenu($parentMenuId, $doc, $class, $method);
-                //增加权限
-                $this->installPermissions($doc, $class, $installMenu, $method);
-            }
+        $parentMenuId = $installMenu->id;
+        $menus = $this->menu();
+        if ($menus) {
+            $this->installConfigMenu($menus, $parentMenuId);
         }
+        $this->installConfigPermissions();
+        $this->installAnnotation($parentMenuId, $app, $dirName);
         return true;
     }
 
+    /**
+     * 菜单如数据库
+     * @param $title
+     * @param $uri
+     * @param int $pid
+     * @param null $icon
+     * @return array|AdminMenu|\think\Model|null
+     */
     protected function insertMenu($title, $uri, $pid = 0, $icon = null)
     {
         $menuInfo = [
@@ -148,8 +112,12 @@ abstract class AppSettingInterface
         if ($icon) {
             $menuInfo['icon'] = $icon;
         }
-        if ($menu = AdminMenu::where($menuInfo)->find()) {
-            return $menu;
+        try {
+            $menu = AdminMenu::where($menuInfo)->find();
+            if ($menu) {
+                return $menu;
+            }
+        } catch (DataNotFoundException|ModelNotFoundException|DbException $e) {
         }
         return AdminMenu::create($menuInfo);
     }
@@ -160,7 +128,7 @@ abstract class AppSettingInterface
      * @param $doc
      * @param $class
      * @param ReflectionMethod $method
-     * @return bool
+     * @return AdminMenu|bool
      */
     protected function installMenu($parentMenuId, $doc, $class, ReflectionMethod $method = null)
     {
@@ -185,6 +153,112 @@ abstract class AppSettingInterface
             $uri,
             $parentMenuId
         );
+    }
+
+    /**
+     * 安装配置权限
+     */
+    protected function installConfigPermissions()
+    {
+        $permission = $this->permission();
+        foreach ($permission as $item) {
+            if (!isset($item['slug']) || AdminPermissions::getBySlug($item['slug'])) {
+                continue;
+            }
+            AdminPermissions::insert($item);
+        }
+    }
+
+    /**
+     * 安装注解菜单和权限
+     * @param $parentMenuId
+     * @param AdminApps $app
+     * @param string $dirName
+     * @throws \ReflectionException
+     * @throws \Exception
+     */
+    protected function installAnnotation($parentMenuId, AdminApps $app, $dirName = '')
+    {
+        $ref = new \ReflectionClass($this);
+        $dir = dirname($ref->getFileName());
+        $controller_layer = config('route.controller_layer');
+        $controllerDir = $dir . DIRECTORY_SEPARATOR
+            . $controller_layer . DIRECTORY_SEPARATOR
+            . $dirName;
+
+        if (!is_dir($controllerDir)) {
+            throw new \Exception('controller dir not found');
+        }
+        //注解菜单
+        foreach (new DirectoryIterator($controllerDir) as $fileInfo) {
+            $fileParentMenuId = $parentMenuId;
+            $fileName = $fileInfo->getFilename();
+            if ($fileInfo->isDot()) {
+                continue;
+            }
+            if (is_dir($fileName)) {
+                $this->installMenuAndPermissions($app, $fileName);
+            }
+            if ('php' != $fileInfo->getExtension()) {
+                continue;
+            }
+            $class = $ref->getNamespaceName() . "\\{$controller_layer}\\" . ucfirst(substr($fileName, 0,
+                    strlen($fileName) - 4));
+            if (!class_exists($class)) {
+                continue;
+            }
+            $installMenu = null;
+            $objRef = new \ReflectionClass($class);
+            if ($doc = $objRef->getDocComment()) {
+                $doc = $this->parseDoc($doc);
+                if (isset($doc['menu']) && $doc['menu']) {
+                    //类注释的菜单(二级)
+                    $installMenu = $this->installMenu($fileParentMenuId, $doc, $class);
+                    if ($installMenu) {
+                        $fileParentMenuId = $installMenu->id;
+                    }
+                }
+                //增加权限
+                $this->installPermissions($doc, $class, $installMenu);
+            }
+            foreach ($objRef->getMethods() as $method) {
+                if (!$method->isPublic()) {
+                    continue;
+                }
+                $doc = $this->parseDoc($method->getDocComment());
+                //method注释的菜单(二/三级)
+                $installMenu = $this->installMenu($fileParentMenuId, $doc, $class, $method);
+                //增加权限
+                $this->installPermissions($doc, $class, $installMenu, $method);
+            }
+        }
+    }
+
+    /**
+     * 安装本地菜单配置
+     * @param $menus
+     * @param int $parentMenuId
+     * @return int|mixed
+     * @throws \Exception
+     */
+    protected function installConfigMenu($menus, $parentMenuId)
+    {
+        foreach ($menus as $menu) {
+            $installMenu = $this->insertMenu(
+                $menu['title'],
+                $menu['uri'] ?? '',
+                $parentMenuId,
+                $menu['icon'] ?? ''
+            );
+            if (!$installMenu) {
+                continue;
+            }
+            $installMenu->id;
+            if (isset($menu['child'])) {
+                $this->installConfigMenu($menu['child'], $installMenu->id);
+            }
+        }
+        return true;
     }
 
     protected $uriClassStore = [];
@@ -309,4 +383,13 @@ abstract class AppSettingInterface
         return $app;
     }
 
+    public function menu()
+    {
+        return [];
+    }
+
+    public function permission()
+    {
+        return [];
+    }
 }

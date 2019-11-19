@@ -208,7 +208,7 @@ class ThinkAdmin extends Migrator
                 'comment' => '应用管理',
             ));
         $table->addColumn('app_name', 'string', ['comment' => '应用标识', 'length' => 64])
-            ->addColumn('type', 'string', ['comment' => '应用类型', 'length' => 32, 'local'])
+            ->addColumn('type', 'string', ['comment' => '应用类型', 'length' => 32, 'default' => 'local'])
             ->addColumn('title', 'string', ['comment' => '应用标题', 'length' => 128])
             ->addColumn('image', 'string', ['comment' => '应用封面', 'length' => 255])
             ->addColumn('auth', 'string', ['comment' => '开发者', 'length' => 128])

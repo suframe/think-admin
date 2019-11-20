@@ -110,6 +110,18 @@ class UITable
         return $this;
     }
 
+    protected $breadcrumb = [];
+    public function setBreadcrumb($title, $link = null)
+    {
+        if (is_array($title)) {
+            $this->breadcrumb = $title;
+        } else {
+            $this->breadcrumb[] = $link ? [$title, $link] : $title;
+        }
+        return $this;
+    }
+
+
     public function setEditOps($url, $vars, $config = []){
         $default = [
             'type' => 'link',
@@ -205,6 +217,7 @@ class UITable
         $searchFormId = $this->searchFormId;
         $buttons = $this->buttons;
         $configs = $this->configs;
+        $breadcrumb = $this->breadcrumb;
         require(__DIR__ . '/UITableTemplate.php');
         $rs = ob_get_clean();
         $rs = explode('<!-- split -->', $rs);

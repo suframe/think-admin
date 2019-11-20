@@ -1,17 +1,23 @@
 <?php
 function __UITableBuildItemsUrl($item)
 {
+    $type = $item['type'] ?? 'link';
     $rowClick = [
-        'type' => $item['type']
+        'type' => $type
     ];
     $vars = $item['vars'] ?? [];
     if (isset($item['url'])) {
         $rowClick['url'] = $item['url'];
     }
-    if (in_array($item['type'], ['link', 'dialog']) && isset($item['url'])) {
+    if (in_array($type, ['link', 'dialog']) && isset($item['url'])) {
         $urlArgs = [];
         foreach ($vars as $var) {
-            $urlArgs[$var] = "__{$var}__";
+            if (strpos($var, '@') !== false) {
+                $var = explode('@', $var);
+                $urlArgs[$var[1]] = "__{$var[1]}__";
+            } else {
+                $urlArgs[$var] = "__{$var}__";
+            }
         }
         if (is_object($item['url'])) {
             $rowClick['url'] = $item['url']->vars($urlArgs)->build();
@@ -34,6 +40,7 @@ function __UITableBuildItemsUrl($item)
     $rowClick = json_encode($rowClick);
     return $rowClick;
 }
+
 ?>
 <el-row>
     <el-col :span="<?= $buttons ? 20 : 24 ?>">
@@ -144,6 +151,17 @@ function __UITableBuildItemsUrl($item)
     }
     ?>
 </el-row>
+<?php if($breadcrumb) { ?>
+<el-breadcrumb separator-class="el-icon-arrow-right" style="margin-bottom: 15px;">
+    <?php foreach ($breadcrumb as $key => $item) { ?>
+        <?php if(is_string($item)) { ?>
+            <el-breadcrumb-item><?php echo $item ?></el-breadcrumb-item>
+        <?php } else if(is_array($item)) { ?>
+            <el-breadcrumb-item><a href="<?php echo $item[1] ?>"><?php echo $item[0] ?></a></el-breadcrumb-item>
+        <?php } ?>
+    <?php } ?>
+</el-breadcrumb>
+<?php } ?>
 
 <el-table
         :data="tableData"
@@ -206,19 +224,27 @@ function __UITableBuildItemsUrl($item)
                         case 'link':
                             ?>
                             <template slot-scope="scope">
-                                <?php foreach ($column[$key]['linkConfig'] as $k => $v) { ?>
-                                    <template v-if="scope.row.<?= $v['key'] ?>===<?= $v['value'] ?>">
-                                    {{scope.row.<?= $key ?>}}
-                                    <?php if(isset($v['url'])){
-                                        $rowClick = __UITableBuildItemsUrl($v);
-                                        ?>
-                                        <el-button type="text" size="small" @click='handleOps(scope.row, <?= $rowClick ?>)'>
-                                            <?php if (isset($v['icon'])) { ?>
-                                                <i class="<?= $v['icon'] ?>"></i>
-                                            <?php } ?>
-                                            <?= $v['label'] ?>
-                                        </el-button>
-                                    <?php } ?>
+                                <?php foreach ($column[$key]['linkConfig'] as $k => $v) {
+                                    $filterValue = $v['value'] ?? null;
+                                    if ($filterValue) {
+                                        $filterValue = is_bool($filterValue) ? ($filterValue ? 'true' : 'false') : $filterValue;
+                                    }
+                                    ?>
+                                    <template <?php if ($filterValue) { ?> v-if="scope.row.<?= $v['key'] ?>===<?= $filterValue ?>"<?php } ?>>
+                                        <?php if(!(isset($v['showValue']) && ($v['showValue'] === false))) {?>
+                                            {{scope.row.<?= $key ?>}}
+                                        <?php } ?>
+                                        <?php if (isset($v['url'])) {
+                                            $rowClick = __UITableBuildItemsUrl($v);
+                                            ?>
+                                            <el-button type="text" size="small"
+                                                       @click='handleOps(scope.row, <?= $rowClick ?>)'>
+                                                <?php if (isset($v['icon'])) { ?>
+                                                    <i class="<?= $v['icon'] ?>"></i>
+                                                <?php } ?>
+                                                <?= $v['label'] ?>
+                                            </el-button>
+                                        <?php } ?>
                                     </template>
                                 <?php } ?>
                             </template>
@@ -362,9 +388,16 @@ function __UITableBuildItemsUrl($item)
                     return false
                 }
                 var vars = config.vars || []
+                var tmpVar;
                 if (config.type === 'link') {
                     for (var i in vars) {
-                        config.url = config.url.replace('__' + vars[i] + '__', row[vars[i]])
+                        tmpVar = vars[i];
+                        if (tmpVar.indexOf('@') !== -1) {
+                            tmpVar = tmpVar.split('@')
+                            config.url = config.url.replace('__' + tmpVar[1] + '__', row[tmpVar[0]])
+                        } else {
+                            config.url = config.url.replace('__' + vars[i] + '__', row[vars[i]])
+                        }
                     }
                     window.location.href = config.url
                     return false
@@ -372,7 +405,13 @@ function __UITableBuildItemsUrl($item)
                 var params = {}
                 for (var i in vars) {
                     if (row[vars[i]]) {
-                        params[vars[i]] = row[vars[i]]
+                        tmpVar = vars[i];
+                        if (tmpVar.indexOf('@') !== -1) {
+                            tmpVar = tmpVar.split('@')
+                            params[tmpVar[1]] = row[tmpVar[0]]
+                        } else {
+                            params[vars[i]] = row[vars[i]]
+                        }
                     }
                 }
                 if (config.type === 'ajax') {
@@ -435,7 +474,7 @@ function __UITableBuildItemsUrl($item)
             },
             handleCommand(command) {
                 if (command.target) {
-                    if(parent && parent.layer){
+                    if (parent && parent.layer) {
                         var width = parent.document.body.clientWidth;
                         var height = parent.document.body.clientHeight - 60;
                         width = width > 1300 ? 1300 : (width - 70)

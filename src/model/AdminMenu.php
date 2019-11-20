@@ -17,6 +17,19 @@ class AdminMenu extends Model
         return AdminApps::where('app_name', $data['app_name'])->field('title')->value('title');
     }
 
+    public function getChildCountAttr($value, $data)
+    {
+        if(!$data['app_name']){
+            return '';
+        }
+        return AdminMenu::where('parent_id', $data['id'])->count();
+    }
+
+    public function getHasChildAttr($value, $data)
+    {
+        return !!$this->getChildCountAttr($value, $data);
+    }
+
     /**
      * 下拉options
      * @param int $parent_id

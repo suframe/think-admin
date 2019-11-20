@@ -114,7 +114,7 @@ class User extends SystemBase
             'real_name',
             'create_time',
             'avatar'
-        ])->order('id', 'desc');
+        ]);
         $rs = $this->parseSearchWhere($users, [
             'username' => 'like',
             'create_time' => 'betweenTime',

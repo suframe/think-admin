@@ -19,7 +19,8 @@ class Menu extends SystemBase
     protected $urlPre = '/thinkadmin/menu/';
     use CURDController;
 
-    private function curlInit(){
+    private function curlInit()
+    {
         $this->currentNav = 'menu';
         $this->currentNavZh = '菜单';
     }
@@ -31,9 +32,11 @@ class Menu extends SystemBase
 
     private function ajaxSearch()
     {
-        $rs = $this->parseSearchWhere($this->getManageModel()::order('id', 'desc'), [
-            'title' => 'like', 'uri' => 'like'
-        ])->append(['app_name_zh']);
+        $parent_id = $this->request->param('parent_id', 0);
+        $rs = $this->parseSearchWhere(
+            $this->getManageModel()::where('parent_id', $parent_id),
+            ['title' => 'like', 'uri' => 'like']
+        )->append(['app_name_zh', 'has_child']);
         return json_return($rs);
     }
 
@@ -50,11 +53,21 @@ class Menu extends SystemBase
     /**
      * @param UITable $table
      */
-    private function getTableSetting($table){
+    private function getTableSetting($table)
+    {
         $table->createByClass(MenuTable::class);
         $table->setButtons('add', ['title' => '增加', 'url' => $this->urlABuild('update')]);
         $table->setEditOps($this->urlA('update'), ['id']);
         $table->setDeleteOps($this->urlA('delete'), ['id']);
+
+        $parent_id = $this->request->param('parent_id');
+        if ($parent_id != null) {
+            if ($parent_id) {
+                $parent = AdminMenu::find($parent_id);
+                $parent && $table->setBreadcrumb('上一级', $this->urlABuild('index', ['parent_id' => $parent['parent_id']]));
+                $table->setBreadcrumb('子菜单');
+            }
+        }
     }
 
     /**

@@ -181,6 +181,8 @@ trait AdminController
         if (isset($params['sort'])) {
             $order = $params['sortType'] ?? 'desc';
             $model->order($params['sort'], $order === 'asc' ? 'asc' : 'desc');
+        } else if($pk = $model->getPk()){
+            $model->order($pk, 'desc');
         }
         foreach ($defaultParams as $defaultParam) {
             if (isset($params[$defaultParam])) {

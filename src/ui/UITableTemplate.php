@@ -207,17 +207,19 @@ function __UITableBuildItemsUrl($item)
                             ?>
                             <template slot-scope="scope">
                                 <?php foreach ($column[$key]['linkConfig'] as $k => $v) { ?>
+                                    <template v-if="scope.row.<?= $v['key'] ?>===<?= $v['value'] ?>">
                                     {{scope.row.<?= $key ?>}}
                                     <?php if(isset($v['url'])){
                                         $rowClick = __UITableBuildItemsUrl($v);
                                         ?>
-                                        <el-button type="text" size="small" v-if="scope.row.<?= $v['key'] ?>===<?= $v['value'] ?>" @click='handleOps(scope.row, <?= $rowClick ?>)'>
+                                        <el-button type="text" size="small" @click='handleOps(scope.row, <?= $rowClick ?>)'>
                                             <?php if (isset($v['icon'])) { ?>
                                                 <i class="<?= $v['icon'] ?>"></i>
                                             <?php } ?>
                                             <?= $v['label'] ?>
                                         </el-button>
                                     <?php } ?>
+                                    </template>
                                 <?php } ?>
                             </template>
                             <?php

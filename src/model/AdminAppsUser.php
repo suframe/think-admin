@@ -31,7 +31,8 @@ class AdminAppsUser extends Model
         }
         try {
             $adminApps = AdminApps::order('order', 'desc')
-                ->field(['app_name', 'menu_title', 'menu_icon', 'entry']);
+                ->where('installed', 1)
+                ->field(['app_name', 'title', 'image', 'entry']);
             if ($appIds !== 'all') {
                 $adminApps->whereIn('id', $appIds);
             }

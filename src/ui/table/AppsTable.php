@@ -19,7 +19,8 @@ class AppsTable extends TableInterface
                 'label' => '是否安装',
                 'type' => 'link',
                 'linkConfig'  => [
-                    ['key' => 'installed', 'value' => 0, 'label' => '安装', 'icon' => 'fa fa-random', 'url' => '/thinkadmin/apps/install', 'vars' =>['app_name'], 'type' => 'ajax']
+                    ['key' => 'installed', 'value' => 0, 'label' => '安装', 'icon' => 'fa fa-random', 'url' => '/thinkadmin/apps/install', 'vars' =>['app_name'], 'type' => 'ajax'],
+                    ['key' => 'installed', 'value' => 1, 'label' => '卸载', 'icon' => 'fa fa-random', 'url' => '/thinkadmin/apps/remove', 'vars' =>['app_name'], 'type' => 'ajax']
                 ]
             ],
         ];

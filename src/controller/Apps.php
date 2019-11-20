@@ -5,11 +5,16 @@ namespace suframe\thinkAdmin\controller;
 use suframe\thinkAdmin\Admin;
 use suframe\thinkAdmin\model\AdminApps;
 use suframe\thinkAdmin\model\AdminAppsUser;
+use suframe\thinkAdmin\model\AdminMenu;
+use suframe\thinkAdmin\model\AdminPermissions;
+use suframe\thinkAdmin\model\AdminRoleMenu;
+use suframe\thinkAdmin\model\AdminRolePermissions;
 use suframe\thinkAdmin\model\AdminUsers;
 use suframe\thinkAdmin\traits\CURDController;
 use suframe\thinkAdmin\ui\form\AdminAppsForm;
 use suframe\thinkAdmin\ui\table\AppsTable;
 use suframe\thinkAdmin\ui\UITable;
+use think\facade\Db;
 use think\facade\View;
 
 class Apps extends SystemBase
@@ -93,7 +98,7 @@ class Apps extends SystemBase
         $table->createByClass(AppsTable::class);
         $table->setButtons('add', ['title' => '增加', 'url' => $this->urlABuild('update')]);
         $table->setButtons('checkNewApp', ['title' => '检测新应用', 'url' => $this->urlABuild('checkNewApp'), 'isAjax' => true]);
-        $table->setDeleteOps($this->urlA('delete'), ['id']);
+        $table->setDeleteOps($this->urlA('delete'), ['id'], ['confirm' => '应用数据将一起被删除，确认删除?']);
         $table->setEditOps($this->urlA('update'), ['id']);
         $configUsers = [
             'type' => 'link',
@@ -123,7 +128,7 @@ class Apps extends SystemBase
      */
     public function checkNewApp()
     {
-        try{
+        try {
             $rs = Admin::apps()->checkNewApp();
             return $rs ? json_success() : json_error();
         } catch (\Exception $e) {
@@ -164,14 +169,24 @@ class Apps extends SystemBase
     }
 
     /**
-     * @param \think\Model $model
+     * @param AdminApps $model
      * @throws \Exception
      */
     private function beforeDelete($model)
     {
-        $rs = AdminAppsUser::where('app_id', $model->id)->count();
-        if ($rs) {
-            throw new \Exception('此应用下有:' . $rs . '用户，删除失败');
+        //删除
+        if ($model->setting_class && class_exists($model->setting_class)) {
+            $settingClass = new $model->setting_class;
+            Db::startTrans();
+            try {
+                $settingClass->uninstall($model);
+                // 提交事务
+                Db::commit();
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                throw $e;
+            }
         }
     }
 

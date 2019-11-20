@@ -5,8 +5,11 @@ namespace suframe\thinkAdmin;
 use DirectoryIterator;
 use ReflectionMethod;
 use suframe\thinkAdmin\model\AdminApps;
+use suframe\thinkAdmin\model\AdminAppsUser;
 use suframe\thinkAdmin\model\AdminMenu;
 use suframe\thinkAdmin\model\AdminPermissions;
+use suframe\thinkAdmin\model\AdminRoleMenu;
+use suframe\thinkAdmin\model\AdminRolePermissions;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
@@ -48,6 +51,26 @@ abstract class AppSettingInterface
             Db::rollback();
             throw $e;
         }
+    }
+
+    /**
+     * 卸载
+     * @throws \Exception
+     */
+    public function uninstall(AdminApps $adminApps)
+    {
+        //删除授权用户
+        AdminAppsUser::where('app_id', $adminApps->id)->delete();
+        //删除菜单
+        $adminMenuQuery = AdminMenu::where('app_name', $adminApps->app_name);
+        $menuIds = $adminMenuQuery->column('id');
+        $menuIds && AdminRoleMenu::whereIn('menu_id', $menuIds)->delete();
+        $adminMenuQuery->delete();
+        //删除权限
+        $adminPermissionQuery = AdminPermissions::where('app_name', $adminApps->app_name);
+        $permissionIds = $adminPermissionQuery->column('id');
+        $permissionIds && AdminRolePermissions::whereIn('permission_id', $permissionIds)->delete();
+        $adminPermissionQuery->delete();
     }
 
     /**

@@ -28,7 +28,7 @@ class Permission extends SystemBase
 
     private function ajaxSearch()
     {
-        $rs = $this->parseSearchWhere($this->getManageModel()::order('id', 'desc'), [
+        $rs = $this->parseSearchWhere($this->getManageModel(), [
             'name' => 'like', 'slug' => 'like', 'http_path' => 'like'
         ])->append(['app_name_zh']);
         return json_return($rs);

@@ -36,7 +36,7 @@ class Apps extends SystemBase
 
     private function ajaxSearch()
     {
-        $rs = $this->parseSearchWhere($this->getManageModel()::order('id', 'desc'), [
+        $rs = $this->parseSearchWhere($this->getManageModel(), [
             'name' => 'like'
         ])->append(['installedName', 'type_name']);
         return json_return($rs);

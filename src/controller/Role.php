@@ -30,7 +30,7 @@ class Role extends SystemBase
 
     private function ajaxSearch()
     {
-        $rs = $this->parseSearchWhere($this->getManageModel()::order('id', 'desc'), [
+        $rs = $this->parseSearchWhere($this->getManageModel(), [
             'name' => 'like',
         ]);
         return json_return($rs);

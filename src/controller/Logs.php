@@ -21,7 +21,7 @@ class Logs extends SystemBase
     public function index()
     {
         if($this->request->isAjax()){
-            $rs = $this->parseSearchWhere(AdminOperationLog::order('id', 'desc'), [
+            $rs = $this->parseSearchWhere(AdminOperationLog::class, [
                 'path' => 'like', 'ip' => 'like', 'create_time' => 'betweenTime',
             ]);
             return json_return($rs);

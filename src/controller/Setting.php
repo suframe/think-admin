@@ -31,7 +31,7 @@ class Setting extends SystemBase
 
     private function ajaxSearch()
     {
-        $rs = $this->parseSearchWhere($this->getManageModel()::order('id', 'desc'), [
+        $rs = $this->parseSearchWhere($this->getManageModel(), [
             'name' => 'like', 'key' => 'like',
         ]);
         return json_return($rs);

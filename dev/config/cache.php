@@ -25,6 +25,18 @@ return [
             // 序列化机制 例如 ['serialize', 'unserialize']
             'serialize'  => [],
         ],
+        'temp' => [
+            // 驱动方式
+            'type'       => 'File',
+            // 缓存保存目录
+            'path'       => app()->getRuntimePath() . 'temp',
+        ],
+        'log' => [
+            // 驱动方式
+            'type'       => 'File',
+            // 缓存保存目录
+            'path'       => app()->getRuntimePath() . 'log',
+        ],
         // 更多的缓存连接
     ],
 ];

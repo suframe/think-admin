@@ -5,6 +5,7 @@ use app\BaseController;
 use app\validate\User;
 use think\db\Query;
 use think\exception\ValidateException;
+use think\facade\Cache;
 use think\facade\Db;
 use think\facade\Session;
 use think\response\Json;
@@ -22,20 +23,12 @@ class Index extends BaseController
 
     public function index()
     {
-        $user = Db::table('admin_users');
-        Db::startTrans();
-        try {
-            $rs = $user->select();
-//            $user->delete(2);
-//            throw new \Exception();
-            // 提交事务
-            Db::commit();
-            return json()->data($rs);;
-        } catch (\Exception $e) {
-            // 回滚事务
-            Db::rollback();
-        }
-        return '错误';
+        cache('test', 'aaaa');
+//        cache()->clear();
+        cache()->store('temp')->clear();
+
+//        app()->make(Cache::class, ['path' => $this->app->getRuntimePath()])
+        return 'ok';
     }
 
     public function add()

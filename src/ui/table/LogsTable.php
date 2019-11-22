@@ -26,7 +26,7 @@ class LogsTable extends TableInterface
             'ip' => ['label' => 'IP', 'type' => 'text'],
             'user_id' => ['label' => '管理员ID', 'type' => 'text'],
             'path' => ['label' => '请求path', 'type' => 'text'],
-            'create_time' => ['label' => '请求path', 'type' => 'datetimerange'],
+            'create_time' => ['label' => '时间', 'type' => 'datetimerange'],
         ];
     }
 

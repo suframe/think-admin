@@ -5,61 +5,15 @@
 {/block}
 
 {block name="main"}
-<template>
-    <div class="block">
-    <el-table
-            :data="tableData"
-            stripe
-            style="width: 100%">
-        <el-table-column
-                prop="date"
-                label="日期"
-                width="180">
-        </el-table-column>
-        <el-table-column
-                prop="type"
-                label="类型"
-                width="180">
-        </el-table-column>
-        <el-table-column
-                prop="message"
-                label="内容">
-        </el-table-column>
-    </el-table>
-    </div>
+<template id="appCnt">
+    <el-container>
+        <el-main>
+            {$table->getHtml()|raw}
+        </el-main>
+    </el-container>
 </template>
 {/block}
 
 {block name='script'}
-<script>
-    new Vue({
-        el: '#app',
-        data: function () {
-            return {
-                tableData: [{
-                    date: '2016-05-02',
-                    type: '系统',
-                    message: '某某登录后台'
-                }, {
-                    date: '2016-05-04',
-                    type: '用户',
-                    message: '修改密码'
-                }, {
-                    date: '2016-05-01',
-                    type: '产品',
-                    message: '更新商品信息'
-                }, {
-                    date: '2016-05-03',
-                    type: '第三方app',
-                    message: '版本发布'
-                }]
-            }
-        },
-        methods: {
-        },
-        created: function () {
-        }
-    })
-</script>
+{$table->getJs()|raw}
 {/block}
-

@@ -5,7 +5,10 @@ namespace suframe\thinkAdmin\controller;
 
 use suframe\thinkAdmin\facade\Admin;
 use suframe\thinkAdmin\model\AdminAppsUser;
+use suframe\thinkAdmin\model\AdminMessage;
 use suframe\thinkAdmin\model\AdminRoleMenu;
+use suframe\thinkAdmin\ui\table\MessageTable;
+use suframe\thinkAdmin\ui\UITable;
 use think\facade\Request;
 use think\facade\View;
 
@@ -32,6 +35,16 @@ class Main extends Base
 
     public function message()
     {
+        if ($this->request->isAjax()) {
+            $rs = $this->parseSearchWhere(AdminMessage::order(
+                'id', 'desc'
+            ))->append(['type_zh']);
+            return json_return($rs);
+        }
+
+        $table = new UITable();
+        $table->createByClass(MessageTable::class);
+        View::assign('table', $table);
         return View::fetch('main/message');
     }
 
@@ -39,7 +52,7 @@ class Main extends Base
     {
         $file = request()->file('file');
         // 上传到本地服务器
-        $url = \think\facade\Filesystem::disk('public')->putFile( 'thinkAdmin', $file);
+        $url = \think\facade\Filesystem::disk('public')->putFile('thinkAdmin', $file);
         $url = Request::root(true) . config('filesystem.disks.public.url') . '/' . $url;
         //todo 保存到数据库
         $id = 1; //存到数据库后返回id

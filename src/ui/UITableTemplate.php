@@ -230,7 +230,7 @@ function __UITableBuildItemsUrl($item)
                                         $filterValue = is_bool($filterValue) ? ($filterValue ? 'true' : 'false') : $filterValue;
                                     }
                                     ?>
-                                    <template <?php if ($filterValue) { ?> v-if="scope.row.<?= $v['key'] ?>===<?= $filterValue ?>"<?php } ?>>
+                                    <template <?php if ($filterValue !== null) { ?> v-if="scope.row.<?= $v['key'] ?>===<?= $filterValue ?>"<?php } ?>>
                                         <?php if(!(isset($v['showValue']) && ($v['showValue'] === false))) {?>
                                             {{scope.row.<?= $key ?>}}
                                         <?php } ?>

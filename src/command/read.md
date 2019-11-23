@@ -3,7 +3,7 @@
 根据数据表自动生成增删改查的表单，表格等代码，一键生成
 
 ## 安装
-config/console.php 中commands添加 \suframe\thinkAdmin\command\thinkAdmin::class
+config/console.php 中commands添加 \suframe\thinkAdmin\command\thinkAdminCURD::class
 
 > 为了简化，去了thinkAdmin的别名 ta
 

@@ -5,6 +5,6 @@
 return [
     // 指令定义
     'commands' => [
-        \suframe\thinkAdmin\command\thinkAdmin::class
+        \suframe\thinkAdmin\command\thinkAdminCURD::class
     ],
 ];

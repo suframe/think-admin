@@ -1,15 +1,13 @@
 # thinkAdmin 命令行脚本
 
+根据数据表自动生成增删改查的表单，表格等代码，一键生成
+
 ## 安装
 config/console.php 中commands添加 \suframe\thinkAdmin\command\thinkAdmin::class
 
 > 为了简化，去了thinkAdmin的别名 ta
 
 ## 使用
-
-### 一. curl
-根据数据表自动生成增删改查
-
 命令:
 ```
 php think ta curd -t 数据库 

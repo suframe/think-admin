@@ -5,13 +5,13 @@
 ## 安装
 config/console.php 中commands添加 \suframe\thinkAdmin\command\thinkAdminCURD::class
 
-> 为了简化，去了thinkAdmin的别名 ta
+> 为了简化，取了个别名 curd
 
 ## 使用
 命令:
 ```
-php think ta curd -t 数据库 
-php think ta curd -t 数据库 -c 控制器路径
+php think curd 数据库 
+php think curd -c 控制器路径
 ```
 
 由于生成增删改查表单和列表需要一些中文支撑，因为字段是英文的，思考了很久，决定通过表注释自动生成
@@ -22,10 +22,11 @@ php think ta curd -t 数据库 -c 控制器路径
  - 单图: [name@image]
  - 多图: [name@images] 需要序列化存储
  - 文件: [name@file]
- - 多文件: [name@file] 需要序列化存储
+ - 多文件: [name@files] 需要序列化存储
  - switch: [name@switch] ,默认0,1,
  - 滑块: [name@slider], 默认1-100
- - 颜色选择: [name@ColorPicker]
+ - 滑块多选: [name@sliderRange], 默认1-100
+ - 颜色选择: [name@colorPicker]
  - 评分: [name@rate]
  - 多选: [name@checkbox] 由于多选数据来源不固定，所有默认是空的，需要生成后自己去配置数据
  - 级联: [name@cascader] 由于级联数据来源不固定，所有默认是空的，需要生成后自己去配置数据

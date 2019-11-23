@@ -15,36 +15,15 @@ class thinkAdminCURD extends Command
     protected function configure()
     {
         // 指令配置
-        $this->setName('ta')
-            ->addArgument('action', Argument::REQUIRED, 'action')
-            ->addOption('table', 't', Option::VALUE_OPTIONAL, 'database table name')
+        $this->setName('curd')
+            ->addArgument('table', Argument::REQUIRED, 'table')
             ->addOption('controller', 'c', Option::VALUE_OPTIONAL, 'controller path')
             ->setDescription('the thinkAdmin command');
     }
 
     protected function execute(Input $input, Output $output)
     {
-        $action = trim($input->getArgument('action'));
-
-        $method = 'action' . ucfirst($action);
-        if (method_exists($this, $method)) {
-            $this->$method($input, $output);
-        }
-    }
-
-    /**
-     * 增删改查生成
-     * @param Input $input
-     * @param Output $output
-     * @return bool
-     */
-    protected function actionCurd(Input $input, Output $output)
-    {
-        if (!$input->hasOption('table')) {
-            $output->warning('please input table name, like:  php think ta curd -t news');
-            return false;
-        }
-        $table = $input->getOption('table');
+        $table = trim($input->getArgument('table'));
         $controller = $input->hasOption('controller') ? $input->getOption('controller') : null;
         $gen = new Gen();
         $gen->setOutput($output);

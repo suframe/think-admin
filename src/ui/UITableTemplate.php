@@ -262,6 +262,19 @@ function __UITableBuildItemsUrl($item)
                             </template>
                             <?php
                             break;
+                        case 'images':
+                            ?>
+                            <template slot-scope="scope">
+                                <el-image
+                                        v-if="scope.row.<?= $key ?>"
+                                        style="width: 30px; height: 30px"
+                                        :src="scope.row.<?= $key ?>[0]"
+                                        :preview-src-list="scope.row.<?= $key ?>"
+                                >
+                                </el-image>
+                            </template>
+                            <?php
+                            break;
                     }
                 }
                 ?>

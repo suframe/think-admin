@@ -44,6 +44,11 @@ return [
         ]
     ],
 
+    'view' => [
+        'commonTable' => thinkAdminPath() . 'view' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'table.html',
+        'commonForm' => thinkAdminPath() . 'view' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'form.html',
+    ],
+
     'configGroups' => [
         'system' => '系统配置',
         'other' => '其他配置'

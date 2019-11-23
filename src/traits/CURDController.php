@@ -76,7 +76,7 @@ trait CURDController
         }
         View::assign('table', $table);
         $this->beforeIndexRender($table);
-        return View::fetch('common/table');
+        return View::fetch(config('thinkAdmin.view.commonTable'));
     }
 
     /**
@@ -124,7 +124,7 @@ trait CURDController
         View::assign('pageTitle', $title);
         View::assign('form', $form);
         $this->beforeUpdateRender($form);
-        return View::fetch('common/form');
+        return View::fetch(config('thinkAdmin.view.commonForm'));
     }
 
     /**

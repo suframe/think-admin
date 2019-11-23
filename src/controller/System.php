@@ -34,7 +34,7 @@ class System extends SystemBase
         $form->setRuleByClass(SystemInfoForm::class);
         View::assign('form', $form);
         View::assign('pageTitle', '基本信息');
-        return View::fetch('common/form');
+        return View::fetch(config('thinkAdmin.view.commonForm'));
     }
     /**
      * 清除缓存

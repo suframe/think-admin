@@ -55,3 +55,10 @@ if (!function_exists('json_return')) {
         ]);
     }
 }
+
+if (!function_exists('thinkAdminPath')) {
+    function thinkAdminPath()
+    {
+        return __DIR__ . DIRECTORY_SEPARATOR;
+    }
+}

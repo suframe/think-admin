@@ -31,7 +31,7 @@ class Logs extends SystemBase
         $table->createByClass(LogsTable::class);
         $this->setNav('logs');
         View::assign('table', $table);
-        return View::fetch('common/table');
+        return View::fetch(config('thinkAdmin.view.commonTable'));
     }
 
 }

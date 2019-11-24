@@ -46,17 +46,17 @@
 <div id="app">
 <template id="appCnt">
 <el-container style="height: 100%">
+    {if isset($adminNavs)}
     <el-aside width="200px" style="height: 100%">
         {block name="menu"}
-        {if isset($adminNavs)}
         <el-menu default-active="{$adminNavActive}">
             {volist name="adminNavs" id="vo"}
             <el-menu-item index="{$key}"><a href="{$vo[1]}">{$vo[0]}</a></el-menu-item>
             {/volist}
         </el-menu>
-        {/if}
         {/block}
     </el-aside>
+    {/if}
     <el-main>
         {block name="main"}{/block}
     </el-main>

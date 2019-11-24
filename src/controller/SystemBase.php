@@ -4,7 +4,7 @@ namespace suframe\thinkAdmin\controller;
 
 use think\facade\View;
 
-class SystemBase extends \suframe\thinkAdmin\controller\Base
+class SystemBase extends Base
 {
     protected $urlPre = '/thinkadmin/';
 

@@ -12,4 +12,10 @@ class [layout:class] extends TableInterface
         return [layout:config];
     }
 
+    public function filters()
+    {
+        return [
+            '[layout:filter_field]' => ['label' => '[layout:filter_label]', 'type' => 'text'],
+        ];
+    }
 }

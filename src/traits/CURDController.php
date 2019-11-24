@@ -57,6 +57,19 @@ trait CURDController
         return $post;
     }
 
+    private function getThinkAdminViewLayoutName()
+    {
+        return 'container';
+    }
+
+    private function getThinkAdminViewLayout()
+    {
+        $name = $this->getThinkAdminViewLayoutName();
+        $name = $name ? '_' . $name : '';
+        $layout = thinkAdminPath() . 'view' . DIRECTORY_SEPARATOR . 'layout' . $name . '.html';
+        View::assign('thinkAdminViewLayoutFile', $layout);
+    }
+
     /**
      * @return string|\think\response\Json
      * @throws \Exception
@@ -68,7 +81,7 @@ trait CURDController
         if ($this->request->isAjax()) {
             return $this->ajaxSearch();
         }
-
+        $this->getThinkAdminViewLayout();
         $table = new UITable();
         $this->getTableSetting($table);
         if($this->currentNav){
@@ -114,6 +127,7 @@ trait CURDController
             $rs = $info->save($post);
             return $this->handleResponse($rs);
         }
+        $this->getThinkAdminViewLayout();
         if($this->currentNav){
             $this->setNav($this->currentNav);
         }

@@ -2,13 +2,10 @@
 
 namespace suframe\thinkAdmin\controller;
 
-use app\BaseController;
-use suframe\thinkAdmin\traits\AdminController;
 use think\facade\View;
 
 abstract class Base extends BaseController
 {
-    use AdminController;
 
     protected function initialize()
     {

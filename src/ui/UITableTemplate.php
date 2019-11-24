@@ -133,11 +133,13 @@ function __UITableBuildItemsUrl($item)
                 </el-form-item>
             </el-form>
         <?php } ?>
+        &nbsp;
     </el-col>
     <?php
     if ($buttons) {
         ?>
         <el-col style="margin-top: 4px" :span="4">
+            <div class="el-form-item">
             <el-dropdown size="small" split-button type="primary" @command="handleCommand">
                 操作
                 <el-dropdown-menu slot="dropdown">
@@ -146,6 +148,7 @@ function __UITableBuildItemsUrl($item)
                     <?php } ?>
                 </el-dropdown-menu>
             </el-dropdown>
+            </div>
         </el-col>
         <?php
     }

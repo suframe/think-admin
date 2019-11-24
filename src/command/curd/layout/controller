@@ -1,10 +1,10 @@
 <?php
 namespace [layout:namespace];
 
-use app\BaseController;
+use suframe\thinkAdmin\controller\BaseController;
 use suframe\thinkAdmin\traits\CURDController;
 use suframe\thinkAdmin\ui\UITable;
-use app\model\[layout:model];
+use app\model\[layout:model] as [layout:model]Model;
 
 /**
 * [layout:comment]
@@ -16,7 +16,7 @@ class [layout:class] extends BaseController
 
     private function getManageModel()
     {
-        return [layout:model]::class;
+        return [layout:model]Model::class;
     }
 
     private function ajaxSearch()

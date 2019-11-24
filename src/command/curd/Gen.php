@@ -33,7 +33,7 @@ class Gen
     protected $config = [];
     protected $allowTypes = [
         'image', 'images', 'file', 'files', 'switch', 'slider', 'sliderRange',
-        'colorPicker', 'rate', 'checkbox', 'cascader', 'city', 'cityArea',
+        'color', 'rate', 'radio', 'checkbox', 'cascader', 'city', 'cityArea',
     ];
     protected $layoutDir;
 
@@ -125,8 +125,15 @@ class Gen
 
         //生成控制器
         $controller_layer = config('route.controller_layer');
-        $namespace = app()->getNamespace() . '/' . $controller_layer;
-        $filePath = app()->getAppPath() . $controller_layer . DIRECTORY_SEPARATOR . $className . '.php';
+        if($controller){
+            $namespace = str_replace(DIRECTORY_SEPARATOR, '\\', $controller);
+            $filePath = $controller;
+        } else {
+            $namespace = $controller_layer;
+            $filePath = $controller_layer;
+        }
+        $namespace = app()->getNamespace() . '\\' . $namespace;
+        $filePath = app()->getAppPath() . $filePath . DIRECTORY_SEPARATOR . $className . '.php';
         $config = [
             'namespace' => $namespace,
             'model' => $className,
@@ -136,7 +143,7 @@ class Gen
             'table' => $tableClass,
             'form' => $formClass,
         ];
-        $this->buildClassFile('controller', $config, $filePath);
+        return $this->buildClassFile('controller', $config, $filePath);
     }
 
     protected function buildTable(string $tableComment, string $className, array $params): string
@@ -162,7 +169,7 @@ class Gen
             return '';
         }
         //生产文件
-        $namespace = app()->getNamespace() . 'ui/table/';
+        $namespace = app()->getNamespace() . '\ui\table';
         $filePath = app()->getBasePath() . 'ui' . DIRECTORY_SEPARATOR . 'table' . DIRECTORY_SEPARATOR;
         $className = $className . 'Table';
         $config = [
@@ -172,8 +179,14 @@ class Gen
             'config' => var_export($table, true),
         ];
 
+        foreach ($table as $k => $v) {
+            $config['filter_field'] = $k;
+            $config['filter_label'] = $v['label'];
+            break;
+        }
+
         $this->buildClassFile('table', $config, $filePath . $className . '.php');
-        return $namespace . $className;
+        return $namespace . '\\' . $className;
     }
 
     protected function buildForm(string $tableComment, string $className, array $params): string
@@ -194,7 +207,7 @@ class Gen
                 case 'images':
                 case 'file':
                 case 'files':
-                    $filedSetting = ['type' => 'upload' . ucfirst($item['type'])];
+                    $filedSetting = ['type' => 'upload' . ucfirst($item['type']), 'action' => '__UPLOAD_ACTION__'];
                     break;
                 case 'switch':
                     $filedSetting = [
@@ -241,8 +254,8 @@ class Gen
                 case 'cityArea':
                     $filedSetting = ['type' => $item['type']];
                     break;
-                case 'colorPicker':
-                    $filedSetting = ['type' => 'ColorPicker'];
+                case 'color':
+                    $filedSetting = ['type' => 'color'];
                     break;
 
                 default:
@@ -265,7 +278,7 @@ class Gen
         }
 
         //生产文件
-        $namespace = app()->getNamespace() . 'ui/form/';
+        $namespace = app()->getNamespace() . '\ui\form';
         $filePath = app()->getBasePath() . 'ui' . DIRECTORY_SEPARATOR . 'form' . DIRECTORY_SEPARATOR;
         $className = $className . 'Form';
         $config = [
@@ -277,18 +290,19 @@ class Gen
         $configStr = '';
         foreach ($form as $field => $item) {
             $tmp = var_export($item, true);
+            if(strpos($tmp, '__UPLOAD_ACTION__') !== false) {
+                $tmp = str_replace("'__UPLOAD_ACTION__'", "config('thinkAdmin.upload_url')", $tmp);
+            }
             $configStr .= <<<EOF
-
-public function {$field}()
-{
-    return {$tmp};
-}
+    public function {$field}()
+    {
+        return {$tmp};
+    }
 EOF;
         }
-
         $config['config'] = $configStr;
         $this->buildClassFile('form', $config, $filePath . $className . '.php');
-        return $namespace . $className;
+        return $namespace . '\\' . $className;
     }
 
     protected function exist($classFile, $classDir, $namespace)

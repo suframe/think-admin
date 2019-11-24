@@ -1,0 +1,12 @@
+<?php
+namespace [layout:namespace];
+use suframe\thinkAdmin\ui\table\TableInterface;
+
+class [layout:class] extends TableInterface
+{
+    public function header()
+    {
+        return [layout:tableConfig];
+    }
+
+}

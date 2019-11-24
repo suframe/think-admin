@@ -37,6 +37,11 @@ class Gen
     ];
     protected $layoutDir;
 
+    protected function getLayoutDir() : string
+    {
+        return config('thinkAdmin.view.genLayoutDir', __DIR__ . DIRECTORY_SEPARATOR . 'layout' . DIRECTORY_SEPARATOR);
+    }
+
     /**
      * 配置
      * @param $config
@@ -57,7 +62,7 @@ class Gen
     {
         $default = config('database.default');
         $options = config("database.connections.{$default}");
-        $sql = "SELECT TABLE_NAME, TABLE_COMMENT 
+        $sql = "SELECT TABLE_NAME, TABLE_COMMENT" . " 
             FROM INFORMATION_SCHEMA.TABLES 
             WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
         ";
@@ -72,7 +77,7 @@ class Gen
         }
         $tableComment = $match[1];
 
-        $sqlFields = "SELECT COLUMN_NAME , COLUMN_COMMENT, DATA_TYPE, COLUMN_KEY, IS_NULLABLE
+        $sqlFields = "SELECT COLUMN_NAME , COLUMN_COMMENT, DATA_TYPE, COLUMN_KEY, IS_NULLABLE" . "
                     FROM INFORMATION_SCHEMA.Columns 
                     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?";
         $fields = Db::query($sqlFields, [$options['database'], $tableName]);
@@ -109,82 +114,17 @@ class Gen
             return false;
         }
 
-        $tableConfig = $this->buildTable($fieldsConfig);
+        $className = explode('_', $tableName);
+        array_walk($className, function (&$v, $k){
+            return $v = ucfirst($v);
+        });
+        $className = implode('', $className);
+
+        $tableConfig = $this->buildTable($tableComment, $className, $fieldsConfig);
         $formConfig = $this->buildForm($fieldsConfig);
-
-        var_dump($tableConfig);
-        var_dump($formConfig);
-
-        exit;
-
-
-        $adapter = AdapterFactory::instance()->getAdapter($default, $options);
-        $table = new Table($tableName, [], $adapter);
-        echo '<pre>';
-        print_r($table->getColumns());
-        echo '<pre>';
-        exit;
-
-        if (!$table) {
-            return false;
-        }
-        $sql = "desc `{$table}`";
-        $rs = Db::query($sql);
-
-        echo '<pre>';
-        print_r($rs);
-        echo '<pre>';
-        exit;
-        //读取数据库
-        $sql = "SELECT column_name ,column_comment, data_type FROM INFORMATION_SCHEMA.Columns WHERE table_name='{$tableName}' AND table_schema='j_market'";
-
-
-        $namespace = explode('/', $class);
-        $className = array_pop($namespace);
-        $namespace = implode('/', $namespace);
-        $classDir = $this->appPath . $namespace . '/';
-
-        //生成dao文件
-        $classFile = $classDir . ucfirst($className) . 'Dao.php';
-        //step1, 检查是否存在,防止冲突，已存在的不做处理
-        if ($this->exist($classFile, $classDir, $namespace)) {
-            $this->out($class . ' exist');
-            return false;
-        }
-        $config = [
-            'title' => $className,
-            'table' => $tableName,
-            'model' => $className,
-        ];
-        //step2, 替换layout相关参数，然后生成文件写入
-        $this->buildClassFile('__dao', $config, $namespace, $className, $classFile);
-
-        //model
-        $classFile = $classDir . ucfirst($className) . '.php';
-        //step1, 检查是否存在,防止冲突，已存在的不做处理
-        if ($this->exist($classFile, $classDir, $namespace)) {
-            $this->out($class . ' exist');
-            return false;
-        }
-
-        //默认$className对应表名
-        $table = table($tableName);
-        $sql = "SELECT column_name ,column_comment, data_type FROM INFORMATION_SCHEMA.Columns WHERE table_name='{$tableName}' AND table_schema='j_market'";
-        $columns = $table->execute($sql, \j\db\SqlFactory::SELECT)->toArray();
-        $property = '';
-        foreach ($columns as $column) {
-            $type = $column['data_type'] == 'int' ? 'integer' : 'string';
-            $property .= " * @property {$type} {$column['column_name']} {$column['column_comment']}\n";
-        }
-        $config = [
-            'title' => $className,
-            'property' => $property,
-        ];
-        //step2, 替换layout相关参数，然后生成文件写入
-        $this->buildClassFile('__model', $config, $namespace, $className, $classFile);
     }
 
-    protected function buildTable(array $params): array
+    protected function buildTable(string $tableComment, string $className, array $params): string
     {
         $table = [];
         foreach ($params as $field => $item) {
@@ -203,8 +143,20 @@ class Gen
                     $table[$field] = $item['comment'];
             }
         }
-        //
-        return $table;
+        if(!$table){
+            return '';
+        }
+        //生产文件
+        $namespace = app()->getNamespace() . '/ui/table/';
+        $filePath = app()->getBasePath() . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'table' . DIRECTORY_SEPARATOR;
+        $config = [
+            'tableComment' => $tableComment,
+            'tableConfig' => $table,
+        ];
+        $className = $className . 'Table';
+        $this->buildClassFile('table', $config, $namespace, $className, $filePath . $className . '.php');
+
+        return $namespace . $className;
     }
 
     protected function buildForm(array $params): array
@@ -308,39 +260,34 @@ class Gen
         return false;
     }
 
-    protected function buildClassFile($layout, $config, $namespace, $class, $file)
+    protected function buildClassFile($layout, $config, $namespace, $class, $file) : bool
     {
         if (file_exists($file)) {
             return false;
         }
-        $base = file_get_contents($this->layoutDir . $layout);
-
-        //替换参数
-        $base = str_replace('[layout:time]', date('Y-m-d H:i:s'), $base);
-        if ($namespace) {
-            $namespace = '\\' . $namespace;
-        }
-        $namespace = str_replace('/', '\\', $namespace);
+        $base = file_get_contents($this->getLayoutDir() . $layout);
         $base = str_replace('[layout:namespace]', $namespace, $base);
-        $base = str_replace('[layout:title]', $config['title'], $base);
         $class = ucfirst($class);
         $base = str_replace('[layout:class]', $class, $base);
-        if (isset($config['property'])) {
-            $base = str_replace('[layout:property]', $config['property'], $base);
+        if (isset($config['tableConfig'])) {
+            if(is_array($config['tableConfig'])){
+                $config['tableConfig'] = var_export($config['tableConfig'], true);
+            }
+            $base = str_replace('[layout:tableConfig]', $config['tableConfig'], $base);
         }
-        if (isset($config['table'])) {
-            $base = str_replace('[layout:table]', $config['table'], $base);
-        }
-        if (isset($config['model'])) {
-            $base = str_replace('[layout:model]', $config['model'], $base);
+        if (isset($config['formConfig'])) {
+            if(is_array($config['formConfig'])){
+                $config['formConfig'] = var_export($config['formConfig'], true);
+            }
+            $base = str_replace('[layout:formConfig]', $config['formConfig'], $base);
         }
         file_put_contents($file, $base);
         $this->out($file . ' ok');
         return true;
     }
 
-    protected function out($message = null)
+    protected function out(string $message) : void
     {
-        echo "{$message}\n";
+        $this->output->writeln($message);
     }
 }

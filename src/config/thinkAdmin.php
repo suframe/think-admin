@@ -45,6 +45,7 @@ return [
     ],
 
     'view' => [
+        'genLayoutDir' => thinkAdminPath() . 'command' . DIRECTORY_SEPARATOR . 'curd' . DIRECTORY_SEPARATOR . 'layout' . DIRECTORY_SEPARATOR,
         'commonTable' => thinkAdminPath() . 'view' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'table.html',
         'commonForm' => thinkAdminPath() . 'view' . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'form.html',
     ],

@@ -1,0 +1,11 @@
+<?php
+namespace [layout:namespace];
+
+/**
+* [layout:comment]表单
+*/
+
+class [layout:class]
+{
+    [layout:config]
+}

@@ -101,7 +101,7 @@ class AdminService extends Service
             }
             $target = $dataPath . $fileInfo->getFilename();
 //            if (!file_exists($target)) {
-                //开发版咱叔先覆盖
+                //开发版先覆盖
                 copy($fileInfo->getRealPath(), $target);
 //            }
         }

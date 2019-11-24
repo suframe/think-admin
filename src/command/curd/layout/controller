@@ -1,0 +1,48 @@
+<?php
+namespace [layout:namespace];
+
+use app\BaseController;
+use suframe\thinkAdmin\traits\CURDController;
+use suframe\thinkAdmin\ui\UITable;
+use app\model\[layout:model];
+
+/**
+* [layout:comment]
+*/
+class [layout:class] extends BaseController
+{
+    use CURDController;
+    protected $urlPre = '[layout:urlPre]';
+
+    private function getManageModel()
+    {
+        return [layout:model]::class;
+    }
+
+    private function ajaxSearch()
+    {
+        $rs = $this->parseSearchWhere($this->getManageModel());
+        return json_return($rs);
+    }
+
+    /**
+     * @param \suframe\form\Form $form
+     * @throws \FormBuilder\Exception\FormBuilderException
+     * @throws \ReflectionException
+     */
+    private function getFormSetting($form)
+    {
+        $form->setRuleByClass(\[layout:form]::class);
+    }
+
+    /**
+     * @param UITable $table
+     */
+    private function getTableSetting($table)
+    {
+        $table->createByClass(\[layout:table]::class);
+        $table->setButtons('add', ['title' => '增加', 'url' => $this->urlABuild('update')]);
+        $table->setEditOps($this->urlA('update'), ['id']);
+        $table->setDeleteOps($this->urlA('delete'), ['id']);
+    }
+}

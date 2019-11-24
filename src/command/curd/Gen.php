@@ -37,7 +37,7 @@ class Gen
     ];
     protected $layoutDir;
 
-    protected function getLayoutDir() : string
+    protected function getLayoutDir(): string
     {
         return config('thinkAdmin.view.genLayoutDir', __DIR__ . DIRECTORY_SEPARATOR . 'layout' . DIRECTORY_SEPARATOR);
     }
@@ -115,13 +115,28 @@ class Gen
         }
 
         $className = explode('_', $tableName);
-        array_walk($className, function (&$v, $k){
+        array_walk($className, function (&$v, $k) {
             return $v = ucfirst($v);
         });
         $className = implode('', $className);
 
-        $tableConfig = $this->buildTable($tableComment, $className, $fieldsConfig);
-        $formConfig = $this->buildForm($fieldsConfig);
+        $tableClass = $this->buildTable($tableComment, $className, $fieldsConfig);
+        $formClass = $this->buildForm($tableComment, $className, $fieldsConfig);
+
+        //生成控制器
+        $controller_layer = config('route.controller_layer');
+        $namespace = app()->getNamespace() . '/' . $controller_layer;
+        $filePath = app()->getAppPath() . $controller_layer . DIRECTORY_SEPARATOR . $className . '.php';
+        $config = [
+            'namespace' => $namespace,
+            'model' => $className,
+            'comment' => $tableComment,
+            'class' => $className,
+            'urlPre' => '/' . lcfirst($className) . '/',
+            'table' => $tableClass,
+            'form' => $formClass,
+        ];
+        $this->buildClassFile('controller', $config, $filePath);
     }
 
     protected function buildTable(string $tableComment, string $className, array $params): string
@@ -143,23 +158,25 @@ class Gen
                     $table[$field] = $item['comment'];
             }
         }
-        if(!$table){
+        if (!$table) {
             return '';
         }
         //生产文件
-        $namespace = app()->getNamespace() . '/ui/table/';
-        $filePath = app()->getBasePath() . DIRECTORY_SEPARATOR . 'ui' . DIRECTORY_SEPARATOR . 'table' . DIRECTORY_SEPARATOR;
-        $config = [
-            'tableComment' => $tableComment,
-            'tableConfig' => $table,
-        ];
+        $namespace = app()->getNamespace() . 'ui/table/';
+        $filePath = app()->getBasePath() . 'ui' . DIRECTORY_SEPARATOR . 'table' . DIRECTORY_SEPARATOR;
         $className = $className . 'Table';
-        $this->buildClassFile('table', $config, $namespace, $className, $filePath . $className . '.php');
+        $config = [
+            'namespace' => $namespace,
+            'comment' => $tableComment,
+            'class' => $className,
+            'config' => var_export($table, true),
+        ];
 
+        $this->buildClassFile('table', $config, $filePath . $className . '.php');
         return $namespace . $className;
     }
 
-    protected function buildForm(array $params): array
+    protected function buildForm(string $tableComment, string $className, array $params): string
     {
         $form = [];
         foreach ($params as $field => $item) {
@@ -236,14 +253,42 @@ class Gen
             }
             $filedSetting['title'] = $item['comment'];
             $filedSetting['field'] = $field;
-            if($item['require']){
+            if ($item['require']) {
                 $filedSetting['validate'] = [
                     ['required' => true, 'message' => '不能为空']
                 ];
             }
             $form[$field] = $filedSetting;
         }
-        return $form;
+        if (!$form) {
+            return '';
+        }
+
+        //生产文件
+        $namespace = app()->getNamespace() . 'ui/form/';
+        $filePath = app()->getBasePath() . 'ui' . DIRECTORY_SEPARATOR . 'form' . DIRECTORY_SEPARATOR;
+        $className = $className . 'Form';
+        $config = [
+            'namespace' => $namespace,
+            'comment' => $tableComment,
+            'class' => $className,
+        ];
+
+        $configStr = '';
+        foreach ($form as $field => $item) {
+            $tmp = var_export($item, true);
+            $configStr .= <<<EOF
+
+public function {$field}()
+{
+    return {$tmp};
+}
+EOF;
+        }
+
+        $config['config'] = $configStr;
+        $this->buildClassFile('form', $config, $filePath . $className . '.php');
+        return $namespace . $className;
     }
 
     protected function exist($classFile, $classDir, $namespace)
@@ -260,33 +305,26 @@ class Gen
         return false;
     }
 
-    protected function buildClassFile($layout, $config, $namespace, $class, $file) : bool
+    protected function buildClassFile(string $layout, array $configs, string $file): bool
     {
         if (file_exists($file)) {
             return false;
         }
-        $base = file_get_contents($this->getLayoutDir() . $layout);
-        $base = str_replace('[layout:namespace]', $namespace, $base);
-        $class = ucfirst($class);
-        $base = str_replace('[layout:class]', $class, $base);
-        if (isset($config['tableConfig'])) {
-            if(is_array($config['tableConfig'])){
-                $config['tableConfig'] = var_export($config['tableConfig'], true);
-            }
-            $base = str_replace('[layout:tableConfig]', $config['tableConfig'], $base);
+        if (!is_dir(dirname($file))) {
+            mkdir(dirname($file), 0755, true);
         }
-        if (isset($config['formConfig'])) {
-            if(is_array($config['formConfig'])){
-                $config['formConfig'] = var_export($config['formConfig'], true);
-            }
-            $base = str_replace('[layout:formConfig]', $config['formConfig'], $base);
+
+        $base = file_get_contents($this->getLayoutDir() . $layout);
+
+        foreach ($configs as $key => $config) {
+            $base = str_replace("[layout:{$key}]", $config, $base);
         }
         file_put_contents($file, $base);
         $this->out($file . ' ok');
         return true;
     }
 
-    protected function out(string $message) : void
+    protected function out(string $message): void
     {
         $this->output->writeln($message);
     }

@@ -2,11 +2,14 @@
 namespace [layout:namespace];
 use suframe\thinkAdmin\ui\table\TableInterface;
 
+/**
+* [layout:comment]表格
+*/
 class [layout:class] extends TableInterface
 {
     public function header()
     {
-        return [layout:tableConfig];
+        return [layout:config];
     }
 
 }

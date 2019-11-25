@@ -3,11 +3,9 @@ declare (strict_types=1);
 
 namespace suframe\thinkAdmin\command\curd;
 
-use Phinx\Db\Adapter\AdapterFactory;
 use Phinx\Db\Adapter\TablePrefixAdapter;
 use think\console\Output;
 use think\facade\Db;
-use think\migration\db\Table;
 
 /**
  * curd 生成助手
@@ -162,7 +160,7 @@ class Gen
                     $table[$field] = ['label' => $item['comment'], 'type' => $item['type']];
                     break;
                 default:
-                    $table[$field] = $item['comment'];
+                    $table[$field] = ['label' => $item['comment']];
             }
         }
         if (!$table) {
@@ -202,6 +200,9 @@ class Gen
                     break;
                 case 'int':
                     $filedSetting = ['type' => 'number'];
+                    break;
+                case 'datetime':
+                    $filedSetting = ['type' => 'dateTime'];
                     break;
                 case 'image':
                 case 'images':
@@ -252,6 +253,10 @@ class Gen
                 case 'cascader':
                 case 'city':
                 case 'cityArea':
+                case 'year':
+                case 'month':
+                case 'dateRange':
+                case 'dates':
                     $filedSetting = ['type' => $item['type']];
                     break;
                 case 'color':

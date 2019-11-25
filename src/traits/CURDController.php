@@ -57,16 +57,9 @@ trait CURDController
         return $post;
     }
 
-    private function getThinkAdminViewLayoutName()
-    {
-        return 'container';
-    }
-
     private function getThinkAdminViewLayout()
     {
-        $name = $this->getThinkAdminViewLayoutName();
-        $name = $name ? '_' . $name : '';
-        $layout = thinkAdminPath() . 'view' . DIRECTORY_SEPARATOR . 'layout' . $name . '.html';
+        $layout = thinkAdminPath() . 'view' . DIRECTORY_SEPARATOR . 'layout_container.html';
         View::assign('thinkAdminViewLayoutFile', $layout);
     }
 

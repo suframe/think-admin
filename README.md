@@ -58,3 +58,43 @@ php think run -H 0.0.0.0
 ![4](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/4.png)
 
 ![5](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/5.png)
+
+## 根据mysql表增删改查自动生成
+当已经有数据库了，需要开发增删改查，还要去撸代码？
+作为喜欢偷懒的我，当然不可能写增删改查，这辈子都不可能，我要自动生成！
+一觉醒来，上帝听到我的呼唤，于是有了根据mysql表增删改查自动生成增删改查
+
+部署：
+在 config/command.php 文件增加
+
+```
+// 指令定义
+'commands' => [
+    \suframe\thinkAdmin\command\thinkAdminCURD::class
+],
+```
+
+新建表
+```
+CREATE TABLE `news` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '[ID]',
+  `name` varchar(128) NOT NULL COMMENT '[标题]',
+  `image` varchar(255) DEFAULT NULL COMMENT '[封面@image]',
+  `cid` int(11) DEFAULT NULL COMMENT '[分类@cascader]',
+  `publish_time` datetime NOT NULL COMMENT '[发布日期]',
+  `created_time` timestamp NULL DEFAULT NULL COMMENT '时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='[新闻]';
+```
+
+进入命令行，网站根目录，运行命令
+```
+php think curd news
+```
+进入后台，增加个菜单(接下来也会自动生成，开发中)
+
+![6](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/6.png)
+![7](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/7.png)
+
+觉得不错上方点个star，
+更详细的数据库设置教程和文档参看：[生成增删改文档](https://github.com/suframe/think-admin/blob/master/src/command/read.md)

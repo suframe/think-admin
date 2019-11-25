@@ -23,6 +23,9 @@ composer require suframe/think-admin:dev-master -vvv
 cp .example.env .env
 //编辑修改.env数据库为你自己数据库账户
 
+// 安装数据库迁移
+composer require topthink/think-migration
+
 // 执行sql迁移
 php think migrate:run
 ```

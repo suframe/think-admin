@@ -148,7 +148,7 @@ class Gen
     {
         $table = [];
         foreach ($params as $field => $item) {
-            if (strpos($item['comment'], '_' === 0)) {
+            if (strpos($item['comment'], '_') === 0) {
                 continue;
             }
             switch ($item['type']) {
@@ -191,7 +191,7 @@ class Gen
     {
         $form = [];
         foreach ($params as $field => $item) {
-            if (strpos($item['comment'], '^' === 0)) {
+            if (strpos($item['comment'], '^') === 0) {
                 continue;
             }
             $filedSetting = [];

@@ -29,6 +29,8 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
+    "topthink/think-view": "^1.0",
+    "suframe/form": "dev-master",
     "topthink/think-migration": "^3.0"
   },
   "require-dev": {

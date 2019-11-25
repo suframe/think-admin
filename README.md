@@ -65,7 +65,7 @@ php think run -H 0.0.0.0
 一觉醒来，上帝听到我的呼唤，于是有了根据mysql表增删改查自动生成增删改查
 
 部署：
-在 config/command.php 文件增加
+在 config/console.php 文件增加
 
 ```
 // 指令定义

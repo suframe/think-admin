@@ -96,8 +96,8 @@ php think curd news
 ```
 进入后台，增加个菜单，注意天下icon,然后刷新下页面看看吧(接下来也会自动生成，开发中)
 
-![6](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/6.jpg)
 ![7](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/7.jpg)
+![6](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/6.jpg)
 
 觉得不错上方点个star，
 更详细的数据库设置教程和文档参看：[生成增删改文档](https://github.com/suframe/think-admin/blob/master/src/command/read.md)

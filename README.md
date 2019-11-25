@@ -89,6 +89,9 @@ CREATE TABLE `news` (
 
 进入命令行，网站根目录，运行命令
 ```
+# 生成模型
+php think make:model News
+# 生成curl
 php think curd news
 ```
 进入后台，增加个菜单，注意天下icon,然后刷新下页面看看吧(接下来也会自动生成，开发中)

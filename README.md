@@ -91,7 +91,7 @@ CREATE TABLE `news` (
 ```
 php think curd news
 ```
-进入后台，增加个菜单(接下来也会自动生成，开发中)
+进入后台，增加个菜单，注意天下icon,然后刷新下页面看看吧(接下来也会自动生成，开发中)
 
 ![6](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/6.png)
 ![7](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/7.png)

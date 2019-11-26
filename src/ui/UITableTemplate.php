@@ -461,9 +461,10 @@ function __UITableBuildItemsUrl($item)
                 var params = {
                     page: this.currentPage,
                     pageSize: this.pageSize,
+                    '_t': new Date().getTime()
                 }
                 Object.assign(params, this.searchParam)
-                let _this = this
+                var _this = this
                 $.getJSON('<?= $apiUrl ?>', params, function (rs) {
                     if (rs.code === 200) {
                         _this.tableData = rs.data.data
@@ -511,7 +512,8 @@ function __UITableBuildItemsUrl($item)
                         window.open(command.url)
                     }
                 } else if (command.isAjax) {
-                    let _this = this
+                    var _this = this
+                    var params = {'_t': new Date().getTime()}
                     $.getJSON(command.url, function (rs) {
                         _this.$message({
                             showClose: true,

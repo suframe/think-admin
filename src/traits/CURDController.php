@@ -4,6 +4,7 @@ namespace suframe\thinkAdmin\traits;
 
 use suframe\form\Form;
 use suframe\thinkAdmin\ui\UITable;
+use think\facade\Db;
 use think\facade\View;
 
 /**
@@ -116,9 +117,17 @@ trait CURDController
                 $class = $this->getManageModel();
                 $info = new $class;
             }
-            $post = $this->beforeSave($info, $post);
-            $rs = $info->save($post);
-            return $this->handleResponse($rs);
+            Db::startTrans();
+            try {
+                $post = $this->beforeSave($info, $post);
+                $rs = $info->save($post);
+                Db::commit();
+                return $this->handleResponse($rs);
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                throw $e;
+            }
         }
         $this->getThinkAdminViewLayout();
         if($this->currentNav){
@@ -150,8 +159,17 @@ trait CURDController
         if (!$model) {
             throw new \Exception('model not exist');
         }
-        $this->beforeDelete($model);
-        return $this->handleResponse($model->delete(), '删除成功', '删除失败');
+        Db::startTrans();
+        try {
+            $this->beforeDelete($model);
+            $rs = $model->delete();
+            Db::commit();
+            return $this->handleResponse($rs, '删除成功', '删除失败');
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            throw $e;
+        }
     }
 
 }

@@ -12,7 +12,24 @@ composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 //创建thinkphp6项目
 composer create-project topthink/think tp
 cd tp
+```
 
+修改composer.json（重要）
+这步很重要，因为suframe-think还在开发版，没有发布正式版，只能先安装dev版
+增加到底部如下
+```
+{
+...
+    {
+      "minimum-stability": "dev",
+      "prefer-stable": true
+    }
+...
+}
+
+```
+
+```
 //安装think-admin
 composer require suframe/think-admin:dev-master -vvv
 cp .example.env .env

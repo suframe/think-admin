@@ -100,11 +100,12 @@ abstract class AppSettingInterface
         //配置菜单
         $info = $this->info();
         $this->app_name = $info['app_name'];
-        $installMenu = $this->insertMenu(
+        $installMenu = Admin::menu()->insertMenu(
             $info['menu_title'] ?? $info['title'],
             $info['entry'],
             0,
-            $info['menu_icon'] ?? 'el-icon-apple'
+            $info['menu_icon'] ?? 'el-icon-apple',
+            $this->app_name
         );
         if (!$installMenu) {
             throw new \Exception('应用没有配置入口');
@@ -117,68 +118,6 @@ abstract class AppSettingInterface
         $this->installConfigPermissions();
         $this->installAnnotation($parentMenuId, $app, $dirName);
         return true;
-    }
-
-    /**
-     * 菜单如数据库
-     * @param $title
-     * @param $uri
-     * @param int $pid
-     * @param null $icon
-     * @return array|AdminMenu|\think\Model|null
-     */
-    protected function insertMenu($title, $uri, $pid = 0, $icon = null)
-    {
-        $menuInfo = [
-            'title' => $title,
-            'uri' => $uri,
-            'parent_id' => $pid,
-            'app_name' => $this->app_name,
-        ];
-        if ($icon) {
-            $menuInfo['icon'] = $icon;
-        }
-        try {
-            $menu = AdminMenu::where($menuInfo)->find();
-            if ($menu) {
-                return $menu;
-            }
-        } catch (DataNotFoundException|ModelNotFoundException|DbException $e) {
-        }
-        return AdminMenu::create($menuInfo);
-    }
-
-    /**
-     * 安装菜单
-     * @param $parentMenuId
-     * @param $doc
-     * @param $class
-     * @param ReflectionMethod $method
-     * @return AdminMenu|bool
-     */
-    protected function installMenu($parentMenuId, $doc, $class, ReflectionMethod $method = null)
-    {
-        if (!isset($doc['menu'])) {
-            return false;
-        }
-        $menu = $doc['menu'];
-        if (strpos($menu, '{') === false) {
-            $title = trim($menu);
-            $uri = $this->getUriByClass($class);
-            if ($method) {
-                $uri .= '/' . lcfirst($method->getName());
-            }
-        } else {
-            $menu = json_decode($menu, true);
-            $title = $menu['title'] ?? '';
-            $uri = $menu['uri'] ?? '';
-        }
-
-        return $this->insertMenu(
-            $title,
-            $uri,
-            $parentMenuId
-        );
     }
 
     /**
@@ -217,6 +156,8 @@ abstract class AppSettingInterface
             throw new \Exception('controller dir not found');
         }
         //注解菜单
+        $namespaceName = $ref->getNamespaceName() . "\\{$controller_layer}\\";
+
         foreach (new DirectoryIterator($controllerDir) as $fileInfo) {
             $fileParentMenuId = $parentMenuId;
             $fileName = $fileInfo->getFilename();
@@ -229,35 +170,13 @@ abstract class AppSettingInterface
             if ('php' != $fileInfo->getExtension()) {
                 continue;
             }
-            $class = $ref->getNamespaceName() . "\\{$controller_layer}\\" . ucfirst(substr($fileName, 0,
+            $class = $namespaceName . ucfirst(substr($fileName, 0,
                     strlen($fileName) - 4));
             if (!class_exists($class)) {
                 continue;
             }
-            $installMenu = null;
-            $objRef = new \ReflectionClass($class);
-            if ($doc = $objRef->getDocComment()) {
-                $doc = $this->parseDoc($doc);
-                if (isset($doc['menu']) && $doc['menu']) {
-                    //类注释的菜单(二级)
-                    $installMenu = $this->installMenu($fileParentMenuId, $doc, $class);
-                    if ($installMenu) {
-                        $fileParentMenuId = $installMenu->id;
-                    }
-                }
-                //增加权限
-                $this->installPermissions($doc, $class, $installMenu);
-            }
-            foreach ($objRef->getMethods() as $method) {
-                if (!$method->isPublic()) {
-                    continue;
-                }
-                $doc = $this->parseDoc($method->getDocComment());
-                //method注释的菜单(二/三级)
-                $installMenu = $this->installMenu($fileParentMenuId, $doc, $class, $method);
-                //增加权限
-                $this->installPermissions($doc, $class, $installMenu, $method);
-            }
+
+            Admin::menu()->installAnnotation($class, $fileParentMenuId, $this->app_name);
         }
     }
 
@@ -271,11 +190,12 @@ abstract class AppSettingInterface
     protected function installConfigMenu($menus, $parentMenuId)
     {
         foreach ($menus as $menu) {
-            $installMenu = $this->insertMenu(
+            $installMenu = Admin::menu()->insertMenu(
                 $menu['title'],
                 $menu['uri'] ?? '',
                 $parentMenuId,
-                $menu['icon'] ?? ''
+                $menu['icon'] ?? '',
+                $this->app_name
             );
             if (!$installMenu) {
                 continue;
@@ -368,28 +288,6 @@ abstract class AppSettingInterface
         if ($permissions && $data) {
             AdminPermissions::insertAll($data);
         }
-    }
-
-    protected function parseDoc($docComment)
-    {
-        $docs = explode("\n", $docComment);
-        array_shift($docs);
-        array_pop($docs);
-        $rs = [];
-        foreach ($docs as $doc) {
-            if (strpos($doc, '* @') === false) {
-                continue;
-            }
-            $doc = substr($doc, strpos($doc, '* @') + 3, strlen($doc));
-            if (!$doc) {
-                continue;
-            }
-            $splitPos = strpos($doc, ' ');
-            $name = substr($doc, 0, $splitPos);
-            $desc = rtrim(substr($doc, $splitPos + 1, strlen($doc)));
-            $rs[$name] = $desc;
-        }
-        return $rs;
     }
 
     /**

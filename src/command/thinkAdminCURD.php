@@ -13,7 +13,7 @@ use think\console\Output;
 
 class thinkAdminCURD extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         // 指令配置
         $this->setName('curd')
@@ -22,7 +22,7 @@ class thinkAdminCURD extends Command
             ->setDescription('the thinkAdmin command');
     }
 
-    protected function execute(Input $input, Output $output)
+    protected function execute(Input $input, Output $output): void
     {
         $table = trim($input->getArgument('table'));
         /** @var TablePrefixAdapter $adapter */

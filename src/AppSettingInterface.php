@@ -224,7 +224,7 @@ abstract class AppSettingInterface
                 continue;
             }
             if (is_dir($fileName)) {
-                $this->installMenuAndPermissions($app, $fileName);
+                $this->installAnnotation($parentMenuId, $app, $fileName);
             }
             if ('php' != $fileInfo->getExtension()) {
                 continue;

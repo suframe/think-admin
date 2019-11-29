@@ -92,7 +92,7 @@ CREATE TABLE `news` (
   `name` varchar(128) NOT NULL COMMENT '[标题]',
   `image` varchar(255) DEFAULT NULL COMMENT '[封面@image]',
   `cid` int(11) DEFAULT NULL COMMENT '[分类@cascader]',
-  `publish_time` datetime NOT NULL COMMENT '[发布日期]',
+  `publish_time` datetime DEFAULT NULL COMMENT '[发布日期]',
   `created_time` timestamp NULL DEFAULT NULL COMMENT '时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='[新闻]';

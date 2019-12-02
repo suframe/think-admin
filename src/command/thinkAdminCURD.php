@@ -21,6 +21,7 @@ class thinkAdminCURD extends Command
             ->addOption('controller', 'c', Option::VALUE_OPTIONAL, 'controller path')
             ->addOption('app', 'a', Option::VALUE_OPTIONAL, 'app')
             ->addOption('menu', 'm', Option::VALUE_NONE, 'init menu and permission')
+            ->addOption('force', 'f', Option::VALUE_NONE, 'force to new')
             ->setDescription('the thinkAdmin command');
     }
 
@@ -34,14 +35,16 @@ class thinkAdminCURD extends Command
         }
         $controller = $input->hasOption('controller') ? $input->getOption('controller') : '';
         $app = $input->hasOption('app') ? $input->getOption('app') : '';
-        $menu = $input->hasOption('menu');
         $gen = new Gen();
         $gen->setOutput($output);
         if ($app) {
             $gen->setApp($app);
         }
-        if ($menu) {
-            $gen->setMenu($menu);
+        if ($input->hasOption('menu')) {
+            $gen->setMenu(true);
+        }
+        if ($input->hasOption('force')) {
+            $gen->setForce(true);
         }
         try {
             $rs = $gen->build($adapter, $table, $controller);

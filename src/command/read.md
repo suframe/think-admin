@@ -12,10 +12,18 @@ config/console.php 中commands添加 \suframe\thinkAdmin\command\thinkAdminCURD:
 命令:
 ```
 php think curd 数据库 
+php think curd news -c controller/news/manager.php  指定控制器路径(基于app/的相对路径)
 
-# 多应用模式，生成应用下的控制器
-php think curd news -c news/controller  控制器路径(基于app/的相对路径)
+# 多应用模式，生成应用下的控制器, demo为你自己app_name
+ php think curd news -a demo -m -f
 ```
+
+参数：
+- -c --controller 指定控制器
+- -a --app 指定应用
+- -m --menu 生成菜单及权限(默认不生成
+- -f --force 强制生成(覆盖原来生成的,已生成的菜单不会覆盖)
+
 
 由于生成增删改查表单和列表需要一些中文支撑，因为字段是英文的，思考了很久，决定通过表注释自动生成
 1. 表注释中： [name] ， 表注释中的name 用于显示菜单和整个栏目的名称，没有注释的表不予生成

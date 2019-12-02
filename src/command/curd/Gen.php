@@ -70,6 +70,13 @@ class Gen
         $this->app = $app;
     }
 
+    protected $force;
+
+    public function setForce(bool $force): void
+    {
+        $this->force = $force;
+    }
+
     protected $menus;
 
     public function setMenu(bool $menu): void
@@ -198,7 +205,7 @@ class Gen
         ];
         $rs = $this->buildClassFile('controller', $config, $filePath);
         if ($rs && $this->menus) {
-            $this->addMenu($namespace, $className, $tableName);
+            $this->addMenu($namespace, $className, $tableComment);
         }
         return $rs;
     }
@@ -435,15 +442,13 @@ EOF;
 
     protected function buildClassFile(string $layout, array $configs, string $file): bool
     {
-        if (file_exists($file)) {
+        if (!$this->force && file_exists($file)) {
             return false;
         }
         if (!is_dir(dirname($file))) {
             mkdir(dirname($file), 0755, true);
         }
-
         $base = file_get_contents($this->getLayoutDir() . $layout);
-
         foreach ($configs as $key => $config) {
             $base = str_replace("[layout:{$key}]", $config, $base);
         }

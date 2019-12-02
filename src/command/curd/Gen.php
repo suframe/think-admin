@@ -4,6 +4,8 @@ declare (strict_types=1);
 namespace suframe\thinkAdmin\command\curd;
 
 use Phinx\Db\Adapter\TablePrefixAdapter;
+use suframe\thinkAdmin\model\AdminMenu;
+use suframe\thinkAdmin\model\AdminPermissions;
 use think\console\Output;
 use think\facade\Db;
 
@@ -30,8 +32,20 @@ class Gen
 
     protected $config = [];
     protected $allowTypes = [
-        'image', 'images', 'file', 'files', 'switch', 'slider', 'sliderRange',
-        'color', 'rate', 'radio', 'checkbox', 'cascader', 'city', 'cityArea',
+        'image',
+        'images',
+        'file',
+        'files',
+        'switch',
+        'slider',
+        'sliderRange',
+        'color',
+        'rate',
+        'radio',
+        'checkbox',
+        'cascader',
+        'city',
+        'cityArea',
     ];
     protected $layoutDir;
 
@@ -56,10 +70,17 @@ class Gen
         $this->app = $app;
     }
 
+    protected $menus;
+
+    public function setMenu(bool $menu): void
+    {
+        $this->menus = $menu;
+    }
+
     protected function getFileGenPath(): string
     {
         $path = app()->getAppPath();
-        if($this->app) {
+        if ($this->app) {
             $path .= $this->app . DIRECTORY_SEPARATOR;
         }
         return $path;
@@ -68,7 +89,7 @@ class Gen
     protected function getFileNamespace(): string
     {
         $namespace = app()->getNamespace();
-        if($this->app) {
+        if ($this->app) {
             $namespace .= '\\' . $this->app;
         }
         return $namespace;
@@ -81,7 +102,7 @@ class Gen
      * @param $controller
      * @return bool
      */
-    public function build(TablePrefixAdapter $adapter, string $tableName, $controller): bool
+    public function build(TablePrefixAdapter $adapter, string $tableName, string $controller = ''): bool
     {
         $default = config('database.default');
         $options = config("database.connections.{$default}");
@@ -148,15 +169,24 @@ class Gen
 
         //生成控制器
         $controller_layer = config('route.controller_layer');
-        if($controller){
-            $namespace = str_replace(DIRECTORY_SEPARATOR, '\\', $controller);
+        if ($controller) {
+            //自定义控制器文件，相对app/ 路径，例如 controller/goods/myGoods.php
             $filePath = $controller;
+            if (strpos($controller, '.php') !== false) {
+                $filePath .= '.php';
+            }
+            $namespace = str_replace('.php', '', $filePath);
+            $namespace = explode('/', $namespace);
+            $className = array_pop($namespace);
+            $className = ucfirst($className);
+            $namespace = implode('\\', $namespace);
         } else {
             $namespace = $controller_layer;
-            $filePath = $controller_layer;
+            $filePath = $controller_layer . DIRECTORY_SEPARATOR . $className . '.php';
         }
+
         $namespace = $this->getFileNamespace() . '\\' . $namespace;
-        $filePath = $this->getFileGenPath() . $filePath . DIRECTORY_SEPARATOR . $className . '.php';
+        $filePath = $this->getFileGenPath() . $filePath;
         $config = [
             'namespace' => $namespace,
             'model' => $className,
@@ -166,7 +196,61 @@ class Gen
             'table' => $tableClass,
             'form' => $formClass,
         ];
-        return $this->buildClassFile('controller', $config, $filePath);
+        $rs = $this->buildClassFile('controller', $config, $filePath);
+        if ($rs && $this->menus) {
+            $this->addMenu($namespace, $className, $tableName);
+        }
+        return $rs;
+    }
+
+    /**
+     * 增加菜单和权限
+     * @param string $namespace
+     * @param string $className
+     * @param string $title
+     * @return bool
+     */
+    protected function addMenu(string $namespace, string $className, string $title): bool
+    {
+        $parentId = 0;
+        if ($this->app) {
+            //找出上级
+            $parentId = AdminMenu::where('app_name', $this->app)
+                ->where('parent_id', 0)->field('id')->value('id', 0);
+        }
+        $controller_layer = config('route.controller_layer');
+        //指定控制器
+        $uri = str_replace('\\', '/', $namespace);
+        $uri = substr($uri, strlen(app()->getNamespace()), strlen($uri));
+        $uri = str_replace("/{$controller_layer}/", '/', $uri . '/');
+        $uri .= lcfirst($className) . '/index';
+        if (AdminMenu::where('uri', $uri)->count()) {
+            return false;
+        }
+        $menu = [
+            'parent_id' => $parentId,
+            'title' => $title,
+            'icon' => 'el-icon-apple',
+            'uri' => $uri,
+            'app_name' => $this->app,
+        ];
+        $menuModel = new AdminMenu();
+        $rs = $menuModel->save($menu);
+
+        if (!$rs) {
+            return false;
+        }
+        //增加默认权限
+        $httpPath = $uri . '/*';
+        $info = [
+            'name' => $title,
+            'slug' => $httpPath,
+            'http_method' => 'ALL',
+            'http_path' => $httpPath,
+            'app_name' => $this->app,
+        ];
+        $permissionsModel = new AdminPermissions();
+        return $permissionsModel->save($info);
     }
 
     protected function buildTable(string $tableComment, string $className, array $params): string
@@ -320,7 +404,7 @@ class Gen
         $configStr = '';
         foreach ($form as $field => $item) {
             $tmp = var_export($item, true);
-            if(strpos($tmp, '__UPLOAD_ACTION__') !== false) {
+            if (strpos($tmp, '__UPLOAD_ACTION__') !== false) {
                 $tmp = str_replace("'__UPLOAD_ACTION__'", "config('thinkAdmin.upload_url')", $tmp);
             }
             $configStr .= <<<EOF

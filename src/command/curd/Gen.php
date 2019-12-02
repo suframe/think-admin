@@ -49,6 +49,31 @@ class Gen
         $this->config = $config;
     }
 
+    protected $app;
+
+    public function setApp(string $app): void
+    {
+        $this->app = $app;
+    }
+
+    protected function getFileGenPath(): string
+    {
+        $path = app()->getAppPath();
+        if($this->app) {
+            $path .= $this->app . DIRECTORY_SEPARATOR;
+        }
+        return $path;
+    }
+
+    protected function getFileNamespace(): string
+    {
+        $namespace = app()->getNamespace();
+        if($this->app) {
+            $namespace .= '\\' . $this->app;
+        }
+        return $namespace;
+    }
+
     /**
      * 生成
      * @param TablePrefixAdapter $adapter
@@ -130,8 +155,8 @@ class Gen
             $namespace = $controller_layer;
             $filePath = $controller_layer;
         }
-        $namespace = app()->getNamespace() . '\\' . $namespace;
-        $filePath = app()->getAppPath() . $filePath . DIRECTORY_SEPARATOR . $className . '.php';
+        $namespace = $this->getFileNamespace() . '\\' . $namespace;
+        $filePath = $this->getFileGenPath() . $filePath . DIRECTORY_SEPARATOR . $className . '.php';
         $config = [
             'namespace' => $namespace,
             'model' => $className,
@@ -167,8 +192,8 @@ class Gen
             return '';
         }
         //生产文件
-        $namespace = app()->getNamespace() . '\ui\table';
-        $filePath = app()->getBasePath() . 'ui' . DIRECTORY_SEPARATOR . 'table' . DIRECTORY_SEPARATOR;
+        $namespace = $this->getFileNamespace() . '\ui\table';
+        $filePath = $this->getFileGenPath() . 'ui' . DIRECTORY_SEPARATOR . 'table' . DIRECTORY_SEPARATOR;
         $className = $className . 'Table';
         $config = [
             'namespace' => $namespace,
@@ -283,8 +308,8 @@ class Gen
         }
 
         //生产文件
-        $namespace = app()->getNamespace() . '\ui\form';
-        $filePath = app()->getBasePath() . 'ui' . DIRECTORY_SEPARATOR . 'form' . DIRECTORY_SEPARATOR;
+        $namespace = $this->getFileNamespace() . '\ui\form';
+        $filePath = $this->getFileGenPath() . 'ui' . DIRECTORY_SEPARATOR . 'form' . DIRECTORY_SEPARATOR;
         $className = $className . 'Form';
         $config = [
             'namespace' => $namespace,

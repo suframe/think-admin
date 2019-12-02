@@ -19,6 +19,7 @@ class thinkAdminCURD extends Command
         $this->setName('curd')
             ->addArgument('table', Argument::REQUIRED, 'table')
             ->addOption('controller', 'c', Option::VALUE_OPTIONAL, 'controller path')
+            ->addOption('app', 'a', Option::VALUE_OPTIONAL, 'app')
             ->setDescription('the thinkAdmin command');
     }
 
@@ -31,8 +32,12 @@ class thinkAdminCURD extends Command
             $table = substr($table, strlen($table_prefix));
         }
         $controller = $input->hasOption('controller') ? $input->getOption('controller') : null;
+        $app = $input->hasOption('app') ? $input->getOption('app') : '';
         $gen = new Gen();
         $gen->setOutput($output);
+        if ($app) {
+            $gen->setApp($app);
+        }
         try {
             $rs = $gen->build($adapter, $table, $controller);
             if ($rs) {

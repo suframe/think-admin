@@ -11,7 +11,19 @@
     .vue-sku .vue-sku-table td, .vue-sku .vue-sku-table th{
         padding: 5px 2px;
     }
-
+    .vue-sku .spec-line{
+        position:relative;
+    }
+    .vue-sku .spec-line .spec-deleted {
+        position: absolute;
+        right: 0;
+        top: 0;
+        display: none;
+        cursor: pointer;
+    }
+    .vue-sku .spec-line:hover .spec-deleted{
+        display: inline;
+    }
 </style>
 {/block}
 

@@ -23,8 +23,7 @@
         "topthink/think-migration": "^3.0",
         "topthink/framework": "6.0.*-dev",
         "suframe/form": "dev-master",
-        "topthink/think-multi-app": "^1.0",
-        "suframe/think-admin": "dev-master"
+        "topthink/think-multi-app": "^1.0"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2"

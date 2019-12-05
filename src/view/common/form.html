@@ -1,4 +1,19 @@
 {extend name="$thinkAdminViewLayoutFile" /}
+{block name="style"}
+{__block__}
+<style>
+    .vue-sku{
+        line-height: 100%;
+    }
+    .vue-sku .el-divider--horizontal{
+        margin: 10px 0;
+    }
+    .vue-sku .vue-sku-table td, .vue-sku .vue-sku-table th{
+        padding: 5px 2px;
+    }
+
+</style>
+{/block}
 
 {block name="main"}
 <el-row>
@@ -15,6 +30,8 @@
 {block name="script"}
 {__block__}
 <script>
+    {$form->customComponentView()|raw}
+
     var create = {$form->formScript()|raw};
     var $f = create({el: document.getElementById('base-form')});
 </script>

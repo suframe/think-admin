@@ -111,10 +111,6 @@ class Gen
      */
     public function build(TablePrefixAdapter $adapter, string $tableName, string $controller = ''): bool
     {
-
-        $parentId = AdminMenu::where('app_name', $this->app)
-            ->where('parent_id', 0)->field('id')->value('id', 0);
-
         $default = config('database.default');
         $options = config("database.connections.{$default}");
         $sql = "SELECT TABLE_NAME, TABLE_COMMENT" . " 
@@ -199,7 +195,7 @@ class Gen
         $namespace = $this->getFileNamespace() . '\\' . $namespace;
         $filePath = $this->getFileGenPath() . $filePath;
         $urlPre = '/' . lcfirst($className) . '/';
-        if($this->app){
+        if ($this->app) {
             $urlPre = '/' . $this->app . $urlPre;
         }
         $config = [

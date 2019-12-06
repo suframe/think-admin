@@ -62,15 +62,15 @@ class Role extends SystemBase
             'url' => $this->urlA('menu'),
             'vars' => ['id'],
         ];
-        $table->setOps('permissions', $configMenu);
-        $configMenu = [
+        $table->setOps('menu', $configMenu);
+        $configPermissions = [
             'type' => 'link',
             'label' => '权限',
             'icon' => 'el-icon-check',
             'url' => $this->urlA('permissions'),
             'vars' => ['id'],
         ];
-        $table->setOps('menu', $configMenu);
+        $table->setOps('permissions', $configPermissions);
         $table->setConfigs('opsWidth', 240);
     }
 

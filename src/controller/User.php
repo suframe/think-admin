@@ -7,6 +7,7 @@ use suframe\thinkAdmin\Admin;
 use suframe\thinkAdmin\model\AdminMenu;
 use suframe\thinkAdmin\model\AdminRoles;
 use suframe\thinkAdmin\model\AdminRoleUsers;
+use suframe\thinkAdmin\model\AdminUserPermissions;
 use suframe\thinkAdmin\model\AdminUsers;
 use suframe\thinkAdmin\traits\CURDController;
 use suframe\thinkAdmin\ui\form\AdminUserForm;
@@ -93,7 +94,16 @@ class User extends SystemBase
             'vars' => ['id'],
         ];
         $table->setOps('roles', $configRole);
-        $table->setConfigs('opsWidth', 180);
+
+        $configPermissions = [
+            'type' => 'link',
+            'label' => '权限',
+            'icon' => 'el-icon-check',
+            'url' => $this->urlA('permissions'),
+            'vars' => ['id'],
+        ];
+        $table->setOps('permissions', $configPermissions);
+        $table->setConfigs('opsWidth', 240);
     }
 
     /**
@@ -176,5 +186,44 @@ class User extends SystemBase
         if ($model->isSupper()) {
             throw new \Exception('超级管理员不允许删除');
         }
+        $rs = AdminUserPermissions::where('user_id', $model->id)->delete();
+        if (!$rs) {
+            throw new \Exception('此用户权限删除失败，请手动移除');
+        }
+        $rs = AdminRoleUsers::where('user_id', $model->id)->delete();
+        if (!$rs) {
+            throw new \Exception('此用户角色删除失败，请手动移除');
+        }
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function permissions()
+    {
+        $id = $this->requireParamInt('id');
+        if ($this->request->isAjax() && $this->request->isPost()) {
+            $direction = $this->requirePost('direction');
+            $movedKeys = $this->requirePost('movedKeys');
+            if ($direction == 'right') {
+                //增加
+                $data = [];
+                foreach ($movedKeys as $movedKey) {
+                    $data[] = [
+                        'user_id' => $id,
+                        'permission_id' => $movedKey,
+                    ];
+                }
+                $rs = AdminUserPermissions::insertAll($data);
+            } else {
+                $rs = AdminUserPermissions::where('user_id', $id)->whereIn('permission_id', $movedKeys)->delete();
+            }
+            return $this->handleResponse($rs);
+        }
+        $this->setNav('user');
+        View::assign('id', $id);
+        View::assign('pageTitle', '用户权限编辑');
+        return View::fetch('user/permissions');
     }
 }

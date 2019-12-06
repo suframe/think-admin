@@ -4,6 +4,7 @@ namespace suframe\thinkAdmin\controller;
 
 use suframe\thinkAdmin\model\AdminPermissions;
 use suframe\thinkAdmin\model\AdminRolePermissions;
+use suframe\thinkAdmin\model\AdminUserPermissions;
 use suframe\thinkAdmin\traits\CURDController;
 use suframe\thinkAdmin\ui\form\AdminPermissionForm;
 use suframe\thinkAdmin\ui\table\PermissionTable;
@@ -64,6 +65,22 @@ class Permission extends SystemBase
         $role_id = $this->requireParamInt('role_id');
         $all = AdminPermissions::buildOptions();
         $my = AdminRolePermissions::where('role_id', $role_id)->field('permission_id')->select()->column('permission_id');
+        $rs = [
+            'all' => $all,
+            'my' => $my,
+        ];
+        return json_return($rs);
+    }
+
+    /**
+     * @return \think\response\Json
+     * @throws \Exception
+     */
+    public function userPermission()
+    {
+        $user_id = $this->requireParamInt('user_id');
+        $all = AdminPermissions::buildOptions();
+        $my = AdminUserPermissions::where('user_id', $user_id)->field('permission_id')->select()->column('permission_id');
         $rs = [
             'all' => $all,
             'my' => $my,

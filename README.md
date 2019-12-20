@@ -14,24 +14,9 @@ composer create-project topthink/think tp
 cd tp
 ```
 
-修改composer.json（重要）
-这步很重要，因为suframe-think还在开发版，没有发布正式版，只能先安装dev版
-增加到底部如下
-```
-{
-...
-    {
-      "minimum-stability": "dev",
-      "prefer-stable": true
-    }
-...
-}
-
-```
-
 ```
 //安装think-admin
-composer require suframe/think-admin:dev-master -vvv
+composer require suframe/think-admin -vvv
 cp .example.env .env
 //编辑修改.env数据库为你自己数据库账户
 // 执行sql迁移

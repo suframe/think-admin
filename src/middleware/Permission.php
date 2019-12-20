@@ -21,6 +21,9 @@ class Permission
         if (config('thinkAdmin.check_route_permission') === false) {
             return $next($request);
         }
+        if (strpos(app()->request->pathinfo(), config('app.uri_pre', 'thinkadmin/')) !== 0) {
+            return false;
+        }
         /** @var AdminUsers $user */
         $user = app('admin')->user();
         if (!$user ||

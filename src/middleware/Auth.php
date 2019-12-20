@@ -21,6 +21,9 @@ class Auth
         /** @var \suframe\thinkAdmin\Auth $auth */
         $auth = app('admin')->auth();
         $auth->initAdmin();
+        if (strpos(app()->request->pathinfo(), config('app.uri_pre', 'thinkadmin/')) !== 0) {
+            return false;
+        }
         if ($auth->guest() && !$this->shouldPassThrough($request)) {
             if(!$request->isAjax() && ($auth->getDriver() instanceof SessionDriver)){
                 return redirect('/thinkadmin/auth/login');

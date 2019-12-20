@@ -30,7 +30,7 @@
   "prefer-stable": true,
   "require": {
     "topthink/think-view": "^1.0",
-    "suframe/form": "dev-master",
+    "suframe/form": "^1.0",
     "topthink/think-migration": "^3.0"
   },
   "require-dev": {

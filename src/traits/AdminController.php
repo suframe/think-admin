@@ -110,6 +110,14 @@ trait AdminController
         return Admin::user();
     }
 
+    private function getRpcExtParam()
+    {
+        $admin = $this->getAdminUser();
+        return [
+            'admin' => $admin ? $admin->toArray() : null
+        ];
+    }
+
     /**
      * 返回处理
      * @param $rs

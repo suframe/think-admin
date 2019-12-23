@@ -22,7 +22,7 @@ class Auth
         $auth = app('admin')->auth();
         $auth->initAdmin();
         if (strpos(app()->request->pathinfo(), config('app.uri_pre', 'thinkadmin/')) !== 0) {
-            return false;
+            return $next($request);
         }
         if ($auth->guest() && !$this->shouldPassThrough($request)) {
             if(!$request->isAjax() && ($auth->getDriver() instanceof SessionDriver)){

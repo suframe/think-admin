@@ -22,7 +22,7 @@ class Permission
             return $next($request);
         }
         if (strpos(app()->request->pathinfo(), config('app.uri_pre', 'thinkadmin/')) !== 0) {
-            return false;
+            return $next($request);
         }
         /** @var AdminUsers $user */
         $user = app('admin')->user();

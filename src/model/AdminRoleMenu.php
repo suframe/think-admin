@@ -13,9 +13,13 @@ class AdminRoleMenu extends Model
 
     /**
      * @param AdminUsers $user
+     * @param bool $withApp
      * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      */
-    public static function getMenuByUser(AdminUsers $user)
+    public static function getMenuByUser(AdminUsers $user, $withApp = true)
     {
         if ($user->isSupper()) {
             $menu_ids = 'all';
@@ -35,6 +39,9 @@ class AdminRoleMenu extends Model
         $adminMenu = AdminMenu::order('order', 'desc');
         if ($menu_ids !== 'all') {
             $adminMenu->whereIn('id', $menu_ids);
+        }
+        if (!$withApp) {
+            $adminMenu->whereNull('app_name');
         }
         $rs = $adminMenu->select()->toArray();
         if (!$rs) {

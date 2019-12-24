@@ -76,7 +76,7 @@ class Main extends Base
      */
     public function getMyMenus()
     {
-        $rs = AdminRoleMenu::getMenuByUser($this->getAdminUser());
+        $rs = AdminRoleMenu::getMenuByUser($this->getAdminUser(), false);
         return json_return($rs);
     }
 }

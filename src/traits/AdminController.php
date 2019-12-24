@@ -110,7 +110,7 @@ trait AdminController
         return Admin::user();
     }
 
-    private function getRpcExtParam()
+    protected function getRpcExtParam()
     {
         $admin = $this->getAdminUser();
         return [

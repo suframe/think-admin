@@ -13,7 +13,7 @@ use think\facade\View;
  * @method setNav($title)
  * @package suframe\thinkAdmin\traits
  */
-trait CURDRpc
+trait CURDRpcController
 {
 
     protected $currentNav;

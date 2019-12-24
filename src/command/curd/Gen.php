@@ -113,6 +113,10 @@ class Gen
     {
         $default = config('database.default');
         $options = config("database.connections.{$default}");
+        if(($pos = strpos($tableName, '.')) !== false) {
+            $options['database'] = substr($tableName, 0, $pos);
+            $tableName = substr($tableName, $pos + 1, strlen($tableName));
+        }
         $sql = "SELECT TABLE_NAME, TABLE_COMMENT" . " 
             FROM INFORMATION_SCHEMA.TABLES 
             WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
@@ -132,6 +136,7 @@ class Gen
                     FROM INFORMATION_SCHEMA.Columns 
                     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?";
         $fields = Db::query($sqlFields, [$options['database'], $tableName]);
+
         if (!$fields) {
             return false;
         }

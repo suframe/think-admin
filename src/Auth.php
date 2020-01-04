@@ -71,7 +71,9 @@ class Auth
         if (!$this->user) {
             return false;
         }
-        return $this->getDriver()->logout($this->user);
+        $rs = $this->getDriver()->logout($this->user);
+        $this->user = null;
+        return $rs;
     }
 
     /**

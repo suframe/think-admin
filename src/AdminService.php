@@ -36,16 +36,8 @@ class AdminService extends Service
         if (!$this->enable) {
             return false;
         }
-        $middleware = $this->routeMiddleware;
         $route->post('thinkadmin/auth/login', '\suframe\thinkAdmin\controller\Auth@login')->token();
-        if (config('app.auto_multi_app') === true) {
-            //多应用，通过应用目录下 middleware.php文件自己设置
-            $this->setRouter($route)->middleware($middleware);
-        } else {
-            $this->setRouter($route);
-            //单应用，全局配置middleware
-            $this->app->middleware->import($middleware);
-        }
+        $this->setRouter($route);
     }
 
     /**
@@ -60,7 +52,7 @@ class AdminService extends Service
                 $controllerUc = ucfirst($controller);
                 $route->any("{$controller}/:action", "\\suframe\\thinkAdmin\\controller\\{$controllerUc}@:action");
             }
-        });
+        })->middleware($this->routeMiddleware);;
     }
 
     /**

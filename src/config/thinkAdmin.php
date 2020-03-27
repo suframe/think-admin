@@ -4,7 +4,6 @@ use think\facade\Env;
 
 return [
     'enable' => Env::get('thinkAdmin.enable', 'true'),
-    'enable_force' => Env::get('thinkAdmin.enable_force', 'false'),
     'uri_pre' => 'admin/thinkadmin/',
     'routeMiddleware' => [
         'Auth' => \suframe\thinkAdmin\middleware\Auth::class,

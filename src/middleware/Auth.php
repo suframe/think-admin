@@ -21,7 +21,9 @@ class Auth
         /** @var \suframe\thinkAdmin\Auth $auth */
         $auth = app('admin')->auth();
         $auth->initAdmin();
-        if (strpos(app()->request->pathinfo(), config('thinkAdmin.uri_pre', 'thinkadmin/')) !== 0) {
+
+        if ((config('thinkAdmin.enable_force') !== 'true') && (strpos(app()->request->pathinfo(),
+                    config('thinkAdmin.uri_pre', 'thinkadmin/')) !== 0)) {
             return $next($request);
         }
         if ($auth->guest() && !$this->shouldPassThrough($request)) {

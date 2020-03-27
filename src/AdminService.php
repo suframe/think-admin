@@ -16,7 +16,7 @@ class AdminService extends Service
     public function register()
     {
         $config = include(__DIR__ . '/config/thinkAdmin.php');
-        $config += config('thinkAdmin');
+        $config = config('thinkAdmin') + $config;
         Config::set($config, 'thinkadmin');
         $this->enable = config('thinkAdmin.enable', false);
         if (!$this->enable) {

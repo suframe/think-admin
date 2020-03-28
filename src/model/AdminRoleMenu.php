@@ -9,7 +9,6 @@ use think\Model;
  */
 class AdminRoleMenu extends Model
 {
-    //
 
     /**
      * @param AdminUsers $user
@@ -19,7 +18,7 @@ class AdminRoleMenu extends Model
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public static function getMenuByUser(AdminUsers $user, $withApp = true)
+    public static function getMenuByUser(AdminUsers $user, $withApp = true, $app_name = '')
     {
         if ($user->isSupper()) {
             $menu_ids = 'all';
@@ -42,6 +41,9 @@ class AdminRoleMenu extends Model
         }
         if (!$withApp) {
             $adminMenu->whereNull('app_name');
+        }
+        if($app_name) {
+            $adminMenu->where('app_name', $app_name);
         }
         $rs = $adminMenu->select()->toArray();
         if (!$rs) {

@@ -38,9 +38,6 @@ class UITable
         if ($filters = $obj->filters()) {
             $this->setFilter($filters);
         }
-        if ($filters = $obj->filters()) {
-            $this->setFilter($filters);
-        }
         if ($ops = $obj->ops()) {
             $this->setOps($ops);
         }

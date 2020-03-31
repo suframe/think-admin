@@ -12,6 +12,25 @@ return [
         'Boot' => \suframe\thinkAdmin\middleware\Boot::class,
     ],
 
+    'theme' => 'new',
+    'welcomeUrl' => url('/thinkadmin/main/welcome')->build(),
+    'menus' => [
+        [
+            'title' => '系统设置',
+            'url' => '',
+            'child' => [
+                ['title' => '基本信息', 'uri' => url('/thinkadmin/system/index')->build()],
+                ['title' => '用户管理', 'uri' => url('/thinkadmin/user/index')->build()],
+                ['title' => '角色管理', 'uri' => url('/thinkadmin/role/index')->build()],
+                ['title' => '菜单管理', 'uri' => url('/thinkadmin/menu/index')->build()],
+                ['title' => '权限管理', 'uri' => url('/thinkadmin/permission/index')->build()],
+                ['title' => '系统日志', 'uri' => url('/thinkadmin/logs/index')->build()],
+                ['title' => '系统配置', 'uri' => url('/thinkadmin/setting/index')->build()],
+                ['title' => '应用管理', 'uri' => url('/thinkadmin/apps/index')->build()],
+            ]
+        ]
+    ],
+
     'database' => [
         'users_table' => 'admin_users',
         'roles_table' => 'admin_roles',

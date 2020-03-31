@@ -6,59 +6,83 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>{$system_info['title']}</title>
     <!-- import CSS -->
-    <link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.12.0/theme-chalk/index.css">
-    <link rel="stylesheet" href="https://cdn.bootcss.com/layer/2.3/skin/layer.css">
-    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-ui/lib/theme-chalk/index.css">
 </head>
 <body>
-<div class="think-app">
-    <div id="app">
-        <template id="appcnt">
-            <el-container class="think-container">
-                <el-aside class="think-aside">
+<div id="app">
+    <template id="appcnt">
+        <el-container style="height: 100%">
+            <el-header class="summer-header" style="padding: 0">
+
+                <el-row>
+                    <el-col :span="18">
+                        <el-menu
+                                :default-active="activeIndex2"
+                                class="el-menu-demo"
+                                mode="horizontal"
+                                @select="handleSelect"
+                                background-color="#1890ff"
+                                text-color="#fff"
+                                active-text-color="#f6f6f6">
+                            <el-menu-item style="width: 200px; text-align: center">
+                                MALL <i class="el-icon-s-operation" @click="isCollapse=!isCollapse"></i>
+                            </el-menu-item>
+                            <el-menu-item @click="changeSubMenu(index)" :key="index"
+                                          v-for="(menu, index) in menus">
+                                <i :class="menu.icon" v-if="menu.icon"></i>{{menu.title}}
+                            </el-menu-item>
+                        </el-menu>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-menu
+                                :default-active="activeIndex2"
+                                class="el-menu-top-right"
+                                mode="horizontal"
+                                @select="handleSelect"
+                                background-color="#1890ff"
+                                text-color="#fff"
+                                active-text-color="#f6f6f6">
+                            <el-submenu index="2">
+                                <template slot="title"><i class="el-icon-s-tools"></i>超级管理员</template>
+                                <el-menu-item index="2-1">个人中心</el-menu-item>
+                                <el-menu-item index="2-2">密码修改</el-menu-item>
+                                <el-menu-item index="2-3">退出登录</el-menu-item>
+                            </el-submenu>
+                            <el-menu-item><i class="el-icon-message-solid"></i>消息</el-menu-item>
+                        </el-menu>
+                    </el-col>
+                </el-row>
+
+            </el-header>
+            <el-container style="height: 100%">
+                <el-aside :width="isCollapse ? '66px': '200px'" style="height: 100%">
                     <el-menu
-                            default-active="apps"
-                            class="think-el-menu"
-                            background-color="#2a68c9"
-                            text-color="#d7e6fe"
-                            active-text-color="#ffd04b"
-                            @select="handleSelect"
-                            :collapse="isCollapse">
-
-                        <el-menu-item index="collapse"
-                                      style="padding: 0; height: 12px; font-size: 0px;background: rgb(34, 83, 161);">
-                            展开
-                        </el-menu-item>
-                        <el-menu-item style="padding: 5px; text-align: center;">
-                            <a href="{:url('/thinkadmin/main/index')}">
-                                <img class="menu-logo" src="{$system_info['logo']}" alt="">
-                            </a>
-                        </el-menu-item>
-                        <el-menu-item index="apps">
-                            <i class="el-icon-star-on"></i>
-                            <span slot="title">应用</span>
-                        </el-menu-item>
-
-
-                        <template v-for="(menu, index) in menus">
-                            <el-menu-item :index="index" v-if="!menu.child" @click="openUrl(menu.uri, menu.title)">
+                            style="height: 100%"
+                            :collapse="isCollapse"
+                            default-active="2"
+                            class="el-menu-vertical-demo"
+                    >
+                        <template v-for="(menu, index) in subMenu">
+                            <el-menu-item :index="`elMenu${index}`" v-if="!menu.child"
+                                          @click="openUrl(menu.uri, menu.title)">
                                 <i :class="menu.icon"></i>
                                 <span slot="title">{{menu.title}}</span>
                             </el-menu-item>
 
-                            <el-submenu :index="index" v-if="menu.child">
+                            <el-submenu :index="`elMenu${index}`" v-if="menu.child">
                                 <template slot="title">
                                     <i :class="menu.icon"></i>
                                     <span>{{menu.title}}</span>
                                 </template>
 
                                 <template v-for="(child, childIndex) in menu.child">
-                                    <el-menu-item :index="childIndex" @click="openUrl(child.uri, child.title)"
+                                    <el-menu-item :index="`elChildMenu${childIndex}`"
+                                                  @click="openUrl(child.uri, child.title)"
                                                   v-if="!child.child">{{child.title}}
                                     </el-menu-item>
-                                    <el-submenu :index="childIndex" v-if="child.child">
+                                    <el-submenu :index="`elChildMenu${childIndex}`" v-if="child.child">
                                         <template slot="title">{{child.title}}</template>
-                                        <el-menu-item :index="childSecIndex"
+                                        <el-menu-item :index="`elChildMenu${childSecIndex}`"
                                                       @click="openUrl(childSec.uri, childSec.title)"
                                                       v-for="(childSec, childSecIndex) in child.child">
                                             {{childSec.title}}
@@ -67,141 +91,81 @@
                                 </template>
                             </el-submenu>
                         </template>
-
-                        <div class="menu-bottom">
-                            <el-menu-item @click="openUrl('{:url('/thinkadmin/main/message')}', '消息')">
-                                <i class="el-icon-chat-line-square"></i>
-                                <span slot="title">消息</span>
-                            </el-menu-item>
-                            <el-menu-item>
-                                <el-popover
-                                        style="z-index: 999999998"
-                                        width="114"
-                                        placement="right"
-                                        trigger="hover"
-                                >
-                                    <div class="my-settings">
-                                        <li @click="openUrl('{:url('/thinkadmin/my/index')}', '个人设置')"><i
-                                                class="el-icon-user"></i> 个人设置
-                                        </li>
-                                        {if $admin->isSupper()}
-                                        <li @click="openUrl('{:url('/thinkadmin/system/index')}', '系统设置')"><i
-                                                class="el-icon-setting"></i> 系统设置
-                                        </li>
-                                        {/if}
-                                        <li><a href="{:url('/thinkadmin/auth/logout')}"><i class="el-icon-right"></i>
-                                            退出登录</a></li>
-                                    </div>
-                                    <div slot="reference">
-                                        <i class="el-icon-s-custom"></i>
-                                    </div>
-
-                                </el-popover>
-                            </el-menu-item>
-                        </div>
                     </el-menu>
                 </el-aside>
-                <el-main>
-                    <div style="text-align: center; margin: 300px auto; width: 500px;">
-                        <h1>欢迎登录 think-admin</h1>
-                        <div style="color: #666666">
-                            <p>不要问我</p>
-                            <p>一生曾经爱过多少人</p>
-                            <p>你不懂我伤有多深</p>
-                            <p>要剥开伤口总是很残忍</p>
-                            <p>劝你别做痴心人</p>
-                            <p>多情暂且保留几分</p>
-                            <p>...</p>
-
-                        </div>
-                        <el-alert
-                                title="开发版，暴躁的码农正在不慌不忙的开发中....."
-                                type="error">
-                        </el-alert>
-                    </div>
+                <el-main class="summer-main">
+                    <el-tabs v-model="editableTabsValue" type="card" closable @edit="handleTabsEdit">
+                        <el-tab-pane
+                                :key="item.name"
+                                v-for="(item, index) in editableTabs"
+                                :label="item.title"
+                                :name="item.name"
+                                stlye="height:100%"
+                        >
+                            <iframe :id="item.name" :src="item.url" frameborder="0"></iframe>
+                        </el-tab-pane>
+                    </el-tabs>
                 </el-main>
-                <el-drawer
-                        z-index="999999999"
-                        :modal="falseSetting"
-                        class="apps-drawer"
-                        title="应用"
-                        size="400px"
-                        :visible.sync="drawer"
-                        :direction="direction"
-                        :before-close="handleClose">
-                    <el-row>
-                        <div class="think-apps">
-                            <el-col :span="6" v-for="n in apps">
-                                <span @click="openUrl(n.entry, n.title)">
-                                    <img :src="n.image" alt="">
-                                    <span class="icon-name">{{n.title}}</span></span>
-                            </el-col>
-                        </div>
-                    </el-row>
-                </el-drawer>
             </el-container>
-        </template>
-    </div>
+        </el-container>
+    </template>
 </div>
 </body>
 <!-- import Vue before Element -->
-<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <!-- import JavaScript -->
-<script src="https://cdn.bootcss.com/element-ui/2.12.0/index.js"></script>
-<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/element-ui/lib/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
 <script>
     new Vue({
         el: '#app',
-        template: "#appcnt",
         data: function () {
             return {
-                apps: [],
+                isCollapse: false,
+                activeIndex2: '1',
+
                 menus: [],
-                isCollapse: true,
-                falseSetting: false,
-                drawer: false,
-                direction: 'ltr'
+                subMenus: [],
+                subMenu: [],
+
+                editableTabsValue: '0',
+                editableTabs: [{
+                    title: '仪表盘',
+                    name: '0',
+                    url: '{$system_info["welcomeUrl"]}'
+                }],
+                tabIndex: 2
             }
         },
         methods: {
-            openUrl(url, title) {
-                this.drawer = false
-                var width = document.body.clientWidth;
-                var height = document.body.clientHeight - 40;
-                var maxWidth = 1400
-                width = width > maxWidth ? maxWidth : width - 140
-                layer.open({
-                    type: 2,
-                    title: title,
-                    shadeClose: true,
-                    shade: false,
-                    maxmin: true, //开启最大化最小化按钮
-                    area: [width + 'px', height + 'px'],
-                    content: url,
-                    zIndex: layer.zIndex,
-                    success: function (layero) {
-                        layer.setTop(layero); //重点2
-                    }
-                });
-            },
-            handleCollapse() {
-                this.isCollapse = this.isCollapse ? false : true
-                console.log(this.isCollapse)
-            },
-            handleClose(key, keyPath) {
-                this.drawer = false
-                console.log(key, keyPath);
+            openUrl(url, name) {
+                this.editableTabsValue = '' + this.editableTabs.length;
+                this.editableTabs.push({name: this.editableTabsValue, title: name, url: url})
             },
             handleSelect(key, keyPath) {
-                this.drawer = false
-                if (key === 'apps') {
-                    this.drawer = !this.drawer
-                } else if (key === 'collapse') {
-                    this.isCollapse = this.isCollapse ? false : true
-                }
                 console.log(key, keyPath);
+            },
+            handleTabsEdit(targetName, action) {
+                console.log(action)
+                if (this.editableTabs.length < 1) {
+                    return false;
+                }
+                if (action === 'remove') {
+                    let tabs = this.editableTabs;
+                    let activeName = this.editableTabsValue;
+                    if (activeName === targetName) {
+                        tabs.forEach((tab, index) => {
+                            if (tab.name === targetName) {
+                                let nextTab = tabs[index + 1] || tabs[index - 1];
+                                if (nextTab) {
+                                    activeName = nextTab.name;
+                                }
+                            }
+                        });
+                    }
+                    this.editableTabsValue = activeName;
+                    this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+                }
             },
             getMyApps() {
                 let _this = this
@@ -218,127 +182,61 @@
                     if (rs.code !== 200) {
                         return false;
                     }
+                    rs.data.forEach((menus, index) => {
+                        if (menus.child) {
+                            _this.subMenus.push(menus.child)
+                        } else {
+                            _this.subMenus.push([])
+                        }
+                    })
                     _this.menus = rs.data
-                    if (rs.data.length > 13) {
-                        $(".menu-bottom").css('position', 'unset');
-                    }
                 })
+            },
+            changeSubMenu(index) {
+                this.subMenu = this.subMenus[index]
+                console.log(this.subMenu)
             }
         },
         created: function () {
             this.getMyMenus()
-            this.getMyApps()
-            this.$notify({
-                title: '欢迎访问',
-                message: '不要问我，一生爱过多少人',
-                position: 'bottom-right'
-            });
         }
     })
 </script>
 <style>
-    body, .think-app, html {
+    html, body, #app {
         height: 100%;
-        padding: 0;
         margin: 0;
-    }
-
-    .think-app .think-aside {
-        overflow: unset;
-    }
-
-    .think-app .el-main {
         padding: 0;
     }
 
-    .think-app .think-container,
-    .think-app .think-container .think-aside,
-    .think-app .think-container .think-el-menu {
+    .summer-header i {
+        color: #fff;
+    }
+
+    .el-menu-top-right > .el-menu-item, .el-menu-top-right > .el-submenu {
+        float: right;
+    }
+
+    .el-tab-pane {
         height: 100%;
-    }
-
-    .apps-drawer .el-drawer.ltr {
-        left: 64px;
-    }
-
-
-    .think-el-menu .menu-logo {
-        width: 45px;
-        height: 45px;
-    }
-
-
-    .think-el-menu .menu-bottom {
-        position: absolute;
-        bottom: 20px;
-        display: block;
         width: 100%;
     }
 
-    .think-el-menu i {
-        color: #d7e6fe;
-        margin-right: 5px;
-        width: 24px;
-        text-align: center;
-        font-size: 18px;
-        vertical-align: middle;
+    .summer-main {
+        padding: 0;
     }
 
-    .el-menu--collapse > .el-menu-item i, .el-menu--collapse > .el-submenu i {
-        color: #d7e6fe;
-        speak: none;
-        font-style: normal;
-        font-weight: 400;
-        font-variant: normal;
-        text-transform: none;
-        line-height: 1;
-        display: inline-block;
-        -webkit-font-smoothing: antialiased;
+    .summer-main > .el-tabs, .summer-main > .el-tabs > .el-tabs__content {
+        height: calc(100% - 30px);
+    }
+
+    .summer-main .el-tabs__header {
         margin: 0;
-        vertical-align: middle;
-        width: 24px;
-        text-align: center;
     }
 
-    .my-settings li {
-        list-style-type: none;
-    }
-
-    .my-settings li a {
-        color: #666;
-        line-height: 37px;
-        text-decoration: none;
-    }
-
-    .my-settings li {
-        cursor: pointer;
-        color: #666;
-        line-height: 37px;
-        padding-left: 20px;
-        text-decoration: none;
-    }
-
-    .my-settings li a:hover {
-        color: #4f90f7
-    }
-
-    .think-apps {
-        text-align: center;
-        color: #5e6d82;
-        font-size: 14px;
-        line-height: 2em;
-    }
-
-    .think-apps > .el-col {
-        height: 100px;
-        cursor: pointer;
-    }
-
-    .think-apps img {
-        display: block;
-        width: 48px;
-        height: 48px;
-        margin: 0 auto;
+    .el-tab-pane iframe {
+        height: 100%;
+        width: 100%;
     }
 
 </style>

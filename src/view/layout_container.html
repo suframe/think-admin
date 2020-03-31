@@ -46,7 +46,7 @@
 <div id="app">
 <template id="appCnt">
 <el-container style="height: 100%">
-    {if isset($adminNavs)}
+    {if isset($adminNavs) && $adminNavs}
     <el-aside width="200px" style="height: 100%">
         {block name="menu"}
         <el-menu default-active="{$adminNavActive}">

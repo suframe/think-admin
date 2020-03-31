@@ -27,10 +27,16 @@ class Main extends Base
         $logo = Admin::setting()->getKey('system_info.logo');
         View::assign('system_info', [
             'title' => $title['value'] ?? '管理后台',
+            'welcomeUrl' => config('thinkAdmin.welcomeUrl') ?? url('/thinkadmin/main/welcome'),
             'logo' => $logo['value'] ?? 'https://t1.picb.cc/uploads/2019/10/09/gLpZna.png',
         ]);
         View::assign('admin', $this->getAdminUser());
         return View::fetch('main/index');
+    }
+
+    public function welcome()
+    {
+        return View::fetch('main/welcome');
     }
 
     public function message()
@@ -77,6 +83,7 @@ class Main extends Base
     public function getMyMenus()
     {
         $rs = AdminRoleMenu::getMenuByUser($this->getAdminUser(), false);
+        $rs = array_merge($rs, config('thinkAdmin.menus'));
         return json_return($rs);
     }
 }

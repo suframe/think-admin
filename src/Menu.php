@@ -102,7 +102,8 @@ class Menu
             $uri,
             $parentMenuId,
             null,
-            $app_name
+            $app_name,
+            1
         );
     }
 
@@ -113,15 +114,17 @@ class Menu
      * @param int $pid
      * @param null $icon
      * @param string $app_name
+     * @param int $show_menu
      * @return array|AdminMenu|\think\Model|null
      */
-    public function insertMenu($title, $uri, $pid = 0, $icon = null, $app_name = '')
+    public function insertMenu($title, $uri, $pid = 0, $icon = null, $app_name = '', $show_menu = 2)
     {
         $menuInfo = [
             'title' => $title,
             'uri' => $uri,
             'parent_id' => $pid,
             'app_name' => $app_name,
+            'show_menu' => $show_menu,
         ];
         if ($icon) {
             $menuInfo['icon'] = $icon;

@@ -36,12 +36,14 @@ class AdminRoleMenu extends Model
             }
         }
         $adminMenu = AdminMenu::order('order', 'desc');
+        $adminMenu->where('show_menu', 1);
         if ($menu_ids !== 'all') {
             $adminMenu->whereIn('id', $menu_ids);
         }
         if (!$withApp) {
             $adminMenu->whereNull('app_name');
         }
+
         if($app_name) {
             $adminMenu->where('app_name', $app_name);
         }

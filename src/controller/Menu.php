@@ -36,7 +36,7 @@ class Menu extends SystemBase
         $rs = $this->parseSearchWhere(
             $this->getManageModel()::where('parent_id', $parent_id),
             ['title' => 'like', 'uri' => 'like']
-        )->append(['app_name_zh', 'has_child']);
+        )->append(['app_name_zh', 'has_child', 'show_menu_zh']);
         return json_return($rs);
     }
 

@@ -16,6 +16,10 @@ class AdminMenu extends Model
         }
         return AdminApps::where('app_name', $data['app_name'])->field('title')->value('title');
     }
+   public function getShowMenuZhAttr($value, $data)
+    {
+        return $data['show_menu'] == 1 ? '是' : '否';
+    }
 
     public function getChildCountAttr($value, $data)
     {

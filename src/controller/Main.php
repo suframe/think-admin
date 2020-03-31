@@ -82,8 +82,10 @@ class Main extends Base
      */
     public function getMyMenus()
     {
-        $rs = AdminRoleMenu::getMenuByUser($this->getAdminUser(), false);
-        $rs = array_merge($rs, config('thinkAdmin.menus'));
+        $rs = AdminRoleMenu::getMenuByUser($this->getAdminUser(), true);
+        if ($this->getAdminUser()->isSupper()) {
+            $rs = array_merge($rs, config('thinkAdmin.menus'));
+        }
         return json_return($rs);
     }
 }

@@ -44,6 +44,28 @@ class MenuForm
         ];
     }
 
+    public function icon()
+    {
+        return [
+            'type' => 'input',
+            'title' => '图标',
+            'field' => 'icon',
+        ];
+    }
+
+    public function show_menu()
+    {
+        return [
+            'type' => 'radio',
+            'title' => '显示到菜单',
+            'field' => 'show_menu',
+            'options' => [
+                ['value' => 1, 'label' => "是"],
+                ['value' => 2, 'label' => "否"],
+            ],
+        ];
+    }
+
     public function order()
     {
         return [
@@ -51,15 +73,6 @@ class MenuForm
             'title' => '排序',
             'field' => 'order',
             'value' => 100,
-        ];
-    }
-
-    public function icon()
-    {
-        return [
-            'type' => 'input',
-            'title' => '图标',
-            'field' => 'icon',
         ];
     }
 

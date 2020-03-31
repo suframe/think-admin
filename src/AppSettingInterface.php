@@ -87,6 +87,7 @@ abstract class AppSettingInterface
     }
 
     protected $app_name;
+
     /**
      * 安装菜单
      * @param AdminApps $app
@@ -105,7 +106,8 @@ abstract class AppSettingInterface
             $info['entry'],
             0,
             $info['menu_icon'] ?? 'el-icon-apple',
-            $this->app_name
+            $this->app_name,
+            $info['show_menu'] ?? 2
         );
         if (!$installMenu) {
             throw new \Exception('应用没有配置入口');
@@ -195,7 +197,8 @@ abstract class AppSettingInterface
                 $menu['uri'] ?? '',
                 $parentMenuId,
                 $menu['icon'] ?? '',
-                $this->app_name
+                $this->app_name,
+                $info['show_menu'] ?? 2
             );
             if (!$installMenu) {
                 continue;

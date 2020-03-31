@@ -195,11 +195,11 @@
                         }
                     })
                     _this.menus = rs.data
+                    _this.changeSubMenu(0)
                 })
             },
             changeSubMenu(index) {
                 this.subMenu = this.subMenus[index]
-                console.log(this.subMenu)
             }
         },
         created: function () {

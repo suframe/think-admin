@@ -246,7 +246,7 @@ class Gen
         $menu = [
             'parent_id' => $parentId,
             'title' => $title,
-            'icon' => 'el-icon-apple',
+            'icon' => $parentId == 0 ? 'el-icon-apple' : '',
             'uri' => $uri,
             'app_name' => $this->app,
         ];

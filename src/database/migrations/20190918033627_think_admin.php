@@ -110,6 +110,7 @@ class ThinkAdmin extends Migrator
             ->addColumn('uri', 'string', ['comment' => '路由', 'length' => 50, 'null' => true])
             ->addColumn('permission', 'string', ['comment' => '权限', 'null' => true])
             ->addColumn('app_name', 'string', ['comment' => '应用菜单', 'length' => 64, 'null' => true])
+            ->addColumn('show_menu', 'integer', ['comment' => '显示到菜单', 'length' => 1, 'default' => 1])
             ->addIndex(['parent_id'])
             ->addIndex(['order'])
             ->addIndex(['title'])

@@ -25,7 +25,9 @@
                                 text-color="#fff"
                                 active-text-color="#f6f6f6">
                             <el-menu-item style="width: 200px; text-align: center">
-                                <a class="logo-title" href="{:url('/thinkadmin/main/index')}">{$system_info['title']}</a> <i class="el-icon-s-operation" @click="isCollapse=!isCollapse"></i>
+                                <a class="logo-title"
+                                   href="{:url('/thinkadmin/main/index')}">{$system_info['title']}</a> <i
+                                    class="el-icon-s-operation" @click="isCollapse=!isCollapse"></i>
                             </el-menu-item>
                             <el-menu-item @click="changeSubMenu(index)" :key="index"
                                           v-for="(menu, index) in menus">
@@ -42,11 +44,14 @@
                                 background-color="#1890ff"
                                 text-color="#fff"
                                 active-text-color="#f6f6f6">
-                            <el-submenu index="2">
+                            <el-submenu index="2" class="el-menu-top-right-dialog">
                                 <template slot="title"><i class="el-icon-s-tools"></i>超级管理员</template>
-                                <el-menu-item index="2-1">个人中心</el-menu-item>
-                                <el-menu-item index="2-2">密码修改</el-menu-item>
-                                <el-menu-item index="2-3">退出登录</el-menu-item>
+                                <el-menu-item class="el-menu-top-right-item" index="2-1" @click="openUrl('{:url('/thinkadmin/my/index')}', '个人设置')">
+                                    <i class="el-icon-user"></i> 个人设置
+                                </el-menu-item>
+                                <el-menu-item class="el-menu-top-right-item"  index="2-3">
+                                    <a href="{:url('/thinkadmin/auth/logout')}"><i class="el-icon-right"></i>退出登录</a>
+                                </el-menu-item>
                             </el-submenu>
                             <el-menu-item><i class="el-icon-message-solid"></i>消息</el-menu-item>
                         </el-menu>
@@ -213,6 +218,13 @@
         color: #fff;
     }
 
+    .el-menu-top-right-item a {
+        text-decoration: none;
+        color: #fff;
+    }
+    .el-menu-top-right-item i {
+        color: #fff;
+    }
     .summer-header .logo-title {
         text-decoration: none;
         font-size: 16px;

@@ -25,7 +25,7 @@
                                 text-color="#fff"
                                 active-text-color="#f6f6f6">
                             <el-menu-item style="width: 200px; text-align: center">
-                                MALL <i class="el-icon-s-operation" @click="isCollapse=!isCollapse"></i>
+                                <a class="logo-title" href="{:url('/thinkadmin/main/index')}">{$system_info['title']}</a> <i class="el-icon-s-operation" @click="isCollapse=!isCollapse"></i>
                             </el-menu-item>
                             <el-menu-item @click="changeSubMenu(index)" :key="index"
                                           v-for="(menu, index) in menus">
@@ -211,6 +211,12 @@
 
     .summer-header i {
         color: #fff;
+    }
+
+    .summer-header .logo-title {
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
     }
 
     .el-menu-top-right > .el-menu-item, .el-menu-top-right > .el-submenu {

@@ -13,7 +13,7 @@ class SystemBase extends Base
      */
     protected function initialize()
     {
-        if(!$this->getAdminUser()->isSupper()){
+        if (!$this->getAdminUser()->isSupper()) {
             throw new \Exception('权限不足');
         }
         parent::initialize();

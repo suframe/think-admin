@@ -34,7 +34,7 @@
                                           v-for="(menu, index) in menus">
                                 <i :class="menu.icon" v-if="menu.icon"></i>{{menu.title}}
                             </el-menu-item>
-                            <el-submenu index="2" class="el-menu-top-right-dialog" v-if="menusMore">
+                            <el-submenu index="2" class="el-menu-top-right-dialog" v-if="menusMore.length">
                                 <template slot="title">更多菜单</template>
 
                                 <el-menu-item class="el-menu-top-right-item"

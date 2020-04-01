@@ -19,6 +19,7 @@
                         <el-menu
                                 :default-active="activeIndex2"
                                 class="el-menu-demo"
+                                style="height: 60px;overflow: hidden"
                                 mode="horizontal"
                                 @select="handleSelect"
                                 background-color="#1890ff"
@@ -29,10 +30,19 @@
                                    href="{:url('/thinkadmin/main/index')}">{$system_info['title']}</a> <i
                                     class="el-icon-s-operation" @click="isCollapse=!isCollapse"></i>
                             </el-menu-item>
-                            <el-menu-item @click="changeSubMenu(index)" :key="index"
+                            <el-menu-item @click="changeSubMenu(index)" v-if="index < maxMenu" :key="index"
                                           v-for="(menu, index) in menus">
                                 <i :class="menu.icon" v-if="menu.icon"></i>{{menu.title}}
                             </el-menu-item>
+                            <el-submenu index="2" class="el-menu-top-right-dialog" v-if="menusMore">
+                                <template slot="title">更多菜单</template>
+
+                                <el-menu-item class="el-menu-top-right-item"
+                                              @click="changeSubMenu(index + maxMenu)" :key="index"
+                                              v-for="(menu, index) in menusMore">
+                                    <i :class="menu.icon" v-if="menu.icon"></i>{{menu.title}}
+                                </el-menu-item>
+                            </el-submenu>
                         </el-menu>
                     </el-col>
                     <el-col :span="6">
@@ -43,13 +53,15 @@
                                 @select="handleSelect"
                                 background-color="#1890ff"
                                 text-color="#fff"
+                                style="height: 60px;overflow: hidden"
                                 active-text-color="#f6f6f6">
                             <el-submenu index="2" class="el-menu-top-right-dialog">
                                 <template slot="title"><i class="el-icon-s-tools"></i>超级管理员</template>
-                                <el-menu-item class="el-menu-top-right-item" index="2-1" @click="openUrl('{:url('/thinkadmin/my/index')}', '个人设置')">
+                                <el-menu-item class="el-menu-top-right-item" index="2-1"
+                                              @click="openUrl('{:url('/thinkadmin/my/index')}', '个人设置')">
                                     <i class="el-icon-user"></i> 个人设置
                                 </el-menu-item>
-                                <el-menu-item class="el-menu-top-right-item"  index="2-3">
+                                <el-menu-item class="el-menu-top-right-item" index="2-3">
                                     <a href="{:url('/thinkadmin/auth/logout')}"><i class="el-icon-right"></i>退出登录</a>
                                 </el-menu-item>
                             </el-submenu>
@@ -89,7 +101,7 @@
                                         <template slot="title">{{child.title}}</template>
                                         <el-menu-item :index="`elChildMenu${childSecIndex}`"
                                                       @click="openUrl(childSec.uri, childSec.title)"
-                                                      v-for="(childSec, childSecIndex) in child.child">
+                                                      v-for="(childSec, childSecIndex) in child.child" :key="index">
                                             {{childSec.title}}
                                         </el-menu-item>
                                     </el-submenu>
@@ -129,7 +141,9 @@
                 isCollapse: false,
                 activeIndex2: '1',
 
+                maxMenu: 5,
                 menus: [],
+                menusMore: [],
                 subMenus: [],
                 subMenu: [],
 
@@ -188,6 +202,9 @@
                         return false;
                     }
                     rs.data.forEach((menus, index) => {
+                        if (index >= 5) {
+                            _this.menusMore.push(menus)
+                        }
                         if (menus.child) {
                             _this.subMenus.push(menus.child)
                         } else {
@@ -222,9 +239,11 @@
         text-decoration: none;
         color: #fff;
     }
+
     .el-menu-top-right-item i {
         color: #fff;
     }
+
     .summer-header .logo-title {
         text-decoration: none;
         font-size: 16px;

@@ -96,30 +96,31 @@
         ?>
         <el-col style="margin-top: 4px" :span="4">
             <div class="el-form-item">
-            <el-dropdown size="small" split-button type="primary" @command="handleCommand">
-                操作
-                <el-dropdown-menu slot="dropdown">
-                    <?php foreach ($buttons as $key => $item) { ?>
-                        <el-dropdown-item :command='<?= json_encode($item) ?>'><?= $item['title'] ?></el-dropdown-item>
-                    <?php } ?>
-                </el-dropdown-menu>
-            </el-dropdown>
+                <el-dropdown size="small" split-button type="primary" @command="handleCommand">
+                    操作
+                    <el-dropdown-menu slot="dropdown">
+                        <?php foreach ($buttons as $key => $item) { ?>
+                            <el-dropdown-item
+                                    :command='<?= json_encode($item) ?>'><?= $item['title'] ?></el-dropdown-item>
+                        <?php } ?>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </div>
         </el-col>
         <?php
     }
     ?>
 </el-row>
-<?php if($breadcrumb) { ?>
-<el-breadcrumb separator-class="el-icon-arrow-right" style="margin-bottom: 15px;">
-    <?php foreach ($breadcrumb as $key => $item) { ?>
-        <?php if(is_string($item)) { ?>
-            <el-breadcrumb-item><?php echo $item ?></el-breadcrumb-item>
-        <?php } else if(is_array($item)) { ?>
-            <el-breadcrumb-item><a href="<?php echo $item[1] ?>"><?php echo $item[0] ?></a></el-breadcrumb-item>
+<?php if ($breadcrumb) { ?>
+    <el-breadcrumb separator-class="el-icon-arrow-right" style="margin-bottom: 15px;">
+        <?php foreach ($breadcrumb as $key => $item) { ?>
+            <?php if (is_string($item)) { ?>
+                <el-breadcrumb-item><?php echo $item ?></el-breadcrumb-item>
+            <?php } else if (is_array($item)) { ?>
+                <el-breadcrumb-item><a href="<?php echo $item[1] ?>"><?php echo $item[0] ?></a></el-breadcrumb-item>
+            <?php } ?>
         <?php } ?>
-    <?php } ?>
-</el-breadcrumb>
+    </el-breadcrumb>
 <?php } ?>
 
 <el-table
@@ -187,10 +188,13 @@
                                     $filterValue = $v['value'] ?? null;
                                     if ($filterValue) {
                                         $filterValue = is_bool($filterValue) ? ($filterValue ? 'true' : 'false') : $filterValue;
+                                        if (is_string($filterValue)) {
+                                            $filterValue = "'{$filterValue}'";
+                                        }
                                     }
                                     ?>
                                     <template <?php if ($filterValue !== null) { ?> v-if="scope.row.<?= $v['key'] ?>===<?= $filterValue ?>"<?php } ?>>
-                                        <?php if(!(isset($v['showValue']) && ($v['showValue'] === false))) {?>
+                                        <?php if (!(isset($v['showValue']) && ($v['showValue'] === false))) { ?>
                                             {{scope.row.<?= $key ?>}}
                                         <?php } ?>
                                         <?php if (isset($v['url'])) {

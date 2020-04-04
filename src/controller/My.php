@@ -13,7 +13,7 @@ class My extends Base
 
     protected $urlPre = '/thinkadmin/my/';
 
-    protected function setNav($active)
+    protected function setNav($active = null)
     {
         $navs = [
             'index' => ['基本信息', $this->urlABuild('index')],

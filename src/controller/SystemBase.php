@@ -19,7 +19,7 @@ class SystemBase extends Base
         parent::initialize();
     }
 
-    protected function setNav($active)
+    protected function setNav($active = null)
     {
         $navs = [];
         $this->setAdminNavs($navs, $active);

@@ -375,7 +375,8 @@
                             config.url = config.url.replace('__' + vars[i] + '__', row[vars[i]])
                         }
                     }
-                    if (window.parent && config.blank) {
+                    console.log(window.parent)
+                    if (!(window.parent === window) && config.blank) {
                         window.parent.postMessage(config);
                     } else {
                         window.location.href = config.url

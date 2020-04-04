@@ -18,11 +18,12 @@ trait AppSetNav
 {
     /**
      * 获取app菜单
+     * @param null $active
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    protected function setNav()
+    protected function setNav($active = null)
     {
         $appName = $this->app->http->getName();
         $urlHtmlSuffix = '.' . config('route.url_html_suffix');

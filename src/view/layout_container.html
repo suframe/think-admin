@@ -51,7 +51,7 @@
         {block name="menu"}
         <el-menu default-active="{$adminNavActive}">
             {volist name="adminNavs" id="vo"}
-            <el-menu-item index="{$key}"><a href="{$vo[1]}">{$vo[0]}</a></el-menu-item>
+            <el-menu-item index="{$key}"><a href="{$vo[1]}">{if(isset($vo[2]))}<i class="{$vo[2]}"></i>{/if}{$vo[0]}</a></el-menu-item>
             {/volist}
         </el-menu>
         {/block}

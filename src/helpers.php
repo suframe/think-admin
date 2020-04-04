@@ -102,6 +102,12 @@ if (!function_exists('__UITableBuildItemsUrl')) {
         if (isset($item['confirm'])) {
             $rowClick['confirm'] = $item['confirm'];
         }
+        if (isset($item['blank'])) {
+            $rowClick['blank'] = $item['blank'];
+        }
+        if (isset($item['blankName'])) {
+            $rowClick['blankName'] = $item['blankName'];
+        }
         $rowClick = json_encode($rowClick);
         return $rowClick;
     }

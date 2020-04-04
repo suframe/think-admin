@@ -375,7 +375,11 @@
                             config.url = config.url.replace('__' + vars[i] + '__', row[vars[i]])
                         }
                     }
-                    window.location.href = config.url
+                    if (window.parent && config.blank) {
+                        window.parent.postMessage(config);
+                    } else {
+                        window.location.href = config.url
+                    }
                     return false
                 }
                 var params = {}

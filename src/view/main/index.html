@@ -220,7 +220,11 @@
             }
         },
         created: function () {
+            let _this = this
             this.getMyMenus()
+            window.addEventListener('message', function(event) {
+                _this.openUrl(event.data.url, event.data.blankName ? event.data.blankName : '新窗口')
+            }, false);
         }
     })
 </script>

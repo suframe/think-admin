@@ -1,4 +1,19 @@
 {extend name="$thinkAdminViewLayoutFile" /}
+{block name='css'}
+{__block__}
+{css href="https://cdn.jsdelivr.net/npm/ckeditor5-image@1.0.5/theme/imagestyle.css"}
+{/block}
+
+{block name="js"}
+{__block__}
+{js href="https://cdn.jsdelivr.net/npm/@form-create/data@1.0.0/dist/province_city.js"}
+{js href="https://cdn.jsdelivr.net/npm/@form-create/data@1.0.0/dist/province_city_area.js"}
+
+{js href="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-vue@1.0.1/dist/ckeditor.min.js"}
+{js href="https://cdn.jsdelivr.net/npm/ckeditor5-build-classic-image-resize@1.5.0/build/ckeditor.js"}
+{js href="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-vue@1.0.1/dist/ckeditor.min.js"}
+{/block}
+
 {block name="style"}
 {__block__}
 <style>

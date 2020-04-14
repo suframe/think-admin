@@ -187,9 +187,9 @@
                                 <?php foreach ($column[$key]['linkConfig'] as $k => $v) {
                                     $filterValue = $v['value'] ?? null;
                                     if ($filterValue) {
-                                        $filterValue = is_bool($filterValue) ? ($filterValue ? 'true' : 'false') : $filterValue;
+                                        $filterValue = is_bool($filterValue) ? ($filterValue ? 'true' : 'false') : "'{$filterValue}'";
                                         if (is_string($filterValue)) {
-                                            $filterValue = "'{$filterValue}'";
+                                            $filterValue = "{$filterValue}";
                                         }
                                     }
                                     ?>

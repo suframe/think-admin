@@ -44,24 +44,24 @@
 </head>
 <body>
 <div id="app">
-<template id="appCnt">
-<el-container style="height: 100%">
-    {if isset($adminNavs) && $adminNavs}
-    <el-aside width="200px" style="height: 100%">
-        {block name="menu"}
-        <el-menu default-active="{$adminNavActive}">
-            {volist name="adminNavs" id="vo"}
-            <el-menu-item index="{$key}"><a href="{$vo[1]}">{if(isset($vo[2]))}<i class="{$vo[2]}"></i>{/if}{$vo[0]}</a></el-menu-item>
-            {/volist}
-        </el-menu>
-        {/block}
-    </el-aside>
-    {/if}
-    <el-main>
-        {block name="main"}{/block}
-    </el-main>
-</el-container>
-</template>
+    <template id="appCnt">
+        <el-container style="height: 100%">
+            {if isset($adminNavs) && $adminNavs}
+            <el-aside width="111px" style="height: 100%">
+                {block name="menu"}
+                <el-menu default-active="{$adminNavActive}">
+                    {volist name="adminNavs" id="vo"}
+                    <el-menu-item index="{$key}"><a href="{$vo[1]}">{if(isset($vo[2]))}<i class="{$vo[2]}"></i>{/if}{$vo[0]}</a></el-menu-item>
+                    {/volist}
+                </el-menu>
+                {/block}
+            </el-aside>
+            {/if}
+            <el-main>
+                {block name="main"}{/block}
+            </el-main>
+        </el-container>
+    </template>
 </div>
 
 {block name='js'}
@@ -71,13 +71,13 @@
 {js href="https://cdn.bootcss.com/element-ui/2.12.0/index.js"}
 {js href="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"}
 {js href="https://cdn.bootcss.com/layer/3.0.1/layer.min.js"}
-
 {js href="https://cdn.jsdelivr.net/npm/@form-create/element-ui@1.0.3/dist/form-create.min.js"}
-{js href="https://cdn.jsdelivr.net/npm/@form-create/data@1.0.0/dist/province_city.js"}
-{js href="https://cdn.jsdelivr.net/npm/@form-create/data@1.0.0/dist/province_city_area.js"}
 {/block}
 
 {block name='script'}
+<script type="text/javascript">
+    Vue.use(window.CKEditor)
+</script>
 <script>
     new Vue({
         el: '#app',

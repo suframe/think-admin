@@ -335,6 +335,9 @@ class Gen
                 case 'files':
                     $filedSetting = ['type' => 'upload' . ucfirst($item['type']), 'action' => '__UPLOAD_ACTION__'];
                     break;
+                case 'editor':
+                    $filedSetting = ['type' => $item['type'], 'action' => '__UPLOAD_ACTION__'];
+                    break;
                 case 'switch':
                     $filedSetting = [
                         'type' => 'switch',

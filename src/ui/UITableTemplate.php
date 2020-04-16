@@ -5,7 +5,7 @@
         $cascader = [];
         if ($filter) {
             ?>
-            <el-form :inline="true" :model="searchParam" ref="<?= $searchFormId ?>" class="demo-form-inline">
+            <el-form :inline="true" :model="searchParam" ref="<?= $searchFormId ?>" class="think-search-top">
                 <?php foreach ($filter as $key => $item) { ?>
                     <el-form-item label="<?= $item['label'] ?>">
                         <?php

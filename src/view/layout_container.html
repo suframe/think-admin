@@ -39,6 +39,9 @@
             text-decoration: none;
             color: #303133;
         }
+        .think-search-top .el-form-item {
+            margin-bottom: 0;
+        }
     </style>
     {/block}
 </head>
@@ -47,7 +50,7 @@
     <template id="appCnt">
         <el-container style="height: 100%">
             {if isset($adminNavs) && $adminNavs}
-            <el-aside width="200px" style="height: 100%">
+            <el-aside width="111px" style="height: 100%">
                 {block name="menu"}
                 <el-menu default-active="{$adminNavActive}">
                     {volist name="adminNavs" id="vo"}

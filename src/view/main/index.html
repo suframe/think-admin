@@ -116,10 +116,10 @@
                         <el-tab-pane
                                 :key="item.name"
                                 v-for="(item, index) in editableTabs"
-                                :label="item.title"
                                 :name="item.name"
                                 stlye="height:100%"
                         >
+                            <span slot="label" v-html="item.title"></span>
                             <iframe :id="item.name" :src="item.url" frameborder="0"></iframe>
                         </el-tab-pane>
                     </el-tabs>
@@ -150,7 +150,7 @@
 
                 editableTabsValue: '0',
                 editableTabs: [{
-                    title: '仪表盘',
+                    title: '<i class="el-icon-s-home"></i> 仪表盘 ',
                     name: '0',
                     url: '{$system_info["welcomeUrl"]}'
                 }],

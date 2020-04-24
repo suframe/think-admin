@@ -47,6 +47,8 @@ php think run -H 0.0.0.0
  http://127.0.0.1:8000
 
 预览
+
+<img src="http://q9a4rey0j.bkt.clouddn.com/1.png" />
 ![1](http://q9a4rey0j.bkt.clouddn.com/1.png)
 
 ![2](http://q9a4rey0j.bkt.clouddn.com/2.png)

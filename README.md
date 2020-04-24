@@ -108,17 +108,5 @@ php think curd news
 ```
 进入后台，增加个菜单，注意天下icon,然后刷新下页面看看吧(接下来也会自动生成，开发中)
 
-![1](http://q9a4rey0j.bkt.clouddn.com/1.png)
-![2](http://q9a4rey0j.bkt.clouddn.com/2.png)
-![3](http://q9a4rey0j.bkt.clouddn.com/3.png)
-![4](http://q9a4rey0j.bkt.clouddn.com/4.png)
-![5](http://q9a4rey0j.bkt.clouddn.com/5.png)
-![6](http://q9a4rey0j.bkt.clouddn.com/6.png)
-![7](http://q9a4rey0j.bkt.clouddn.com/7.png)
-![8](http://q9a4rey0j.bkt.clouddn.com/8.png)
-![9](http://q9a4rey0j.bkt.clouddn.com/9.png)
-![10](http://q9a4rey0j.bkt.clouddn.com/10.png)
-![11](http://q9a4rey0j.bkt.clouddn.com/11.png)
-
 觉得不错上方点个star，
 更详细的数据库设置教程和文档参看：[生成增删改文档](https://github.com/suframe/think-admin/blob/master/src/command/read.md)

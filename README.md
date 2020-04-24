@@ -2,7 +2,9 @@
 基于thinkphp6的管理中控台库
 
 开发交流QQ群：647344518   [立即加群](http://shang.qq.com/wpa/qunwpa?idkey=83a58116f995c9f83af6dc2b4ea372e38397349c8f1973d8c9827e4ae4d9f50e)     
-体验地址： [thinkadmin.zacms.com](http://thinkadmin.zacms.com)  账户：admin,密码：admin,**请勿乱更改信息**
+项目地址： [https://github.com/suframe/think-admin](https://github.com/suframe/think-admin)  
+体验地址： [http://thinkadmin.zacms.com/thinkadmin/main/index.html](http://thinkadmin.zacms.com/thinkadmin/main/index.html)  账户：admin,密码：admin,**请勿乱更改信息**
+案例体验地址： [http://mall.zacms.com/admin](http://mall.zacms.com/admin)  账户：admin,密码：admin,**请勿乱更改信息,未完成开发，完成后开源**
 
 ## 安装
 ```
@@ -45,15 +47,27 @@ php think run -H 0.0.0.0
  http://127.0.0.1:8000
 
 预览
-![1](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/1.png)
+![1](http://q9a4rey0j.bkt.clouddn.com/1.png)
 
-![2](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/2.png)
+![2](http://q9a4rey0j.bkt.clouddn.com/2.png)
 
-![3](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/3.png)
+![3](http://q9a4rey0j.bkt.clouddn.com/3.png)
 
-![4](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/4.png)
+![4](http://q9a4rey0j.bkt.clouddn.com/4.png)
 
-![5](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/5.png)
+![5](http://q9a4rey0j.bkt.clouddn.com/5.png)
+
+![6](http://q9a4rey0j.bkt.clouddn.com/6.png)
+
+![7](http://q9a4rey0j.bkt.clouddn.com/7.png)
+
+![8](http://q9a4rey0j.bkt.clouddn.com/8.png)
+
+![9](http://q9a4rey0j.bkt.clouddn.com/9.png)
+
+![10](http://q9a4rey0j.bkt.clouddn.com/10.png)
+
+![11](http://q9a4rey0j.bkt.clouddn.com/11.png)
 
 ## 根据mysql表增删改查自动生成
 当已经有数据库了，需要开发增删改查，还要去撸代码？
@@ -93,8 +107,17 @@ php think curd news
 ```
 进入后台，增加个菜单，注意天下icon,然后刷新下页面看看吧(接下来也会自动生成，开发中)
 
-![7](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/7.jpg)
-![6](https://raw.githubusercontent.com/suframe/think-admin/master/asserts/6.jpg)
+![1](http://q9a4rey0j.bkt.clouddn.com/1.png)
+![2](http://q9a4rey0j.bkt.clouddn.com/2.png)
+![3](http://q9a4rey0j.bkt.clouddn.com/3.png)
+![4](http://q9a4rey0j.bkt.clouddn.com/4.png)
+![5](http://q9a4rey0j.bkt.clouddn.com/5.png)
+![6](http://q9a4rey0j.bkt.clouddn.com/6.png)
+![7](http://q9a4rey0j.bkt.clouddn.com/7.png)
+![8](http://q9a4rey0j.bkt.clouddn.com/8.png)
+![9](http://q9a4rey0j.bkt.clouddn.com/9.png)
+![10](http://q9a4rey0j.bkt.clouddn.com/10.png)
+![11](http://q9a4rey0j.bkt.clouddn.com/11.png)
 
 觉得不错上方点个star，
 更详细的数据库设置教程和文档参看：[生成增删改文档](https://github.com/suframe/think-admin/blob/master/src/command/read.md)

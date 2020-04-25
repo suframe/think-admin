@@ -1,29 +1,52 @@
 {extend name="layout_container" /}
 
-{block name="title"}
-基本信息
-{/block}
-
 {block name="main"}
 
-<el-tabs tab-position="left">
-    <el-tab-pane label="基本信息 ">
-        <div class="base-info-cnt">
-            <div id="user-form"></div>
-        </div>
+<el-tabs v-model="active" @tab-click="handleClick">
+    {foreach $configs as $key=>$item}
+    <el-tab-pane label="{$item['name']}" name="{$item['key']}">
+        <div id="{$item['key']}"></div>
     </el-tab-pane>
-    <el-tab-pane label="密码修改">
-        <div class="user-info-cnt">
-            密码修改
-        </div>
-    </el-tab-pane>
+    {/foreach}
 </el-tabs>
+
 {/block}
 
-{block name="script"}
+{block name="style"}
 {__block__}
+
+{/block}
+{block name="script"}
 <script>
-    var create = {$formScript|raw};
-    var $f = create({el: document.getElementById('user-form')});
+
+
+    new Vue({
+        el: '#app',
+        template: "#appCnt",
+        data: function () {
+            return {
+                active: '{$active}'
+            }
+        },
+        computed: {
+
+        },
+        methods: {
+            handleClick(tab, event) {
+                console.log(tab, event);
+            }
+        },
+        created: function () {
+        }
+    })
 </script>
+{foreach $configs as $key=>$item}
+<script>
+    {if $key==0}
+    {$item['form']->customComponentView()|raw}
+    {/if}
+        var create{$item['key']} = {$item['form']->formScript()|raw};
+        var $f = create{$item['key']}({el: document.getElementById("{$item['key']}")});
+</script>
+{/foreach}
 {/block}

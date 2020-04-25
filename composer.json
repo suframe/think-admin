@@ -31,6 +31,7 @@
   "require": {
     "topthink/think-view": "^1.0",
     "suframe/form": "^1.0",
+    "myclabs/php-enum": "^1.7",
     "topthink/think-migration": "^3.0"
   },
   "require-dev": {

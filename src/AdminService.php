@@ -90,10 +90,9 @@ class AdminService extends Service
                 continue;
             }
             $target = $dataPath . $fileInfo->getFilename();
-//            if (!file_exists($target)) {
-                //开发版先覆盖
+            if (!file_exists($target)) {
                 copy($fileInfo->getRealPath(), $target);
-//            }
+            }
         }
 
     }

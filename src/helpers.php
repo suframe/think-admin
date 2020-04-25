@@ -112,3 +112,39 @@ if (!function_exists('__UITableBuildItemsUrl')) {
         return $rowClick;
     }
 }
+
+if (!function_exists('thinkConfigs')) {
+    /**
+     * @param $key
+     * @param null $def
+     * @return mixed|null
+     */
+    function thinkConfigs($key, $def = null)
+    {
+        static $_mallConfigs;
+        if (!$_mallConfigs) {
+            $_mallConfigs = [];
+        }
+        if (isset($_mallConfigs[$key])) {
+            return $_mallConfigs[$key];
+        }
+
+        $keys = explode('.', $key);
+        if (!isset($keys[1])) {
+            throw new \Exception('配置参数错误');
+        }
+        if ($keys[1] == '*') {
+            $rs = \suframe\thinkAdmin\model\AdminSetting::where('group_key', $keys[0])
+                ->select()
+                ->column('value', 'key');
+        } else {
+            $rs = \suframe\thinkAdmin\model\AdminSetting::where('group_key', $keys[0])
+                ->field(['value'])
+                ->where('key', $keys[1])->value('value');
+        }
+        if($rs){
+            $_mallConfigs[$key] = $rs;
+        }
+        return $rs ?: $def;
+    }
+}

@@ -18,12 +18,6 @@ class Setting extends SystemBase
     protected $urlPre = '/thinkadmin/setting/';
     use CURDController;
 
-    private function curlInit()
-    {
-        $this->currentNav = 'setting';
-        $this->currentNavZh = '角色';
-    }
-
     private function getManageModel()
     {
         return AdminSetting::class;

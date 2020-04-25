@@ -7,7 +7,7 @@ use think\Model;
 /**
  * @mixin \think\Model
  */
-class AdminApps extends Model
+class AdminApps extends ModelBase
 {
     const TYPE_LOCAL = 'local';
     const TYPE_REMOTE = 'remote';
@@ -17,6 +17,13 @@ class AdminApps extends Model
         return AdminApps::field(['app_name', 'title'])
             ->where('installed', 1)
             ->column('title', 'app_name');
+    }
+
+    public static function buildAppsKeyValue($hasAll = false)
+    {
+        $rs = static::buildKeyValue('app_name', 'title', $hasAll);
+
+        return array_merge(['system' => '系统'], $rs);
     }
 
     /**

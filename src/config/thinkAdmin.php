@@ -76,7 +76,7 @@ return [
 
     'captcha' => true,
 
-    'upload_url' => url('/thinkadmin/main/upload'),
+    'upload_url' => url('/thinkadmin/main/upload')->build(),
 
     'controllers' => ['apps', 'auth', 'logs', 'main', 'menu', 'setting', 'system', 'user', 'my', 'role', 'permission'],
 

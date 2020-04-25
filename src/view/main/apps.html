@@ -1,0 +1,55 @@
+{extend name="layout" /}
+
+{block name="title"}
+消息
+{/block}
+
+{block name="main"}
+<template id="appCnt">
+    <el-container>
+        <el-main>
+            <el-row :gutter="12">
+                <el-col :span="3" v-for="(item, index) in apps" :key="index">
+                    <el-card shadow="hover" style="text-align: center">
+                        <div @click="openUrl(item)">
+                        <img style="width: 80px; height: 80px" :src="item.image" class="image">
+                        <div>{{item.title}}</div>
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </el-main>
+    </el-container>
+</template>
+{/block}
+
+{block name="script"}
+<style>
+    .el-card{
+        cursor: pointer;
+    }
+</style>
+{/block}
+{block name="script"}
+<script>
+    new Vue({
+        el: '#app',
+        template: "#appCnt",
+        data: function () {
+            return {
+                apps: {$apps|raw}
+            }
+        },
+        computed: {
+
+        },
+        methods: {
+            openUrl(item) {
+                window.open('{$appsUrl}' + item.app_name, '_blank')
+            }
+        },
+        created: function () {
+        }
+    })
+</script>
+{/block}

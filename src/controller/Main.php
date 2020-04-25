@@ -4,6 +4,7 @@ namespace suframe\thinkAdmin\controller;
 
 
 use suframe\thinkAdmin\facade\Admin;
+use suframe\thinkAdmin\model\AdminApps;
 use suframe\thinkAdmin\model\AdminAppsUser;
 use suframe\thinkAdmin\model\AdminMessage;
 use suframe\thinkAdmin\model\AdminRoleMenu;
@@ -23,6 +24,7 @@ class Main extends Base
      */
     public function index()
     {
+        $app = $this->request->get('app');
         $title = Admin::setting()->getKey('system_info.title');
         $logo = Admin::setting()->getKey('system_info.logo');
         View::assign('system_info', [
@@ -31,6 +33,12 @@ class Main extends Base
             'logo' => $logo['value'] ?? 'https://t1.picb.cc/uploads/2019/10/09/gLpZna.png',
         ]);
         View::assign('admin', $this->getAdminUser());
+        View::assign('app', $app);
+        if($app){
+            $info = AdminApps::where('app_name', $app)->find();
+            View::assign('appInfo', $info);
+            return View::fetch('main/index_app');
+        }
         return View::fetch('main/index');
     }
 
@@ -71,10 +79,13 @@ class Main extends Base
     /**
      * 我的应用
      */
-    public function getMyApps()
+    public function apps()
     {
         $rs = AdminAppsUser::getAppsByUser($this->getAdminUser());
-        return json_return($rs);
+
+        View::assign('apps', json_encode($rs, JSON_UNESCAPED_UNICODE));
+        View::assign('appsUrl', $this->urlABuild('thinkadmin/main/index', ['app' => '']));
+        return View::fetch('main/apps');
     }
 
     /**
@@ -82,10 +93,11 @@ class Main extends Base
      */
     public function getMyMenus()
     {
-        $rs = AdminRoleMenu::getMenuByUser($this->getAdminUser(), true);
-        if ($this->getAdminUser()->isSupper()) {
+        $app = $this->request->get('app');
+        $rs = AdminRoleMenu::getMenuByUser($this->getAdminUser(), true, $app);
+        if (!$app && $this->getAdminUser()->isSupper()) {
             $rs = array_merge($rs, config('thinkAdmin.menus'));
         }
-        return json_return($rs);
+        return json_return(array_values($rs));
     }
 }

@@ -36,29 +36,33 @@ class AdminRoleMenu extends Model
             }
         }
         $adminMenu = AdminMenu::order('order', 'desc');
-        $adminMenu->where('show_menu', 1);
+
         if ($menu_ids !== 'all') {
             $adminMenu->whereIn('id', $menu_ids);
         }
         if (!$withApp) {
             $adminMenu->whereNull('app_name');
         }
-
         if($app_name) {
             $adminMenu->where('app_name', $app_name);
+        } else {
+            $adminMenu->where('show_menu', 1);
         }
         $rs = $adminMenu->select()->toArray();
         if (!$rs) {
             return [];
         }
         //组织成树形
-        return static::buildTree($rs);
+        return static::buildTree($rs, 0 , $app_name);
     }
 
-    public static function buildTree($menus, $pid = 0)
+    public static function buildTree($menus, $pid = 0, $app_name = null)
     {
         $rs = [];
         foreach ($menus as $key => $menu) {
+            if($app_name && ($pid > 0) && ($menu['show_menu'] != 1)){
+                continue;
+            }
             if ($menu['parent_id'] == $pid) {
                 $isUrl = (strpos($menu['uri'], 'http') === 0) ||
                     (strpos($menu['uri'], '//') === 0);
@@ -69,7 +73,7 @@ class AdminRoleMenu extends Model
                 ];
                 unset($menus[$key]);
                 //查找子类
-                $child = static::buildTree($menus, $menu['id']);
+                $child = static::buildTree($menus, $menu['id'], $app_name);
                 if ($child) {
                     $rs[$key]['child'] = $child;
                 }

@@ -80,7 +80,7 @@ return [
 
     'upload_url' => url('/thinkadmin/main/upload')->build(),
 
-    'controllers' => ['apps', 'auth', 'logs', 'main', 'menu', 'setting', 'system', 'user', 'my', 'role', 'permission'],
+    'controllers' => ['apps', 'auth', 'logs', 'main', 'menu', 'setting', 'settingGroup', 'system', 'user', 'my', 'role', 'permission'],
 
     'check_route_permission' => true, //
     'cache_admin_permission' => false, //缓存用户权限提高速度, 修改了权限需要更新缓存

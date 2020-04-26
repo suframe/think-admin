@@ -198,7 +198,7 @@ abstract class AppSettingInterface
                 $parentMenuId,
                 $menu['icon'] ?? '',
                 $this->app_name,
-                $info['show_menu'] ?? 2
+                $info['show_menu'] ?? 1
             );
             if (!$installMenu) {
                 continue;

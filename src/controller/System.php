@@ -2,40 +2,30 @@
 
 namespace suframe\thinkAdmin\controller;
 
+use FormBuilder\Factory\Elm;
 use suframe\form\Form;
-use suframe\thinkAdmin\facade\Admin;
-use suframe\thinkAdmin\ui\form\SystemInfoForm;
+use suframe\thinkAdmin\traits\SettingConfigController;
 use think\facade\Cache;
 use think\facade\View;
 
 class System extends SystemBase
 {
-
+    use SettingConfigController;
     /**
-     * 基本信息
      * @return string
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
      * @throws \FormBuilder\Exception\FormBuilderException
-     * @throws \ReflectionException
-     * @throws \Exception
      */
     public function index()
     {
-        $group = 'system_info';
-        if ($this->request->isAjax() && $this->request->post()) {
-            $post = $this->request->post();
-            $rs = Admin::setting()->saveByGroup($group, $post);
-            return $this->handleResponse($rs);
+        if ($this->request->isPost()) {
+            return $this->doPost();
         }
-
-        $data = Admin::setting()->getGroupToArray($group);
-        $this->setNav('system');
-        $form = (new Form)->createElm();
-        $form->setData($data);
-        $form->setRuleByClass(SystemInfoForm::class);
-        View::assign('form', $form);
-        View::assign('pageTitle', '基本信息');
-        return View::fetch(config('thinkAdmin.view.commonForm'));
+        return $this->doShow();
     }
+
     /**
      * 清除缓存
      * @return bool
@@ -44,6 +34,11 @@ class System extends SystemBase
     {
         //要清除的缓存项目
         return Cache::clear();
+    }
+
+    protected function getSettingAppName()
+    {
+        return 'system';
     }
 
     /**

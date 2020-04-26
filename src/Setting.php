@@ -23,9 +23,9 @@ class Setting extends Collection
         list($group, $key) = $this->formatKey($key);
         $setting = AdminSetting::where('key', $key);
         if ($group) {
-            $setting->where('group', $group);
+            $setting->where('group_key', $group);
         }
-        $setting->order('order', 'desc');
+        $setting->order('inx', 'desc');
         return $setting->find() ?: $default;
     }
 
@@ -39,8 +39,8 @@ class Setting extends Collection
      */
     public function getGroup($group, $default = [])
     {
-        $setting = AdminSetting::where('group', $group);
-        $setting->order('order', 'desc');
+        $setting = AdminSetting::where('group_key', $group);
+        $setting->order('inx', 'desc');
         return $setting->select() ?: $default;
     }
 
@@ -65,7 +65,7 @@ class Setting extends Collection
     {
         $rs = false;
         foreach ($post as $key => $item) {
-            $setting = AdminSetting::where('group', $group)
+            $setting = AdminSetting::where('group_key', $group)
                 ->where('key', $key)->find();
             if($setting){
                 $setting->value = $item;
@@ -94,7 +94,7 @@ class Setting extends Collection
         list($group, $key) = $this->formatKey($key);
         $setting = AdminSetting::where('key', $key);
         if ($group) {
-            $setting->where('group', $group);
+            $setting->where('group_key', $group);
         }
         $info = $setting->find();
         if (!$info) {
@@ -116,11 +116,11 @@ class Setting extends Collection
     {
         list($group, $key) = $this->formatKey($key);
         if ($group && ($key === '*')) {
-            return AdminSetting::where('group', $group)->delete();
+            return AdminSetting::where('group_key', $group)->delete();
         }
         $setting = AdminSetting::where('key', $key);
         if ($group) {
-            $setting->where('group', $group);
+            $setting->where('group_key', $group);
         }
         return $setting->delete();
     }

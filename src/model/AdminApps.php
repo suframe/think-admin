@@ -22,8 +22,14 @@ class AdminApps extends ModelBase
     public static function buildAppsKeyValue($hasAll = false)
     {
         $rs = static::buildKeyValue('app_name', 'title', $hasAll);
-
         return array_merge(['system' => '系统'], $rs);
+    }
+
+    public static function buildAppsOptions($hasAll = false)
+    {
+        $rs = static::buildOptions('app_name', 'title', $hasAll);
+        array_unshift($rs, ['value' => 'system', 'label' => '系统']);
+        return $rs;
     }
 
     /**
@@ -38,7 +44,7 @@ class AdminApps extends ModelBase
             static::TYPE_LOCAL => '本地',
             static::TYPE_REMOTE => '远程',
         ];
-        if($key === null){
+        if ($key === null) {
             return $config;
         }
         return $config[$key] ?? $def;
@@ -62,11 +68,12 @@ class AdminApps extends ModelBase
         return static::getTypes($data['type']);
     }
 
-    public function getStatusTextAttr($value,$data)
+    public function getStatusTextAttr($value, $data)
     {
-        $status = [-1=>'删除',0=>'禁用',1=>'正常',2=>'待审核'];
+        $status = [-1 => '删除', 0 => '禁用', 1 => '正常', 2 => '待审核'];
         return $status[0];
     }
+
     //
     public function getInstalledNameAttr()
     {

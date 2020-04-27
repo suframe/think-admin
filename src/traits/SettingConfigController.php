@@ -23,10 +23,11 @@ trait SettingConfigController
 
     protected function doShow()
     {
-        $list = AdminSettingGroup::order('inx', 'asc')
+        $model = AdminSettingGroup::order('inx', 'asc')
             ->where('app_name', $this->getSettingAppName())
-            ->order('id', 'desc')
-            ->select();
+            ->order('id', 'desc');
+        $this->filterGroup($model);
+        $list = $model->select();
         $configs = [];
         $upload_url = config('thinkAdmin.upload_url');
         foreach ($list as $item) {

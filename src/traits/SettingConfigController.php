@@ -16,6 +16,10 @@ use think\facade\View;
  */
 trait SettingConfigController
 {
+    protected function filterGroup($model)
+    {
+        return $model;
+    }
 
     protected function doShow()
     {

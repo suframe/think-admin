@@ -10,8 +10,8 @@
                 <?php foreach ($filter as $key => $item) { ?>
                     <el-form-item label="<?= $item['label'] ?>">
                         <?php
-                        if (isset($item['value'])) {
-                            $defaultFilter[$key] = $item['value'];
+                        if (isset($item['defaultValue'])) {
+                            $defaultFilter[$key] = $item['defaultValue'];
                         }
                         switch ($item['type']) {
                             case 'select':

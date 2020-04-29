@@ -3,12 +3,16 @@
         <?php
         $hasPickerOption = false;
         $cascader = [];
+        $defaultFilter = null;
         if ($filter) {
             ?>
             <el-form :inline="true" :model="searchParam" ref="<?= $searchFormId ?>" class="think-search-top">
                 <?php foreach ($filter as $key => $item) { ?>
                     <el-form-item label="<?= $item['label'] ?>">
                         <?php
+                        if (isset($item['value'])) {
+                            $defaultFilter[$key] = $item['value'];
+                        }
                         switch ($item['type']) {
                             case 'select':
                                 $multiple = isset($item['multiple']) && $item['multiple'] ? 'multiple' : null;
@@ -327,7 +331,7 @@
                 <?php
                 }
                 ?>
-                searchParam: {},
+                searchParam: <?php echo $defaultFilter ? json_encode($defaultFilter) : '{}' ?>,
                 total: 0,
                 currentPage: 1,
                 pageSize: 10,

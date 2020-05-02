@@ -12,7 +12,7 @@ config/console.php 中commands添加 \suframe\thinkAdmin\command\thinkAdminCURD:
 命令:
 ```
 php think curd 数据库 
-php think curd news -c controller/news/manager.php  指定控制器路径(基于app/的相对路径)
+php think curd news -c controller/news/Manager  指定控制器路径(基于app/的相对路径)
 
 # 多应用模式，生成应用下的控制器, demo为你自己app_name
  php think curd news -a demo -m -f

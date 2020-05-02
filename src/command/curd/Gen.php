@@ -184,7 +184,7 @@ class Gen
         if ($controller) {
             //自定义控制器文件，相对app/ 路径，例如 controller/goods/myGoods.php
             $filePath = $controller;
-            if (strpos($controller, '.php') !== false) {
+            if (strpos($controller, '.php') === false) {
                 $filePath .= '.php';
             }
             $namespace = str_replace('.php', '', $filePath);

@@ -60,6 +60,7 @@ class Auth extends Base
             RouteAlias::get('captcha/[:id]', "\\think\\captcha\\CaptchaController@index");
         }
         View::assign('hasCaptcha', $hasCaptcha);
+        View::assign('loginTitle', config('thinkAdmin.loginTitle') ?: '管理登录');
         return View::fetch('auth/login');
     }
 

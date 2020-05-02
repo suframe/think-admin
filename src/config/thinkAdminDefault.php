@@ -3,6 +3,7 @@
 use think\facade\Env;
 
 return [
+    'loginTitle' => '管理登录',
     'enable' => Env::get('thinkAdmin.enable', 'true'),
     'uri_pre' => 'admin/thinkadmin/',
     'routeMiddleware' => [

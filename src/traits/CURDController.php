@@ -17,8 +17,6 @@ use think\facade\View;
 trait CURDController
 {
 
-    protected $currentNav;
-    protected $currentNavZh = '';
     /**
      * @param $action
      * @throws \Exception
@@ -78,7 +76,7 @@ trait CURDController
         $this->getThinkAdminViewLayout();
         $table = new UITable();
         $this->getTableSetting($table);
-        if($this->currentNav){
+        if(isset($this->currentNav)){
             $this->setNav($this->currentNav);
         }
         View::assign('table', $table);
@@ -130,13 +128,13 @@ trait CURDController
             }
         }
         $this->getThinkAdminViewLayout();
-        if($this->currentNav){
+        if(isset($this->currentNav)){
             $this->setNav($this->currentNav);
         }
         $form = (new Form)->createElm();
         $form->setData($info);
         $this->getFormSetting($form);
-        $title = $this->currentNavZh . ($info ? '编辑' : '新增');
+        $title = (isset($this->currentNavZh) ? $this->currentNavZh : '') . ($info ? '编辑' : '新增');
         View::assign('pageTitle', $title);
         View::assign('form', $form);
         $this->beforeUpdateRender($form);

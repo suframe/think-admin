@@ -46,6 +46,7 @@ class Gen
         'cascader',
         'city',
         'cityArea',
+        'editor',
     ];
     protected $layoutDir;
 

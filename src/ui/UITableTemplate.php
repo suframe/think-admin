@@ -217,6 +217,20 @@
                             </template>
                             <?php
                             break;
+
+                        case 'switch':
+                            ?>
+                            <template slot-scope="scope">
+                                <el-switch
+                                        v-model="scope.row.<?= $key ?>"
+                                        :active-value="<?= $column[$key]['active-value'] ?? 1 ?>"
+                                        :inactive-value="<?= $column[$key]['inactive-value'] ?? 2 ?>"
+                                        active-color="#13ce66"
+                                        inactive-color="#ff4949">
+                                </el-switch>
+                            </template>
+                            <?php
+                            break;
                         case 'image':
                             ?>
                             <template slot-scope="scope">

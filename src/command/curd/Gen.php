@@ -114,7 +114,7 @@ class Gen
     {
         $default = config('database.default');
         $options = config("database.connections.{$default}");
-        if(($pos = strpos($tableName, '.')) !== false) {
+        if (($pos = strpos($tableName, '.')) !== false) {
             $options['database'] = substr($tableName, 0, $pos);
             $tableName = substr($tableName, $pos + 1, strlen($tableName));
         }
@@ -182,6 +182,7 @@ class Gen
 
         //生成控制器
         $controller_layer = config('route.controller_layer');
+        $preName = [];
         if ($controller) {
             //自定义控制器文件，相对app/ 路径，例如 controller/goods/myGoods.php
             $filePath = $controller;
@@ -192,6 +193,13 @@ class Gen
             $namespace = explode('/', $namespace);
             $className = array_pop($namespace);
             $className = ucfirst($className);
+
+            foreach ($namespace as $item) {
+                if ($item != $controller_layer) {
+                    $preName[] = $item;
+                }
+            }
+
             $namespace = implode('\\', $namespace);
         } else {
             $namespace = $controller_layer;
@@ -200,13 +208,20 @@ class Gen
 
         $namespace = $this->getFileNamespace() . '\\' . $namespace;
         $filePath = $this->getFileGenPath() . $filePath;
-        $urlPre = '/' . lcfirst($className) . '/';
+
+        $urlPre = '/';
+        if ($preName) {
+            $urlPre .= implode('/', $preName) . '/';
+        }
+        $urlPre .= lcfirst($className) . '/';
+        $modelClass = 'model\\' . $className;
         if ($this->app) {
             $urlPre = '/' . $this->app . $urlPre;
+            $modelClass = $this->app . '\\' . $modelClass;
         }
         $config = [
             'namespace' => $namespace,
-            'model' => $className,
+            'model' => $modelClass,
             'comment' => $tableComment,
             'class' => $className,
             'urlPre' => $urlPre,
@@ -258,6 +273,9 @@ class Gen
             return false;
         }
         //增加默认权限
+        if(AdminPermissions::where('name', $title)->count()){
+            return false;
+        }
         $httpPath = $uri . '/*';
         $info = [
             'name' => $title,

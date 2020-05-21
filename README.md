@@ -108,5 +108,33 @@ php think curd news
 ```
 进入后台，增加个菜单，注意天下icon,然后刷新下页面看看吧(接下来也会自动生成，开发中)
 
+## api接口调试
+在开发接口中,经常会去调试某个接口中所执行的sql, 大多数情况下，都是去看日志，十分不方便。
+
+为了解决这个问题，开发了这个插件,先看下效果
+
+![11](http://q9a4rey0j.bkt.clouddn.com/12.png)
+
+**步骤**
+在adminapp\event.php中 subscribe栏新增
+```
+return [
+    ...
+    'subscribe' => [
+        \suframe\thinkAdmin\subscribe\DebugSubscribe::class,
+    ]
+```
+然后修改入口文件，例如public/index.php
+```
+$response = $http->run();
+//在获取到response对象后，添加下面这行
+event('HttpSend', $response);
+```
+
+完成。
+
+有朋友问上面这个图的调试工具是什么，这其实是phpstrom自带功能，这里有篇文章教程http://zacms.com/index.php/archives/611/
+
+
 觉得不错上方点个star，
 更详细的数据库设置教程和文档参看：[生成增删改文档](https://github.com/suframe/think-admin/blob/master/src/command/read.md)

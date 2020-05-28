@@ -48,27 +48,27 @@ php think run -H 0.0.0.0
 
 预览
 
-![1](http://q9a4rey0j.bkt.clouddn.com/1.png)
+![1](https://oss-qn.zacms.com/1.png)
 
-![2](http://q9a4rey0j.bkt.clouddn.com/2.png)
+![2](https://oss-qn.zacms.com/2.png)
 
-![3](http://q9a4rey0j.bkt.clouddn.com/3.png)
+![3](https://oss-qn.zacms.com/3.png)
 
-![4](http://q9a4rey0j.bkt.clouddn.com/4.png)
+![4](https://oss-qn.zacms.com/4.png)
 
-![5](http://q9a4rey0j.bkt.clouddn.com/5.png)
+![5](https://oss-qn.zacms.com/5.png)
 
-![6](http://q9a4rey0j.bkt.clouddn.com/6.png)
+![6](https://oss-qn.zacms.com/6.png)
 
-![7](http://q9a4rey0j.bkt.clouddn.com/7.png)
+![7](https://oss-qn.zacms.com/7.png)
 
-![8](http://q9a4rey0j.bkt.clouddn.com/8.png)
+![8](https://oss-qn.zacms.com/8.png)
 
-![9](http://q9a4rey0j.bkt.clouddn.com/9.png)
+![9](https://oss-qn.zacms.com/9.png)
 
-![10](http://q9a4rey0j.bkt.clouddn.com/10.png)
+![10](https://oss-qn.zacms.com/10.png)
 
-![11](http://q9a4rey0j.bkt.clouddn.com/11.png)
+![11](https://oss-qn.zacms.com/11.png)
 
 ## 根据mysql表增删改查自动生成
 当已经有数据库了，需要开发增删改查，还要去撸代码？
@@ -113,7 +113,7 @@ php think curd news
 
 为了解决这个问题，开发了这个插件,先看下效果
 
-![11](http://q9a4rey0j.bkt.clouddn.com/12.png)
+![11](https://oss-qn.zacms.com/12.png)
 
 **步骤**
 在adminapp\event.php中 subscribe栏新增

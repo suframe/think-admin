@@ -72,11 +72,7 @@
 </body>
 <script>
     if ((window.self !== window.top)) {
-        if (document.referrer) {
-            document.getElementById('parent_url').value = document.referrer
-        } else {
-            window.parent.location.href = window.location.href;
-        }
+        window.parent.location.href = window.location.href;
     }
 </script>
 </html>

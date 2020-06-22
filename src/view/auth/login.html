@@ -9,6 +9,7 @@
             background: #F3F4F7;
             text-align: center
         }
+
         .login-form {
             width: 480px;
             margin: 250px auto 0;
@@ -70,8 +71,12 @@
 </div>
 </body>
 <script>
-    if((window.self !== window.top) && document.referrer){
-        document.getElementById('parent_url').value = document.referrer
+    if ((window.self !== window.top) && document.referrer) {
+        if (document.referrer) {
+            document.getElementById('parent_url').value = document.referrer
+        } else {
+            window.parent.location.reload();
+        }
     }
 </script>
 </html>

@@ -75,7 +75,7 @@
         if (document.referrer) {
             document.getElementById('parent_url').value = document.referrer
         } else {
-            window.parent.location.reload();
+            window.parent.location.href = window.location.href;
         }
     }
 </script>

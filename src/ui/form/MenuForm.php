@@ -1,6 +1,7 @@
 <?php
 namespace suframe\thinkAdmin\ui\form;
 
+use suframe\thinkAdmin\model\AdminApps;
 use suframe\thinkAdmin\model\AdminMenu;
 
 class MenuForm
@@ -17,6 +18,19 @@ class MenuForm
             'props' => [
                 'filterable' => true,
             ],
+        ];
+    }
+
+    public function app_name()
+    {
+        return [
+            'type' => 'select',
+            'options' => AdminApps::buildAppsOptions(),
+            'title' => '应用',
+            'field' => 'app_name',
+            'validate' => [
+                ['required' => true, 'message' => '必选']
+            ]
         ];
     }
 

@@ -420,8 +420,11 @@
                             message: rs.message || (rs.code === 200 ? '操作成功' : '操作失败'),
                             type: rs.code === 200 ? 'success' : 'error'
                         });
-                        _this.tableData = []
-                        _this.getList()
+                        if (!config.noReload) {
+                            _this.tableData = []
+                            _this.getList()
+                        }
+
                         if (config.callback) {
                             if (typeof (eval(config.callback)) == "function") {
                                 config.callback(row, config, rs, _this);

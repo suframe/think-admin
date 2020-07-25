@@ -74,6 +74,7 @@ if (!function_exists('__UITableBuildItemsUrl')) {
         if (isset($item['url'])) {
             $rowClick['url'] = $item['url'];
         }
+        $rowClick['noReload'] = $item['noReload'] ?? true;
         if (in_array($type, ['link', 'dialog']) && isset($item['url'])) {
             $urlArgs = [];
             foreach ($vars as $var) {

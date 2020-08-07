@@ -88,6 +88,7 @@
         el: '#app',
         data: function () {
             return {
+                urls: [],
                 isCollapse: false,
                 activeIndex2: '1',
 
@@ -104,8 +105,15 @@
         },
         methods: {
             openUrl(url, name) {
-                this.editableTabsValue = '' + this.editableTabs.length;
-                this.editableTabs.push({name: this.editableTabsValue, title: name, url: url})
+                let index = this.urls.indexOf(url)
+                if(index !== -1){
+                    this.editableTabsValue = '' + index;
+                } else {
+                    this.editableTabsValue = '' + this.editableTabs.length;
+                    this.editableTabs.push({name: this.editableTabsValue, title: name, url: url})
+                    this.urls.push(url)
+                }
+
             },
             handleSelect(key, keyPath) {
                 console.log(key, keyPath);

@@ -56,7 +56,7 @@
                                 style="height: 60px;overflow: hidden"
                                 active-text-color="#f6f6f6">
                             <el-submenu index="2" class="el-menu-top-right-dialog">
-                                <template slot="title"><i class="el-icon-s-tools"></i>超级管理员</template>
+                                <template slot="title"><i class="el-icon-s-tools"></i>{$admin['real_name']}</template>
                                 <el-menu-item class="el-menu-top-right-item" index="2-1"
                                               @click="openUrl('{:url('/thinkadmin/my/index')}', '个人设置')">
                                     <i class="el-icon-user"></i> 个人设置

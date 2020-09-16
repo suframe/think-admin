@@ -186,6 +186,7 @@
                 if ($columType) {
                     switch ($columType) {
                         case 'link':
+                        case 'dailog':
                             ?>
                             <template slot-scope="scope">
                                 <?php foreach ($column[$key]['linkConfig'] as $k => $v) {
@@ -383,7 +384,7 @@
                 }
                 var vars = config.vars || []
                 var tmpVar;
-                if (config.type === 'link') {
+                if (config.type === 'link' || config.type === 'dialog') {
                     for (var i in vars) {
                         tmpVar = vars[i];
                         if (tmpVar.indexOf('@') !== -1) {
@@ -393,8 +394,28 @@
                             config.url = config.url.replace('__' + vars[i] + '__', row[vars[i]])
                         }
                     }
-                    console.log(window.parent)
-                    if (!(window.parent === window) && config.blank) {
+
+                    if (config.type === 'dialog' && layer) {
+                        var width = config.dialogWidth || document.body.clientWidth;
+                        var height = config.dialogHeight || document.body.clientHeight - 60;
+                        width = width > 1300 ? 1300 : (width - 70)
+                        layer.open({
+                            type: 2,
+                            title: config.label,
+                            shadeClose: true,
+                            shade: false,
+                            maxmin: true, //开启最大化最小化按钮
+                            area: [width + 'px', height + 'px'],
+                            content: config.url,
+                            zIndex: parent.layer.zIndex,
+                            success: function (layero) {
+                                layer.setTop(layero); //重点2
+                            },
+                            end: function () {
+                                _this.getList()
+                            }
+                        });
+                    } else if (!(window.parent === window) && config.blank) {
                         window.parent.postMessage(config);
                     } else {
                         window.location.href = config.url

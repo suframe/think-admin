@@ -100,14 +100,14 @@ if (!function_exists('__UITableBuildItemsUrl')) {
         if ($vars) {
             $rowClick['vars'] = $vars;
         }
-        if (isset($item['confirm'])) {
-            $rowClick['confirm'] = $item['confirm'];
-        }
-        if (isset($item['blank'])) {
-            $rowClick['blank'] = $item['blank'];
-        }
-        if (isset($item['blankName'])) {
-            $rowClick['blankName'] = $item['blankName'];
+        $autoSetKey = [
+            'confirm', 'blank', 'blankName', 'label',
+            'dialogWidth', 'dialogHeight'
+        ];
+        foreach ($autoSetKey as $k) {
+            if (isset($item[$k])) {
+                $rowClick[$k] = $item[$k];
+            }
         }
         $rowClick = json_encode($rowClick);
         return $rowClick;

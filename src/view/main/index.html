@@ -56,7 +56,7 @@
                                 style="height: 60px;overflow: hidden"
                                 active-text-color="#f6f6f6">
                             <el-submenu index="2" class="el-menu-top-right-dialog">
-                                <template slot="title"><i class="el-icon-s-tools"></i>{$admin['real_name']}</template>
+                                <template slot="title"><i class="el-icon-s-tools"></i>超级管理员</template>
                                 <el-menu-item class="el-menu-top-right-item" index="2-1"
                                               @click="openUrl('{:url('/thinkadmin/my/index')}', '个人设置')">
                                     <i class="el-icon-user"></i> 个人设置
@@ -135,6 +135,7 @@
 <!-- import JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/element-ui/lib/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
 <script>
     new Vue({
         el: '#app',
@@ -162,7 +163,6 @@
         methods: {
             openUrl(url, name) {
                 let index = this.urls.indexOf(url)
-                console.log('ggggggggggg', index)
                 if(index !== -1){
                     this.editableTabsValue = '' + (index + 1);
                 } else {

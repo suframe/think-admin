@@ -190,8 +190,8 @@
                             ?>
                             <template slot-scope="scope">
                                 <?php foreach ($column[$key]['linkConfig'] as $k => $v) {
-                                    $filterValue = $v['value'] ?? null;
-                                    if ($filterValue) {
+                                    $filterValue = isset($v['value']) ? $v['value'] : null;
+                                    if (isset($v['value'])) {
                                         $filterValue = is_bool($filterValue) ? ($filterValue ? 'true' : 'false') : "'{$filterValue}'";
                                         if (is_string($filterValue)) {
                                             $filterValue = "{$filterValue}";

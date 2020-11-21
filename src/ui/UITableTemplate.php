@@ -192,13 +192,14 @@
                                 <?php foreach ($column[$key]['linkConfig'] as $k => $v) {
                                     $filterValue = isset($v['value']) ? $v['value'] : null;
                                     if (isset($v['value'])) {
-                                        $filterValue = is_bool($filterValue) ? ($filterValue ? 'true' : 'false') : "'{$filterValue}'";
-                                        if (is_string($filterValue)) {
-                                            $filterValue = "{$filterValue}";
+                                        if (is_bool($filterValue)) {
+                                            $filterValue = $filterValue ? 'true' : 'false';
+                                        } else if(!is_numeric($filterValue)) {
+                                            $filterValue = "'{$filterValue}'";
                                         }
                                     }
                                     ?>
-                                    <template <?php if ($filterValue !== null) { ?> v-if="'' + scope.row.<?= $v['key'] ?>===<?= $filterValue ?>"<?php } ?>>
+                                    <template <?php if ($filterValue !== null) { ?> v-if="scope.row.<?= $v['key'] ?>===<?= $filterValue ?>"<?php } ?>>
                                         <?php if (!(isset($v['showValue']) && ($v['showValue'] === false))) { ?>
                                             {{scope.row.<?= $key ?>}}
                                         <?php } ?>

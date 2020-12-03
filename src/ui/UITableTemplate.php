@@ -192,10 +192,9 @@
                                 <?php foreach ($column[$key]['linkConfig'] as $k => $v) {
                                     $filterValue = isset($v['value']) ? $v['value'] : null;
                                     if (isset($v['value'])) {
-                                        if (is_bool($filterValue)) {
-                                            $filterValue = $filterValue ? 'true' : 'false';
-                                        } else if(!is_numeric($filterValue)) {
-                                            $filterValue = "'{$filterValue}'";
+                                        $filterValue = is_bool($filterValue) ? ($filterValue ? 'true' : 'false') : "'{$filterValue}'";
+                                        if (is_string($filterValue)) {
+                                            $filterValue = "{$filterValue}";
                                         }
                                     }
                                     ?>

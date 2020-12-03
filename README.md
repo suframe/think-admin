@@ -45,7 +45,10 @@ php think migrate:run
 php think run -H 0.0.0.0
 ```
 ## 访问
- http://127.0.0.1:8000
+单应用: http://127.0.0.1:8000
+
+多应用: http://127.0.0.1:8000/thinkadmin/auth/login (可自定义路由,见文档下方第四项)
+
 
 预览
 

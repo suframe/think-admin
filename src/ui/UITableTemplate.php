@@ -186,7 +186,7 @@
                 if ($columType) {
                     switch ($columType) {
                         case 'link':
-                        case 'dailog':
+                        case 'dialog':
                             ?>
                             <template slot-scope="scope">
                                 <?php foreach ($column[$key]['linkConfig'] as $k => $v) {

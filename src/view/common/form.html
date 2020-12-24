@@ -58,6 +58,7 @@
 {__block__}
 <script>
 {$form->customComponentView()|raw}
+
 var create = {$form->formScript()|raw};
 var $f = create({el: document.getElementById('base-form'), callback: function(status, res, $f) {
 if (status && res.code === 200) {

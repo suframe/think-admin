@@ -61,15 +61,15 @@
 
 var create = {$form->formScript()|raw};
 var $f = create({el: document.getElementById('base-form'), callback: function(status, res, $f) {
-if (status && res.code === 200) {
-    Vue.prototype.$Message.success(res.msg || '表单提交成功');
-    {if $form->isGoBack() && !$form->getData()}
-    setTimeout("window.history.go(-1)","500");
-    {/if}
+    if (status && res.code === 200) {
+        Vue.prototype.$Message.success(res.msg || '表单提交成功');
+        {if $form->isGoBack() && !$form->getData()}
+        setTimeout("window.history.go(-1)","500");
+        {/if}
     } else {
-        $f.submitBtnProps({loading: false, disabled: false});
         Vue.prototype.$Message.error(res.msg || '表单提交失败');
     }
+    $f.submitBtnProps({loading: false, disabled: false});
 }});
 </script>
 {/block}

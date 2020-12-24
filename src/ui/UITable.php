@@ -139,6 +139,7 @@ class UITable
             'label' => '删除',
             'icon' => 'el-icon-delete',
             'confirm' => '确认删除？',
+            'noReload' => false,
         ];
         $config = $config + $default;
         $config['url'] = $url;

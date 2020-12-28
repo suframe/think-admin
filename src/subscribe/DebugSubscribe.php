@@ -15,6 +15,8 @@ class DebugSubscribe
         Db::listen(function ($sql, $runtime, $master) {
             // 进行监听处理
             $count = count($this->sqls);
+            $sql = str_replace("\n", '', $sql);
+            $sql = str_replace("\r", '', $sql);
             $this->sqls['sql' . $count] = $sql . ' [runtime:' . $runtime . ']';
         });
     }

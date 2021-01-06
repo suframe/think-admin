@@ -79,7 +79,7 @@
 
 {block name='script'}
 <script type="text/javascript">
-    Vue.use(window.CKEditor)
+    window.CKEditor && Vue.use(window.CKEditor)
 </script>
 <script>
     new Vue({

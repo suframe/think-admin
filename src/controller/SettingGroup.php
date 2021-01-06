@@ -13,9 +13,4 @@ class SettingGroup extends SystemBase
     use SettingGroupController;
     protected $urlPre = '/thinkadmin/settingGroup/';
 
-    protected function getSettingAppName()
-    {
-        return 'system';
-    }
-
 }

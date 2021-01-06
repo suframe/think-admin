@@ -186,11 +186,12 @@
                 if ($columType) {
                     switch ($columType) {
                         case 'link':
+                        case 'dialog':
                             ?>
                             <template slot-scope="scope">
                                 <?php foreach ($column[$key]['linkConfig'] as $k => $v) {
-                                    $filterValue = $v['value'] ?? null;
-                                    if ($filterValue) {
+                                    $filterValue = isset($v['value']) ? $v['value'] : null;
+                                    if (isset($v['value'])) {
                                         $filterValue = is_bool($filterValue) ? ($filterValue ? 'true' : 'false') : "'{$filterValue}'";
                                         if (is_string($filterValue)) {
                                             $filterValue = "{$filterValue}";
@@ -214,6 +215,20 @@
                                         <?php } ?>
                                     </template>
                                 <?php } ?>
+                            </template>
+                            <?php
+                            break;
+
+                        case 'switch':
+                            ?>
+                            <template slot-scope="scope">
+                                <el-switch
+                                        v-model="scope.row.<?= $key ?>"
+                                        :active-value="<?= $column[$key]['active-value'] ?? 1 ?>"
+                                        :inactive-value="<?= $column[$key]['inactive-value'] ?? 2 ?>"
+                                        active-color="#13ce66"
+                                        inactive-color="#ff4949">
+                                </el-switch>
                             </template>
                             <?php
                             break;
@@ -369,7 +384,7 @@
                 }
                 var vars = config.vars || []
                 var tmpVar;
-                if (config.type === 'link') {
+                if (config.type === 'link' || config.type === 'dialog') {
                     for (var i in vars) {
                         tmpVar = vars[i];
                         if (tmpVar.indexOf('@') !== -1) {
@@ -379,8 +394,28 @@
                             config.url = config.url.replace('__' + vars[i] + '__', row[vars[i]])
                         }
                     }
-                    console.log(window.parent)
-                    if (!(window.parent === window) && config.blank) {
+
+                    if (config.type === 'dialog' && layer) {
+                        var width = config.dialogWidth || document.body.clientWidth;
+                        var height = config.dialogHeight || document.body.clientHeight - 60;
+                        width = width > 1300 ? 1300 : (width - 70)
+                        layer.open({
+                            type: 2,
+                            title: config.label,
+                            shadeClose: true,
+                            shade: false,
+                            maxmin: true, //开启最大化最小化按钮
+                            area: [width + 'px', height + 'px'],
+                            content: config.url,
+                            zIndex: parent.layer.zIndex,
+                            success: function (layero) {
+                                layer.setTop(layero); //重点2
+                            },
+                            end: function () {
+                                _this.getList()
+                            }
+                        });
+                    } else if (!(window.parent === window) && config.blank) {
                         window.parent.postMessage(config);
                     } else {
                         window.location.href = config.url
@@ -406,8 +441,11 @@
                             message: rs.message || (rs.code === 200 ? '操作成功' : '操作失败'),
                             type: rs.code === 200 ? 'success' : 'error'
                         });
-                        _this.tableData = []
-                        _this.getList()
+                        if (!config.noReload) {
+                            _this.tableData = []
+                            _this.getList()
+                        }
+
                         if (config.callback) {
                             if (typeof (eval(config.callback)) == "function") {
                                 config.callback(row, config, rs, _this);

@@ -12,6 +12,11 @@ class AdminApps extends ModelBase
     const TYPE_LOCAL = 'local';
     const TYPE_REMOTE = 'remote';
 
+    public function getInstalledAttr($value, $data)
+    {
+        return '' . $data['installed'];
+    }
+
     public static function getAllNames()
     {
         return AdminApps::field(['app_name', 'title'])
@@ -82,7 +87,7 @@ class AdminApps extends ModelBase
 
     public function isInstalled()
     {
-        return $this->installed === 1;
+        return $this->installed == 1;
     }
 
 }

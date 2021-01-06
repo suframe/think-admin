@@ -67,10 +67,4 @@ trait SettingGroupController
         }
     }
 
-    private function beforeSave($info, $post)
-    {
-        $post['app_name'] = $this->getSettingAppName();
-        return $post;
-    }
-
 }

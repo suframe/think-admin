@@ -83,11 +83,13 @@
 <!-- import JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/element-ui/lib/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
 <script>
     new Vue({
         el: '#app',
         data: function () {
             return {
+                urls: [],
                 isCollapse: false,
                 activeIndex2: '1',
 
@@ -104,8 +106,15 @@
         },
         methods: {
             openUrl(url, name) {
-                this.editableTabsValue = '' + this.editableTabs.length;
-                this.editableTabs.push({name: this.editableTabsValue, title: name, url: url})
+                let index = this.urls.indexOf(url)
+                if(index !== -1){
+                    this.editableTabsValue = '' + index;
+                } else {
+                    this.editableTabsValue = '' + this.editableTabs.length;
+                    this.editableTabs.push({name: this.editableTabsValue, title: name, url: url})
+                    this.urls.push(url)
+                }
+
             },
             handleSelect(key, keyPath) {
                 console.log(key, keyPath);

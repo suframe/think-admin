@@ -220,12 +220,14 @@
                             break;
 
                         case 'switch':
+                            $rowClick = __UITableBuildItemsUrl($column[$key]);
                             ?>
                             <template slot-scope="scope">
                                 <el-switch
                                         v-model="scope.row.<?= $key ?>"
                                         :active-value="<?= $column[$key]['active-value'] ?? 1 ?>"
                                         :inactive-value="<?= $column[$key]['inactive-value'] ?? 2 ?>"
+                                        @change='handleOps(scope.row, <?= $rowClick ?>)'
                                         active-color="#13ce66"
                                         inactive-color="#ff4949">
                                 </el-switch>
@@ -434,7 +436,7 @@
                         }
                     }
                 }
-                if (config.type === 'ajax') {
+                if (config.type === 'ajax' || config.ajax === true) {
                     $.post(config.url, params, function (rs) {
                         _this.$message({
                             showClose: true,

@@ -102,7 +102,7 @@ if (!function_exists('__UITableBuildItemsUrl')) {
         }
         $autoSetKey = [
             'confirm', 'blank', 'blankName', 'label',
-            'dialogWidth', 'dialogHeight'
+            'dialogWidth', 'dialogHeight', 'ajax'
         ];
         foreach ($autoSetKey as $k) {
             if (isset($item[$k])) {

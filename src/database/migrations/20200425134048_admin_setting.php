@@ -58,11 +58,10 @@ class AdminSetting extends Migrator
                 ->renameColumn('order', 'inx')
                 ->addColumn('app_name', 'string', ['comment' => '应用', 'length' => 32, 'default' => 'system'])
                 ->addColumn('type', 'string', ['comment' => '类型', 'length' => 32])
-                ->addColumn('default_value', 'text', ['comment' => '配置项', 'length' => 32])
+                ->addColumn('default_value', 'text', ['comment' => '配置项', 'null' => true])
+                ->addColumn('values', 'text', ['comment' => '选项值', 'null' => true])
                 ->addColumn('placeholder', 'string', ['comment' => '提示信息', 'length' => 255])
                 ->addColumn('require', 'integer', ['comment' => '是否必选', 'length' => 1])
-                ->changeColumn('value', 'text', ['comment' => '值', 'null' => true])
-                ->changeColumn('values', 'text', ['comment' => '选项值', 'null' => true])
                 ->addIndex(['app_name'])
                 ->addIndex(['group_key'])
                 ->update();

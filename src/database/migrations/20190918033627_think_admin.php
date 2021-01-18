@@ -197,7 +197,7 @@ class ThinkAdmin extends Migrator
         $table->addColumn('group', 'string', ['comment' => '分组名称', 'length' => 64])
             ->addColumn('key', 'string', ['comment' => '配置key', 'length' => 64])
             ->addColumn('name', 'string', ['comment' => '配置名称', 'length' => 64])
-            ->addColumn('value', 'text', ['comment' => '值'])
+            ->addColumn('value', 'text', ['comment' => '值', 'null' => true])
             ->addColumn('order', 'integer', ['comment' => '显示排序', 'null' => true, 'default' => 100])
             ->addIndex(['group'], ['unique' => true])
             ->addIndex(['key'], ['unique' => true])

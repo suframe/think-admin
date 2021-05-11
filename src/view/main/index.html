@@ -141,7 +141,6 @@
         el: '#app',
         data: function () {
             return {
-                urls: [],
                 isCollapse: false,
                 activeIndex2: '1',
 
@@ -162,13 +161,17 @@
         },
         methods: {
             openUrl(url, name) {
-                let index = this.urls.indexOf(url)
-                if(index !== -1){
-                    this.editableTabsValue = '' + (index + 1);
+                let exist = -1
+                this.editableTabs.map(function (item, index) {
+                    if (item.url === url) {
+                        exist = index
+                    }
+                })
+                if(exist !== -1){
+                    this.editableTabsValue = '' + exist;
                 } else {
                     this.editableTabsValue = '' + this.editableTabs.length;
                     this.editableTabs.push({name: this.editableTabsValue, title: name, url: url})
-                    this.urls.push(url)
                 }
             },
             handleSelect(key, keyPath) {

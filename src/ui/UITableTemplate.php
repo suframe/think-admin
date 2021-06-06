@@ -259,6 +259,13 @@
                             </template>
                             <?php
                             break;
+                        case 'html':
+                            ?>
+                            <template slot-scope="scope">
+                                <div v-html="scope.row.<?= $key ?>"></div>
+                            </template>
+                        <?php
+                            break;
                     }
                 }
                 ?>

@@ -68,6 +68,7 @@ class Main extends Base
         // 上传到本地服务器
         $url = \think\facade\Filesystem::disk('public')->putFile('thinkAdmin', $file);
         $url = Request::root(true) . config('filesystem.disks.public.url') . '/' . $url;
+        $url = str_replace('\\', '/', $url);
         //todo 保存到数据库
         $id = 1; //存到数据库后返回id
         return json_return([

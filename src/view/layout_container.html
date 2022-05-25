@@ -7,9 +7,9 @@
     <title>{block name="title"}{$pageTitle|default='管理'}{/block}</title>
     <!-- import CSS -->
     {block name='css'}
-    {css href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.12.0/theme-chalk/index.css" /}
+    {css href="https://cdn.staticfile.org/element-ui/2.12.0/theme-chalk/index.css" /}
     {css href="https://cdn.bootcdn.net/ajax/libs/layer/2.3/skin/layer.css" /}
-    {css href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" /}
+    {css href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css" /}
     {/block}
     {block name='style'}
     <style>
@@ -69,12 +69,12 @@
 
 {block name='js'}
 <!-- import Vue before Element -->
-{js href="https://cdn.bootcdn.net/ajax/libs/vue/2.6.10/vue.min.js"}
+{js href="https://cdn.staticfile.org/vue/2.6.0/vue.min.js"}
 <!-- import JavaScript -->
-{js href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.12.0/index.js"}
-{js href="https://cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"}
-{js href="https://cdn.bootcdn.net/ajax/libs/layer/3.1.1/layer.min.js"}
-{js href="https://cdn.jsdelivr.net/npm/@form-create/element-ui@1.0.12/dist/form-create.min.js"}
+{js href="https://cdn.staticfile.org/element-ui/2.12.0/index.js"}
+{js href="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"}
+{js href="https://cdn.staticfile.org/layer/3.1.1/layer.min.js"}
+{js href="https://unpkg.com/@form-create/element-ui@1.0.12/dist/form-create.min.js"}
 {/block}
 
 {block name='script'}
